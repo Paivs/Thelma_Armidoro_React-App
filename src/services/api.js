@@ -1,20 +1,20 @@
 import axios from "axios"
-import { storeUserData, getUserData } from "./saveData";
+import { storeUserData, getUserData, getCredentials } from "./saveData";
 import {Alert} from "react-native"
 
 
 const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJndXN0YXZvLnBhaXZhLmdwMUBnbWFpbC5jb20iLCJpc3MiOiJBUEkgVm9sbC5tZWQiLCJleHAiOjE2ODE5NDUzMDV9.qYaoEE2tcNSOdtfPnhCF0_XaC2HFEp9jVqk8HSfElRM"
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: "http://localhost:8080/",
     headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${getCredentials().token}`,
         "Access-Control-Allow-Origin": "*"
     }
 })
 
 export async function login(username, password) {
-    return await api.post("/login",
+    return await axios.post("http://localhost:8080/login",
         {
             "login": username,
             "senha": password
@@ -70,24 +70,6 @@ export async function login(username, password) {
                 { cancelable: false }
               );
             return null
-        })
-}
-
-async function getToken() {
-    return await axios.post("http://localhost:8080/login",
-        {
-            "login": "gustavo.paiva.gp1@gmail.com",
-            "senha": "Guga04060810#"
-        })
-        .then((res) => {
-            if (res.status == 200) {
-                return res.data.token
-            } else {
-                return "erro: " + res.status + "\n" + res.data
-            }
-        })
-        .catch((error) => {
-            return "erro: " + error.response.status + "\n" + error.response.data
         })
 }
 

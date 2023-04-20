@@ -15,7 +15,7 @@ export const storeUserData = async (username, password, token) => {
 
 
 
-export const getCredentials = async () => {
+export async function getCredentials() {
     try {
       // recupera as credenciais salvas no AsyncStorage
       const username = await AsyncStorage.getItem('username');
