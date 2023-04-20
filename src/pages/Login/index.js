@@ -10,13 +10,11 @@ export function Login({ navigation }) {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => { 
-    const token = await login(username, password) 
+    const token = await login(username.trim(), password) 
   };
   
   const handleCadastrar = async () => {
-    console.log("foi1")
     navigation.navigate('Cadastro');
-    console.log("foi2")
   };
   
   

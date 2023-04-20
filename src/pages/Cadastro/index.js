@@ -1,13 +1,24 @@
 import React, { useState} from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Image, Alert } from 'react-native';
-import { login } from "../../../src/services/api"
-
-const handleCadastrar = async () => { const token = await login(username, password) };
-
+import { cadastrarUsuario } from "../../../src/services/api"
 
 export function Cadastro({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordRetyped, setPasswordRetyped] = useState('');
+
+  const handleCadastrar = async () => { 
+    if(password == passwordRetyped){
+      const token = await cadastrarUsuario(username.trim(), password) 
+    }else{
+      Alert.alert(
+        'Erro','As senhas não correspondem!',
+        [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+        { cancelable: false }
+    );
+    }
+    
+  };
 
     return (
         <View style={styles.container}>
@@ -30,10 +41,20 @@ export function Cadastro({ navigation }) {
                 <Text style={styles.label}>Senha</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Digite sua senha"
+                    placeholder="Digite a senha"
                     placeholderTextColor="#aaaaaa"
                     onChangeText={setPassword}
                     value={password}
+                    secureTextEntry={true} />
+            </View>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Digite novamente a senha"
+                    placeholderTextColor="#aaaaaa"
+                    onChangeText={setPasswordRetyped}
+                    value={passwordRetyped}
                     secureTextEntry={true} />
             </View>
 

@@ -2,8 +2,10 @@ import axios from "axios"
 import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
+const urlBase = "http://10.0.0.167:8080/"
+
 export async function login(username, password) {
-    return await axios.post("http://localhost:8080/login",
+    return await axios.post(urlBase + "login",
         {
             "login": username,
             "senha": password
@@ -12,16 +14,10 @@ export async function login(username, password) {
             if (res.status == 200) {
                 storeUserData(username, password, res.data.token);
                 console.log("Acesso autorizado")
-                console.log(res.data.token)
+                console.log("Usuário: " + username + "\nToken: " + res.data.token)
                 Alert.alert(
-                    'Sucesso',
-                    'Login autorizado!',
-                    [
-                        {
-                            text: 'OK',
-                            onPress: () => console.log('Botão OK pressionado'),
-                        },
-                    ],
+                    'Sucesso','Login autorizado!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
                     { cancelable: false }
                 );
 
@@ -30,14 +26,8 @@ export async function login(username, password) {
                 console.log("erro: " + res.status + "\n" + res.data)
 
                 Alert.alert(
-                    'Alerta',
-                    'Login não autorizado!',
-                    [
-                        {
-                            text: 'OK',
-                            onPress: () => console.log('Botão OK pressionado'),
-                        },
-                    ],
+                    'Alerta', 'Login não autorizado!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
                     { cancelable: false }
                 );
 
@@ -48,14 +38,49 @@ export async function login(username, password) {
             console.log("erro: " + error.response.status + "\n" + error.response.data)
 
             Alert.alert(
-                'Alerta',
-                'Login não autorizado!',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => console.log('Botão OK pressionado'),
-                    },
-                ],
+                'Alerta', 'Login não autorizado!',
+                [{text: 'OK', onPress: () => console.log('Botão OK pressionado')}],
+                { cancelable: false }
+            );
+            return null
+        })
+}
+
+export async function cadastrarUsuario(username, password) {
+    return await axios.post(urlBase + "cadastrar",
+        {
+            "login": username,
+            "senha": password
+        })
+        .then((res) => {
+            if (res.status == 200) {
+                console.log("Requisição de cadastro realizada: " + res.status)
+                console.log(res.data)
+                Alert.alert(
+                    'Sucesso','Requisição de cadastro realizada!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                    { cancelable: false }
+                );
+
+                return true
+            } else {
+                console.log("erro: " + res.status + "\n" + res.data)
+
+                Alert.alert(
+                    'Alerta', 'Requisição de cadastro inválida!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                    { cancelable: false }
+                );
+
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("erro: " + error.response.status + " - " + error.response.data)
+
+            Alert.alert(
+                'Alerta', 'Requisição de cadastro inválida!',
+                [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
                 { cancelable: false }
             );
             return null
@@ -68,12 +93,12 @@ export async function login(username, password) {
 //lista as propriedades dos pacientes, de acordo com o definido
 export async function listaPacientes(token) {
 
-    const url = "http://localhost:8080/pacientes"
+    const url = urlBase + "pacientes"
     console.log("Realizando uma requisição get em: " + url)
     console.log("Token: " + token)
 
     const instance = axios.create({
-        baseURL: "http://localhost:8080/",
+        baseURL: urlBase,
         headers: {
             'Authorization': `Bearer ${token}`,
             "Access-Control-Allow-Origin": "*"
@@ -99,11 +124,12 @@ export async function listaPacientes(token) {
 //OBS: acrescentar tratativa de erro, retornar o que está errado
 export async function cadastrarPaciente(token, paciente) {
 
+    const url = urlBase + "pacientes"
     console.log("Realizando uma requisição post em: " + url)
     console.log("Token: " + token)
 
     const instance = axios.create({
-        baseURL: "http://localhost:8080/",
+       baseURL: urlBase,
         headers: {
             'Authorization': `Bearer ${token}`,
             "Access-Control-Allow-Origin": "*"
@@ -148,11 +174,12 @@ export async function cadastrarPaciente(token, paciente) {
 //alterar paciente
 export async function alterarPaciente(token, paciente) {
 
+    const url = urlBase + "pacientes"
     console.log("Realizando uma requisição PUT em: " + url)
     console.log("Token: " + token)
 
     const instance = axios.create({
-        baseURL: "http://localhost:8080/",
+       baseURL: urlBase,
         headers: {
             'Authorization': `Bearer ${token}`,
             "Access-Control-Allow-Origin": "*"
@@ -180,11 +207,12 @@ export async function alterarPaciente(token, paciente) {
 //deleta paciente (inativa)
 export async function deletarPaciente(token, id) {
 
+    const url = urlBase + "pacientes"
     console.log("Realizando uma requisição DELETE em: " + url)
     console.log("Token: " + token)
 
     const instance = axios.create({
-        baseURL: "http://localhost:8080/",
+       baseURL: urlBase,
         headers: {
             'Authorization': `Bearer ${token}`,
             "Access-Control-Allow-Origin": "*"
