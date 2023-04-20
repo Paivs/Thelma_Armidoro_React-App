@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingVi
 import { login } from "../../../src/services/api"
 import { getCredentials, isUserLoggedFor24Hours, hasExpiredLogin } from "../../../src/services/saveData"
 import { useNavigation } from '@react-navigation/native';
-import { api } from "../../services/api"
+import { listaPacientes } from "../../services/api"
 
 export function Login({ navigation }) {
   const [username, setUsername] = useState('');
@@ -21,7 +21,8 @@ export function Login({ navigation }) {
   
   
   const handleEsqueciSenha = async () => {
-    console.log(await api.get("/pacientes"))
+    const data = await getCredentials()
+    listaPacientes(data.token)
   };
   
 
