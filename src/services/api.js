@@ -2,7 +2,7 @@ import axios from "axios"
 import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
-const urlBase = "http://10.0.0.167:8080/"
+const urlBase = "http://10.84.9.140:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -56,8 +56,51 @@ export async function cadastrarUsuario(username, password) {
             if (res.status == 200) {
                 console.log("Requisição de cadastro realizada: " + res.status)
                 console.log(res.data)
+
+                return true
+            } else {
+                console.log("erro: " + res.status + "\n" + res.data)
+
                 Alert.alert(
-                    'Sucesso','Requisição de cadastro realizada!',
+                    'Alerta', 'Requisição de cadastro inválida!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                    { cancelable: false }
+                );
+
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("erro: " + error.response.status + " - " + error.response.data)
+
+            Alert.alert(
+                'Alerta', 'Requisição de cadastro inválida!',
+                [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                { cancelable: false }
+            );
+            return null
+        })
+}
+
+export async function cadastrarUsuarioPin(login, senha, pin) {
+    return await axios.post(urlBase + "cadastrar",
+    {
+        "pin": {
+          "login": login,
+          "pin": pin
+        },
+        "usuario": {
+          "login": login,
+          "senha": senha
+        }
+      })
+        .then((res) => {
+            if (res.status == 200) {
+                console.log("Cadastro realizado: " + res.status)
+                console.log(res.data)
+
+                Alert.alert(
+                    'Sucesso',`Cadastro realizado!\nVocê pode realizar seu login agora`,
                     [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
                     { cancelable: false }
                 );
@@ -86,7 +129,6 @@ export async function cadastrarUsuario(username, password) {
             return null
         })
 }
-
 
 //PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES
 
