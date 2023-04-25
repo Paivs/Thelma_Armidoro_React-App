@@ -12,16 +12,8 @@ export function Cadastro({ navigation }) {
 
   const handleCadastrar = async () => {
     if (password == passwordRetyped) {
-      const passou = cadastrarUsuario(username.trim(), password) 
-      
-      Alert.alert(
-        'Sucesso', `Requisição de cadastro realizada!\nVocê vai receber um PIN em seu email ${username}. Aguarde ao menos 30 segundos.`,
-        [{ text: 'OK', onPress: () => {
-          console.log('Botão OK pressionado')
-          setPinPopup(true)
-        } },],
-        { cancelable: false }
-      );
+      const passou = cadastrarUsuario(username.trim(), password)
+      setPinPopup(true)
       
     } else {
       Alert.alert(
@@ -38,17 +30,17 @@ export function Cadastro({ navigation }) {
       setPin(newPin);
     }
     console.log("ENTREI")
-    console.log(`user: ${username.trim()}`)
+    console.log(`user: ${username}`)
     console.log(`password: ${password}`)
-    console.log(`pin: ${newPin.toString().toUpperCase()}`)
+    console.log(`pin: ${newPin}`)
 
-    const foi = await cadastrarUsuarioPin(username, password, pin)
+    const foi = await cadastrarUsuarioPin(username, password, newPin)
 
     if(foi){
+      setPinPopup(false)
       navigation.navigate('Login');
     }
-
-    setPinPopup(false)
+    
   }
 
   return ( 

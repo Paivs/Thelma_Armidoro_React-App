@@ -2,7 +2,7 @@ import axios from "axios"
 import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
-const urlBase = "http://10.84.23.138:8080/"
+const urlBase = "http://10.0.0.167:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -47,6 +47,13 @@ export async function login(username, password) {
 }
 
 export async function cadastrarUsuario(username, password) {
+    Alert.alert(
+        'Sucesso', `Requisição de cadastro realizada!\nVocê vai receber um PIN em seu email ${username}. Aguarde ao menos 30 segundos.`,
+        [{ text: 'OK', onPress: () => {
+          console.log('Botão OK pressionado')
+        } },],
+        { cancelable: false }
+      );
     return await axios.post(urlBase + "cadastrar",
         {
             "login": username,
@@ -84,8 +91,7 @@ export async function cadastrarUsuario(username, password) {
 
 export async function cadastrarUsuarioPin(login, senha, pin) {
     console.log("Realizando requisição PUT")
-    return await axios.put(urlBase + "cadastrar",
-    {
+    const envio = {
         "pin": {
           "login": login,
           "pin": pin
@@ -94,7 +100,12 @@ export async function cadastrarUsuarioPin(login, senha, pin) {
           "login": login,
           "senha": senha
         }
-      })
+      }
+
+      console.log(envio)
+
+    return await axios.put(urlBase + "cadastrar", envio
+    )
         .then((res) => {
             if (res.status == 200) {
                 console.log("Cadastro realizado: " + res.status)
@@ -121,6 +132,7 @@ export async function cadastrarUsuarioPin(login, senha, pin) {
         })
         .catch((error) => {
             console.log("erro: " + error.response.status + " - " + error.response.data)
+            console.log(error.response.data)
 
             Alert.alert(
                 'Alerta', 'Requisição de cadastro inválida!',
