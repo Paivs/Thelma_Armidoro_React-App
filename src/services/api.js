@@ -2,7 +2,7 @@ import axios from "axios"
 import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
-const urlBase = "http://10.84.9.140:8080/"
+const urlBase = "http://10.84.23.138:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -83,7 +83,8 @@ export async function cadastrarUsuario(username, password) {
 }
 
 export async function cadastrarUsuarioPin(login, senha, pin) {
-    return await axios.post(urlBase + "cadastrar",
+    console.log("Realizando requisição PUT")
+    return await axios.put(urlBase + "cadastrar",
     {
         "pin": {
           "login": login,
@@ -107,7 +108,7 @@ export async function cadastrarUsuarioPin(login, senha, pin) {
 
                 return true
             } else {
-                console.log("erro: " + res.status + "\n" + res.data)
+                console.log("Alerta: " + res.status + "\n" + res.data)
 
                 Alert.alert(
                     'Alerta', 'Requisição de cadastro inválida!',

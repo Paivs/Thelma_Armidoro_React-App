@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Image, Alert } from 'react-native';
-import { cadastrarUsuario } from "../../../src/services/api"
+import { cadastrarUsuario, cadastrarUsuarioPin } from "../../../src/services/api"
 import PinPopup from "../../components/PIN/index.js"
 
 export function Cadastro({ navigation }) {
   const [username, setUsername] = useState('');
+  const [pin, setPin] = useState('');
   const [password, setPassword] = useState('');
   const [passwordRetyped, setPasswordRetyped] = useState('');
   const [pinpopup, setPinPopup] = useState(false)
 
   const handleCadastrar = async () => {
     if (password == passwordRetyped) {
-      //const passou = await cadastrarUsuario(username.trim(), password) 
+      const passou = cadastrarUsuario(username.trim(), password) 
+      
       Alert.alert(
         'Sucesso', `Requisição de cadastro realizada!\nVocê vai receber um PIN em seu email ${username}. Aguarde ao menos 30 segundos.`,
-        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        [{ text: 'OK', onPress: () => {
+          console.log('Botão OK pressionado')
+          setPinPopup(true)
+        } },],
         { cancelable: false }
       );
-      setPinPopup(true)
+      
     } else {
       Alert.alert(
         'Erro', 'As senhas não correspondem!',
@@ -28,15 +33,33 @@ export function Cadastro({ navigation }) {
 
   };
 
+  const handleEnvio = async (newPin) => {
+    if (pin !== null) {
+      setPin(newPin);
+    }
+    console.log("ENTREI")
+    console.log(`user: ${username.trim()}`)
+    console.log(`password: ${password}`)
+    console.log(`pin: ${newPin.toString().toUpperCase()}`)
+
+    const foi = await cadastrarUsuarioPin(username, password, pin)
+
+    if(foi){
+      navigation.navigate('Login');
+    }
+
+    setPinPopup(false)
+  }
+
   return ( 
   <>
-    
-
     <View style={styles.container}>
     <PinPopup
         show={pinpopup}
-        close={() => setPinPopup(false)}
-      />
+        usuario={username}
+        senha={password}
+        pin={pin}
+        close={handleEnvio}/>
 
       <Text style={styles.logo}>Cadastro</Text>
       <Text style={styles.subtext}>Faça seu perfil!</Text>

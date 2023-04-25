@@ -1,11 +1,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, TextInput } from 'react-native'
+import { cadastrarUsuarioPin } from "../../services/api.js"
 
 const { height } = Dimensions.get('window')
 
-const PinPopup = ({ show, close }) => {
-  const [pin, setPin] = useState('');
+const PinPopup = ({show, close, pin}) => {
+  const [localPin, setPin] = useState(pin);
   const [state, setState] = useState({
     opacity: new Animated.Value(0),
     container: new Animated.Value(height),
@@ -14,8 +15,8 @@ const PinPopup = ({ show, close }) => {
 
   const openModal = () => {
     Animated.sequence([
-      Animated.timing(state.container, { toValue: 0, duration: 100 }),
-      Animated.timing(state.opacity, { toValue: 1, duration: 300 }),
+      Animated.timing(state.container, { toValue: 0, duration: 100, useNativeDriver: true  }),
+      Animated.timing(state.opacity, { toValue: 1, duration: 300, useNativeDriver: true  }),
       Animated.spring(state.modal, { toValue: 0, bounciness: 5, useNativeDriver: true })
     ]).start()
   }
@@ -23,8 +24,8 @@ const PinPopup = ({ show, close }) => {
   const closeModal = () => {
     Animated.sequence([
       Animated.timing(state.modal, { toValue: height, duration: 250, useNativeDriver: true }),
-      Animated.timing(state.opacity, { toValue: 0, duration: 300 }),
-      Animated.timing(state.container, { toValue: height, duration: 100 })
+      Animated.timing(state.opacity, { toValue: 0, duration: 300, useNativeDriver: true  }),
+      Animated.timing(state.container, { toValue: height, duration: 100, useNativeDriver: true  })
     ]).start()
   }
 
@@ -35,6 +36,10 @@ const PinPopup = ({ show, close }) => {
       closeModal()
     }
   }, [show])
+
+  const handleSave = () => {
+    close(localPin);
+  };
 
   return (
     <Animated.View
@@ -57,17 +62,20 @@ const PinPopup = ({ show, close }) => {
         <Text style={styles.label}>PIN</Text>
       <TextInput
         style={styles.input}
-        value={pin}
+        value={localPin}
         onChangeText={setPin}
-        keyboardType="numeric"
         placeholder="Digite seu PIN aqui"
-        maxLength={4}
+        keyboardType='email-address'
+        maxLength={5}
         secureTextEntry
       />
 
-        <TouchableOpacity style={styles.btn} onPress={close}>
-          <Text style={{ color: '#fff' }}>Close</Text>
+        <TouchableOpacity style={styles.btn} onPress={handleSave}>
+          <Text style={{ color: '#fff' }}>Enviar</Text>
         </TouchableOpacity>
+
+        <Text style={styles.info}>Caso não receba seu PIN pelo e-mail em 30 segundos ou mais, faça outra requisição</Text>
+
       </Animated.View>
     </Animated.View>
   )
@@ -93,12 +101,12 @@ const styles = StyleSheet.create({
     paddingRight: 25
   },
   indicator: {
-    width: 50,
-    height: 5,
-    backgroundColor: '#ccc',
+    width: 75,
+    height: 8,
+    backgroundColor: '#ccC',
     borderRadius: 50,
     alignSelf: 'center',
-    marginTop: 5
+    marginTop: 8
   },
   text: {
     marginTop: 50,
@@ -116,6 +124,7 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginBottom: 5,
+    marginTop: 25,
   },
   input: {
     backgroundColor: '#f9f9f9',
@@ -125,6 +134,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#ccc',
+  },
+  info: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    marginTop: 25,
+    textAlign: "justify"
   },
 })
 
