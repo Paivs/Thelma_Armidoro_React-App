@@ -5,7 +5,7 @@ import { cadastrarUsuarioPin } from "../../services/api.js"
 
 const { height } = Dimensions.get('window')
 
-const PinPopup = ({show, close, pin}) => {
+export const PinPopup = ({show, close, pin}) => {
   const [localPin, setPin] = useState(pin);
   const [state, setState] = useState({
     opacity: new Animated.Value(0),
@@ -85,14 +85,13 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
     position: 'absolute',
     zIndex: 100
   },
   modal: {
-    bottom: 0,
+    bottom: -200,
     position: 'absolute',
-    height: '50%',
+    height: '100%',
     backgroundColor: '#fff',
     width: '100%',
     borderTopLeftRadius: 20,
@@ -139,8 +138,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
     marginTop: 25,
-    textAlign: "justify"
+    textAlign: "justify",
   },
 })
-
-export default PinPopup
