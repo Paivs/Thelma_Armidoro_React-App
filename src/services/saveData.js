@@ -1,11 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { encryptPassword, decryptPassword } from "../services/encriptador.js"
+
 
 // função para fazer login e salvar os dados da sessão no AsyncStorage
-export const storeUserData = async (username, password, token) => {
+  export async function storeUserData (username, password, token){
+  const encryptedPassword = encryptPassword(password);
+
   try {
     // salva os dados da sessão no AsyncStorage
     await AsyncStorage.setItem('username', username);
-    await AsyncStorage.setItem('password', password);
+    await AsyncStorage.setItem('password', encryptedPassword);
     await AsyncStorage.setItem('token', token);
     await AsyncStorage.setItem('loginTime', new Date().getTime().toString());
   } catch (error) {
@@ -14,12 +18,12 @@ export const storeUserData = async (username, password, token) => {
 };
 
 
-
 export async function getCredentials(){
     try {
       // recupera as credenciais salvas no AsyncStorage
       const username = await AsyncStorage.getItem('username');
-      const password = await AsyncStorage.getItem('password');
+      const passwordC = await AsyncStorage.getItem('password');
+      const password = decryptPassword(passwordC);
       const token = await AsyncStorage.getItem('token');
   
       // retorna um objeto com as credenciais
@@ -30,7 +34,8 @@ export async function getCredentials(){
     }
   };
 
-export const clearUserData = async () => {
+
+export async function clearUserData(){
     try {
         await AsyncStorage.removeItem('username');
         await AsyncStorage.removeItem('password');
@@ -41,8 +46,9 @@ export const clearUserData = async () => {
     }
 };
 
+
 // função para verificar se o usuário está logado há mais de 24 horas
-export const isUserLoggedFor24Hours = async () => {
+export async function isUserLoggedFor24Hours(){
     try {
       // recupera o horário de entrada salvo no AsyncStorage
       const loginTime = await AsyncStorage.getItem('loginTime');
@@ -64,7 +70,8 @@ export const isUserLoggedFor24Hours = async () => {
     }
   };
 
-  export const hasExpiredLogin = async () => {
+
+export async function hasExpiredLogin(){
     try {
       // recupera a data do último login salva no AsyncStorage
       const lastLogin = await AsyncStorage.getItem('lastLogin');
@@ -86,15 +93,17 @@ export const isUserLoggedFor24Hours = async () => {
     }
   };
   
+
   // função para atualizar a data do último login no AsyncStorage
-  export const updateLastLogin = async () => {
-    try {
-      await AsyncStorage.setItem('lastLogin', new Date().toString());
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
+  // export async function updateLastLogin(){
+  //   try {
+  //     await AsyncStorage.setItem('lastLogin', new Date().toString());
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+
   /**************************************************************************/
 
 // exemplo de como chamar a função de login

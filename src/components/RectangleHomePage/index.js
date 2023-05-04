@@ -3,9 +3,6 @@ import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacit
 import { FontAwesome } from '@expo/vector-icons';
 
 import { login } from "../../services/api"
-import { getCredentials, isUserLoggedFor24Hours, hasExpiredLogin } from "../../services/saveData"
-import { useNavigation } from '@react-navigation/native';
-import { listaPacientes } from "../../services/api"
 
 
 export const RectangleHomePage = ({ navigation }) => {
@@ -21,10 +18,15 @@ export const RectangleHomePage = ({ navigation }) => {
   };
 
   const handleSubmit = async () => {
-    const token = await login(email.trim(), senha) 
+    console.log("entrar do login")
+    const foi = await login(email.trim(), senha) 
+
+    if (foi) {
+      navigation.navigate('MinhaConta');
+    }
   };
 
-  const handleLoginGoogle = () => {
+  const handleLoginGoogle = async () => {
     console.log('Entrar com Google');
   };
 
