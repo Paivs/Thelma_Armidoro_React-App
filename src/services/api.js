@@ -1,8 +1,8 @@
 import axios from "axios"
-import { storeUserData, getUserData, getCredentials } from "./saveData";
+// import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
-const urlBase = "http://10.0.0.167:8080/"
+const urlBase = "http://localhost:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -11,8 +11,9 @@ export async function login(username, password) {
             "senha": password
         })
         .then((res) => {
+            console.log("then()")
             if (res.status == 200) {
-                storeUserData(username, password, res.data.token);
+                // storeUserData(username, password, res.data.token);
                 console.log("Acesso autorizado")
                 console.log("Usuário: " + username + "\nToken: " + res.data.token)
                 Alert.alert(
@@ -21,7 +22,7 @@ export async function login(username, password) {
                     { cancelable: false }
                 );
 
-                return res.data.token
+                return true //res.data.token
             } else {
                 console.log("erro: " + res.status + "\n" + res.data)
 
@@ -31,10 +32,11 @@ export async function login(username, password) {
                     { cancelable: false }
                 );
 
-                return null
+                return false
             }
         })
         .catch((error) => {
+            console.log("catch()")
             console.log("erro: " + error.response.status + "\n" + error.response.data)
 
             Alert.alert(
@@ -42,7 +44,7 @@ export async function login(username, password) {
                 [{text: 'OK', onPress: () => console.log('Botão OK pressionado')}],
                 { cancelable: false }
             );
-            return null
+            return false
         })
 }
 
