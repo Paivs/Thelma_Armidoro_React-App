@@ -47,17 +47,19 @@ export const RectangleCadastro = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
-    if (senha == senhaNovamente) {
-      const passou = cadastrarUsuario(email.trim(), senha)
-      setPinPopup(true)
+    // if (senha == senhaNovamente) {
+    //   const passou = cadastrarUsuario(email.trim(), senha)
+    //   setPinPopup(true)
 
-    } else {
-      Alert.alert(
-        'Erro', 'As senhas não correspondem!',
-        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
-        { cancelable: false }
-      );
-    }
+    // } else {
+    //   Alert.alert(
+    //     'Erro', 'As senhas não correspondem!',
+    //     [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+    //     { cancelable: false }
+    //   );
+    // }
+
+    navigation.navigate('Dados Pessoais');
   };
 
 

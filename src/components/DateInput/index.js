@@ -1,50 +1,51 @@
 import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import DatePicker from 'react-native-modern-datepicker';
 
+const DateInput = ({ label, onChange, value }) => {
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
-export const Rectangle = ({ navigation }) => {
-  const windowHeight = useWindowDimensions().height;
-  const heightRectangle = windowHeight * 0.65;
-
-  const [email, setEmail] = useState('');
-
-
-
-  const handleEnvio = async () => {
-
-  }
-
-  const handleSubmit = async () => {
-    navigation.navigate('Dados Endereco');
+  const handleDateChange = (date) => {
+    setShowDatePicker(false);
+    onChange(date);
   };
 
-
   return (
-      <View style={[styles.rectangle, { height: heightRectangle }]}>
-        <View style={styles.form}>
-          <View style={styles.formControl}>
-            <Text style={styles.label}>E-mail:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu e-mail"
-              keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-            />
-          </View>
+    <View>
+      <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
+        <Text style={styles.label}>Selecione uma data</Text>
+      </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
-            <Text style={styles.btnEntrarTexto}>Cadastrar</Text>
-          </TouchableOpacity>
-          <View style={styles.linksContainer}>
-          </View>
-        </View>
-      </View>
+      {showDatePicker && (
+        <DatePicker
+          mode="calendar"
+          onSelectedChange={handleDateChange}
+          current={selectedDate}
+          options={{
+            backgroundColor: '#ffffff',
+          }}
+        />
+      )}
+      {value && (
+        <Text style={styles.sublabel} >Data selecionada: {value}</Text>
+      )}
+    </View>
   );
 };
 
+export default DateInput;
+
+
 const styles = StyleSheet.create({
+  button: {
+    padding: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+    backgroundColor: '#6e5baa',
+    borderRadius: 5,
+    justifyContent: 'center',
+  },
   rectangle: {
     position: 'absolute',
     bottom: -30,
@@ -63,6 +64,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     fontSize: 16,
+  },
+  sublabel: {
+    marginBottom: 5,
+    color: '#fff',
+    fontSize: 15,
   },
   input: {
     borderWidth: 1,
