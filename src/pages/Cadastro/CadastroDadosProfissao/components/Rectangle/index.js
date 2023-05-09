@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import GrauEscolaridade from "../GrauEscolaridade/index.js"
 
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [email, setEmail] = useState('');
+  const [curso, setCurso] = useState('');
+  const [profissao, setProfissao] = useState('');
+  const [cargo, setCargo] = useState('');
 
 
 
@@ -19,23 +22,55 @@ export const Rectangle = ({ navigation }) => {
     navigation.navigate('Dados Endereco');
   };
 
+  const renderVirtualizedList = () => {
+    return (
+      <GrauEscolaridade/>
+    );
+  };
+
 
   return (
       <View style={[styles.rectangle, { height: heightRectangle }]}>
         <View style={styles.form}>
-          <View style={styles.formControl}>
-            <Text style={styles.label}>E-mail:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu e-mail"
-              keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-            />
-          </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Grau de escolaridade:</Text>
+          {renderVirtualizedList()}
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label2}>Qual curso superior cursou ou está cursando?</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite aqui o curso"
+            onChangeText={(text) => setCurso(text)}
+            value={curso}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Profissão:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite aqui sua profissão"
+            onChangeText={(text) => setProfissao(text)}
+            value={profissao}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Cargo:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite aqui seu cargo"
+            onChangeText={(text) => setCargo(text)}
+            value={cargo}
+          />
+        </View>
+          
 
           <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
-            <Text style={styles.btnEntrarTexto}>Cadastrar</Text>
+            <Text style={styles.btnEntrarTexto}>Próximo</Text>
           </TouchableOpacity>
           <View style={styles.linksContainer}>
           </View>
@@ -60,6 +95,13 @@ const styles = StyleSheet.create({
   },
   label: {
     marginBottom: 5,
+    fontWeight: 'bold',
+    color: '#fff',
+    fontSize: 16,
+  },
+  label2: {
+    marginBottom: 5,
+    marginTop: 5,
     fontWeight: 'bold',
     color: '#fff',
     fontSize: 16,

@@ -2,6 +2,7 @@ import React from 'react';
 import { ImageBackground, View, Image, Text, useWindowDimensions } from 'react-native';
 import { Rectangle } from "./components/Rectangle/index.js"
 import styles from "./styles.js"
+import { ScrollView } from 'react-native-web';
 
 export function CadastroDadosEndereco({ navigation }) {
   const windowWidth = useWindowDimensions().width;
@@ -25,6 +26,7 @@ export function CadastroDadosEndereco({ navigation }) {
         </View>
 
         <Rectangle navigation={navigation}/>
+
 
       </View>
     </ImageBackground>

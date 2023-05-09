@@ -9,11 +9,9 @@ export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [nome, setNome] = useState('');
-  const [nascimento, setNascimento] = useState('');
-  const [CPF, setCPF] = useState('');
-  const [naturalidade, setNaturalidade] = useState('');
-  const [estadoCivil, setEstadoCivil] = useState('');
+  const [nomeContato, setNomeContato] = useState('');
+  const [vinculo, setVinculo] = useState('');
+  const [celularContato, setCelularContato] = useState('');
 
   const handleDateChange = (date) => {
     setNascimento(date);
@@ -32,48 +30,38 @@ export const Rectangle = ({ navigation }) => {
     <View style={[styles.rectangle, { height: heightRectangle }]}>
       <View style={styles.form}>
         <View style={styles.formControl}>
-          <Text style={styles.label}>Nome e sobrenome:</Text>
+          <Text style={styles.label}>Nome do contato:</Text>
           <TextInput
             style={styles.input}
             placeholder="Digite seu nome completo"
-            onChangeText={(text) => setNome(text)}
-            value={nome}
+            onChangeText={(text) => setNomeContato(text)}
+            value={nomeContato}
           />
         </View>
 
         <View style={styles.formControl}>
-          <Text style={styles.label}>Data de nascimento:</Text>
-          <DateInput onChange={handleDateChange} value={nascimento} />
-        </View>
-
-        <View style={styles.formControl}>
-          <Text style={styles.label}>CPF:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'cpf'}
-            value={CPF}
-            onChangeText={text => setCPF(text)}
-            placeholder="Digite seu CPF"
-          />
-        </View>
-
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Naturalidade:</Text>
+          <Text style={styles.label}>Vínculo do contato com você:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite sua naturalidade"
-            onChangeText={(text) => setNaturalidade(text)}
-            value={naturalidade}
+            placeholder="Digite o vínculo do contato com você"
+            onChangeText={(text) => setVinculo(text)}
+            value={vinculo}
           />
         </View>
 
         <View style={styles.formControl}>
-          <Text style={styles.label}>Estado Civil:</Text>
-          <EstadoCivil/>
+          <Text style={styles.label}>Celular do contato:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'custom'}
+            value={celularContato}
+            onChangeText={text => setCelularContato(text)}
+            placeholder="Digite o celular do contato"
+            options={{
+              mask: "+99 (99) 999999999"
+            }}
+          />
         </View>
-
-        
-
 
 
         <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>

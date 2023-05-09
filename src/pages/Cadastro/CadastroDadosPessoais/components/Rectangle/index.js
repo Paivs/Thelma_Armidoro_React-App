@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-
+import DateInput from "../../../../../components/DateInput/index.js"
+import { TextInputMask } from 'react-native-masked-text';
+import EstadoCivil from "../EstadoCivil/index.js"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState('');
+  const [nascimento, setNascimento] = useState('');
+  const [CPF, setCPF] = useState('');
+  const [naturalidade, setNaturalidade] = useState('');
+  const [estadoCivil, setEstadoCivil] = useState('');
 
-
+  const handleDateChange = (date) => {
+    setNascimento(date);
+  };
 
   const handleEnvio = async () => {
 
@@ -19,28 +27,67 @@ export const Rectangle = ({ navigation }) => {
     navigation.navigate('Dados Profissao');
   };
 
+  const renderVirtualizedList = () => {
+    return (
+      <EstadoCivil/>
+    );
+  };
+
 
   return (
-      <View style={[styles.rectangle, { height: heightRectangle }]}>
-        <View style={styles.form}>
-          <View style={styles.formControl}>
-            <Text style={styles.label}>E-mail:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu e-mail"
-              keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-            />
-          </View>
+    <View style={[styles.rectangle, { height: heightRectangle }]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.form}>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Nome e sobrenome:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu nome completo"
+            onChangeText={(text) => setNome(text)}
+            value={nome}
+          />
+        </View>
 
-          <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
-            <Text style={styles.btnEntrarTexto}>Cadastrar</Text>
-          </TouchableOpacity>
-          <View style={styles.linksContainer}>
-          </View>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Data de nascimento:</Text>
+          <DateInput onChange={handleDateChange} value={nascimento} />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>CPF:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'cpf'}
+            value={CPF}
+            onChangeText={text => setCPF(text)}
+            placeholder="Digite seu CPF"
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Naturalidade:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite sua naturalidade"
+            onChangeText={(text) => setNaturalidade(text)}
+            value={naturalidade}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Estado Civil:</Text>
+          {renderVirtualizedList()}
+        </View>
+
+
+        <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
+          <Text style={styles.btnEntrarTexto}>Próximo</Text>
+        </TouchableOpacity>
+        <View style={styles.linksContainer}>
         </View>
       </View>
+      </ScrollView>
+    </View>
   );
 };
 

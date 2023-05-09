@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { TextInputMask } from 'react-native-masked-text';
 
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [email, setEmail] = useState('');
+  const [logradouro, setLogradouro] = useState('');
+  const [CEP, setCEP] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [estado, setEstado] = useState('');
+  const [pais, setPais] = useState('');
+  const [celular, setCelular] = useState('');
 
 
 
@@ -21,26 +29,108 @@ export const Rectangle = ({ navigation }) => {
 
 
   return (
-      <View style={[styles.rectangle, { height: heightRectangle }]}>
-        <View style={styles.form}>
-          <View style={styles.formControl}>
-            <Text style={styles.label}>E-mail:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Digite seu e-mail"
-              keyboardType="email-address"
-              onChangeText={(text) => setEmail(text)}
-              value={email}
-            />
-          </View>
+    <View style={[styles.rectangle, { height: heightRectangle }]}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.form}>
 
-          <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
-            <Text style={styles.btnEntrarTexto}>Cadastrar</Text>
-          </TouchableOpacity>
-          <View style={styles.linksContainer}>
-          </View>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>CEP:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'custom'}
+            value={CEP}
+            onChangeText={text => setCEP(text)}
+            placeholder="Digite seu CPF"
+            options={{
+              mask: "9999-999"
+            }}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Logradouro:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu endereço (logradouro)"
+            onChangeText={(text) => setLogradouro(text)}
+            value={logradouro}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Complemento:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite o complemento"
+            onChangeText={(text) => setComplemento(text)}
+            value={complemento}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Bairro:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu bairro"
+            onChangeText={(text) => setBairro(text)}
+            value={bairro}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Cidade:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite sua cidade"
+            onChangeText={(text) => setCidade(text)}
+            value={cidade}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Estado:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite sua estado"
+            onChangeText={(text) => setEstado(text)}
+            value={estado}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>País:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu país"
+            onChangeText={(text) => setPais(text)}
+            value={pais}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Celular:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'custom'}
+            value={celular}
+            onChangeText={text => setCelular(text)}
+            placeholder="Digite seu celular"
+            options={{
+              mask: "+99 (99) 999999999"
+            }}
+          />
+        </View>
+
+        <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
+          <Text style={styles.btnEntrarTexto}>Próximo</Text>
+        </TouchableOpacity>
+        <View style={styles.linksContainer}>
         </View>
       </View>
+
+      </ScrollView>
+
+    </View>
   );
 };
 

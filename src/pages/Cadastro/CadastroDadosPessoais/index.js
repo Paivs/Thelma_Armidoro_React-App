@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, View, Image, Text, useWindowDimensions } from 'react-native';
+import { ImageBackground, View, Image, Text, useWindowDimensions,  } from 'react-native';
 import { Rectangle } from "./components/Rectangle/index.js"
 import styles from "./styles.js"
 
@@ -21,7 +21,8 @@ export function CadastroDadosPessoais({ navigation }) {
             <Image source={require('../../../../assets/login-icon.png')} style={[styles.loginIcon, { width: loginIconSize, height: loginIconSize }]} />
           </View>
           <Text style={styles.welcomeText}>Só uma coisa...</Text>
-          <Text style={styles.instructionsText}>Preencha o formulário para que possamos te conhecer.</Text>
+          <Text style={styles.instructionsText}>Preencha o formulário para que 
+          possamos te conhecer</Text>
         </View>
 
         <Rectangle navigation={navigation}/>
