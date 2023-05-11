@@ -1,8 +1,8 @@
 import axios from "axios"
-// import { storeUserData, getUserData, getCredentials } from "./saveData";
+ import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
-const urlBase = "http://localhost:8080/"
+const urlBase = "http://10.0.2.2:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -13,9 +13,11 @@ export async function login(username, password) {
         .then((res) => {
             console.log("then()")
             if (res.status == 200) {
-                // storeUserData(username, password, res.data.token);
+                storeUserData(username, password, res.data.token);
+
                 console.log("Acesso autorizado")
                 console.log("Usuário: " + username + "\nToken: " + res.data.token)
+
                 Alert.alert(
                     'Sucesso','Login autorizado!',
                     [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
@@ -195,12 +197,14 @@ export async function cadastrarPaciente(token, paciente) {
 
     const pacientes = await instance.post("/pacientes", paciente)
         .then((res) => {
-            if (res.status == 200) {
+            if (res.status == 201) {
+
                 console.log("Requisição concluída com sucesso")
                 console.log(res.data)
-                return res.data
+
+                return true
             } else if (res.status == 400) {
-                console.log(`Erro: ${res.status}\nDescrição: ${res.data}`)
+                console.log(`Erro 400: ${res.status}\nDescrição: ${res.data}`)
 
                 Alert.alert(
                     'Erro ao cadastrar novo usuário',
@@ -215,16 +219,19 @@ export async function cadastrarPaciente(token, paciente) {
                     ],
                     { cancelable: false }
                 );
-
+                return false
             }
             else {
                 console.log(`Erro: ${res.status}\nDescrição: ${res.data}`)
-                throw new Error(`Erro: ${res.status}\nDescrição: ${res.data}`)
+
+                return false
             }
         })
         .catch((error) => {
             console.log("Erro: " + error.status)
             console.log("Descrição: " + error.response.data)
+            console.log({error})
+            return false
         })
 }
 

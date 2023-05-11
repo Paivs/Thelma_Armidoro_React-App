@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View } from 'react-native';
 import { Picker } from "@react-native-picker/picker"
 
-export default function DropPicker() {
+import { DataStateContext } from "../../../components/DataCenter/index.js"
+
+export default function EstadoCivil({onStatusChange}) {
     let [valor, setValor] = useState('')
+
+    const handleStatusChange = (itemValue) => {
+        setValor(itemValue);
+        onStatusChange(itemValue); // Chama a função de callback passando o valor selecionado
+      };
 
     return (
         <View style={styles.container}>
             <Picker
                 selectedValue={valor}
-                onValueChange={(item, indexItem) => {
-                    setValor(item)
-                }}
-                style={styles.picker}
+                onValueChange={handleStatusChange}
             >
                 <Picker.Item key={0} label='Solteiro(a)' value='SOLTEIRO' />
                 <Picker.Item key={1} label='Casado(a)' value='CASADO' />
@@ -28,7 +32,5 @@ const styles = {
     container: {
         backgroundColor: '#fff',
         borderRadius: 10,
-    },
-    picker: {
     },
 };

@@ -4,12 +4,12 @@ import { encryptPassword, decryptPassword } from "../services/encriptador.js"
 
 // função para fazer login e salvar os dados da sessão no AsyncStorage
   export async function storeUserData (username, password, token){
-  const encryptedPassword = encryptPassword(password);
+  //const encryptedPassword = encryptPassword(password);
 
   try {
     // salva os dados da sessão no AsyncStorage
     await AsyncStorage.setItem('username', username);
-    await AsyncStorage.setItem('password', encryptedPassword);
+    await AsyncStorage.setItem('password', password);
     await AsyncStorage.setItem('token', token);
     await AsyncStorage.setItem('loginTime', new Date().getTime().toString());
   } catch (error) {
@@ -18,12 +18,13 @@ import { encryptPassword, decryptPassword } from "../services/encriptador.js"
 };
 
 
+
 export async function getCredentials(){
     try {
       // recupera as credenciais salvas no AsyncStorage
       const username = await AsyncStorage.getItem('username');
       const passwordC = await AsyncStorage.getItem('password');
-      const password = decryptPassword(passwordC);
+      const password = 123//decryptPassword(passwordC);
       const token = await AsyncStorage.getItem('token');
   
       // retorna um objeto com as credenciais

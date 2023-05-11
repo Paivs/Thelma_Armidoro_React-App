@@ -1,65 +1,81 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import DatePicker from 'react-native-modern-datepicker';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
-const DateInput = ({ label, onChange, value }) => {
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showValue, setShowValue] = useState(null);
+import { login } from "../../../../services/api.js"
 
-  const handleDateChange = (date) => {
-    setShowDatePicker(false);
 
-    const dateString = date;
-    const dateParts = dateString.split("/");
+export const Rectangle = ({ navigation }) => {
+  const windowHeight = useWindowDimensions().height;
+  const heightRectangle = windowHeight * 0.65;
 
-    // Formato: YYYY-MM-DDTHH:mm:ss.sssZ
-    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [senhaOculta, setSenhaOculta] = useState(true);
 
-    setShowValue(formattedDate)
-    onChange(date);
+  const toggleSenhaOculta = () => {
+    setSenhaOculta(!senhaOculta);
   };
 
-  return (
-    <View>
-      <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
-        {value && (
-          <Text style={styles.label}>Data: {showValue}</Text>
-        )}
-        {!value && (
-          <Text style={styles.label}>Selecione uma data</Text>
-        )}
-      </TouchableOpacity>
+  const handleSubmit = async () => {
+    console.log("entrar do login")
+    const foi = await login(email.trim(), senha) 
 
-      {showDatePicker && (
-        <DatePicker
-          mode="calendar"
-          onSelectedChange={handleDateChange}
-          current={selectedDate}
-          options={{
-            backgroundColor: '#ffffff',
-          }}
-        />
-      )}
+    if (foi) {
+      navigation.navigate('Dados Pessoais');
+    }
+  };
+
+
+
+  return (
+    <View style={[styles.rectangle, {height: heightRectangle}]}>
+      <View style={styles.form}>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>E-mail:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu e-mail"
+            keyboardType="email-address"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
+        </View>
+        
+        <View style={styles.inputSenhaContainer}>
+        <Text style={styles.label}>Senha:</Text>
+        <View style={styles.inputSenha}>
+          <TextInput
+            style={styles.inputSenhaTexto}
+            value={senha}
+            onChangeText={setSenha}
+            placeholder="Digite sua senha"
+            secureTextEntry={senhaOculta}
+          />
+          <TouchableOpacity
+            style={styles.btnOcultarSenha}
+            onPress={toggleSenhaOculta}
+          >
+            <Text style={styles.btnOcultarSenhaTexto}>
+              {toggleSenhaOculta ? 'Ocultar' : 'Mostrar'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+        <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
+          <Text style={styles.btnEntrarTexto}>Entrar</Text>
+        </TouchableOpacity>
+
+      </View>
     </View>
   );
 };
 
-export default DateInput;
-
-
 const styles = StyleSheet.create({
-  button: {
-    padding: 10,
-    alignItems: 'center',
-    marginVertical: 10,
-    backgroundColor: '#51fbaa',
-    borderRadius: 5,
-    justifyContent: 'center',
-  },
   rectangle: {
     position: 'absolute',
-    bottom: -30,
+    bottom: 0,
     backgroundColor: '#8868A5',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -75,11 +91,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     fontSize: 16,
-  },
-  sublabel: {
-    marginBottom: 5,
-    color: '#fff',
-    fontSize: 15,
   },
   input: {
     borderWidth: 1,
@@ -99,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 12,
-    marginBottom: 10,
+    marginBottom: 20,
     backgroundColor: '#9b7bb2',
   },
   inputSenha: {

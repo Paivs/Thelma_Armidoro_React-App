@@ -2,6 +2,7 @@ import React from 'react';
 import { ImageBackground, View, Image, Text, useWindowDimensions,  } from 'react-native';
 import { Rectangle } from "./components/Rectangle/index.js"
 import styles from "./styles.js"
+import {DataStateContext} from "../components/DataCenter/index.js"
 
 export function CadastroDadosPessoais({ navigation }) {
   const windowWidth = useWindowDimensions().width;

@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import GrauEscolaridade from "../GrauEscolaridade/index.js"
+import { DataStateContext } from '../../../components/DataCenter/index.js';
 
 
 export const Rectangle = ({ navigation }) => {
+  const { profissao, setProfissao, cargo, setCargo, curso, setCurso } = useContext(DataStateContext);
+
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [curso, setCurso] = useState('');
-  const [profissao, setProfissao] = useState('');
-  const [cargo, setCargo] = useState('');
-
-
-
-  const handleEnvio = async () => {
-
-  }
 
   const handleSubmit = async () => {
     navigation.navigate('Dados Endereco');
