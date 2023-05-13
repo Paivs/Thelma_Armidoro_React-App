@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, TextInput } from 'react-native'
-import { cadastrarUsuarioPin } from "../../services/api.js"
+import { cadastrarUsuarioPin } from "../../../../services/api.js"
 
 const { height } = Dimensions.get('window')
 
@@ -74,7 +74,9 @@ export const PinPopup = ({show, close, pin}) => {
           <Text style={{ color: '#fff' }}>Enviar</Text>
         </TouchableOpacity>
 
+        <View style={styles.ultimaParte}>
         <Text style={styles.info}>Caso não receba seu PIN pelo e-mail em 30 segundos ou mais, faça outra requisição</Text>
+        </View>
 
       </Animated.View>
     </Animated.View>
@@ -84,12 +86,20 @@ export const PinPopup = ({show, close, pin}) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '100%',
+    height: '200%',
     position: 'absolute',
-    zIndex: 100
+    zIndex: 100,
+  },
+  ultimaParte: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: "#fff",
+    marginLeft: -25,
+    paddingLeft: 25,
+    textAlign: "center"
   },
   modal: {
-    bottom: -200,
+    bottom: -100,
     position: 'absolute',
     height: '100%',
     backgroundColor: '#fff',

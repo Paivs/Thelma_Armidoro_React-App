@@ -68,10 +68,11 @@ export const Rectangle = ({ navigation }) => {
 
     const getToken = await getCredentials()
 
-    const foi = cadastrarPaciente(getToken.token, data)
+    const foi = await cadastrarPaciente(getToken.token, data)
 
     if(foi){
-      console.log("------------- foi")
+      console.log("------------- Enviado paciente:")
+      console.log(data)
       navigation.navigate('MinhaConta');
     }else{
       console.log("------------- não foi")

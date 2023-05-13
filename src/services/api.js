@@ -1,5 +1,5 @@
 import axios from "axios"
- import { storeUserData, getUserData, getCredentials } from "./saveData";
+import { storeUserData, getUserData, getCredentials } from "./saveData";
 import { Alert } from "react-native"
 
 const urlBase = "http://10.0.2.2:8080/"
@@ -147,6 +147,93 @@ export async function cadastrarUsuarioPin(login, senha, pin) {
         })
 }
 
+export async function validarPin(login, PIN) {
+    const dado = {
+        "login": login,
+        "pin": PIN
+    }
+
+    console.log("post em: " + urlBase + "cadastrar/validar")
+    console.log("mandando: ")
+    console.log(dado)
+
+    return await axios.post(urlBase + "cadastrar/validar",
+    {
+        "login": login,
+        "pin": PIN
+    })
+        .then((res) => {
+            console.log("then()")
+            if (res.status == 200) {
+                console.log("PIN autorizado")
+                console.log("Usuário: " + login + "\nPIN: " + PIN)
+
+                Alert.alert(
+                    'Sucesso','PIN Válido!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                    { cancelable: false }
+                );
+
+                return true
+            } else if(res.status == 404){
+                console.log("PIN inválido")
+                console.log("Usuário: " + login + "\PIN: " + PIN)
+
+                Alert.alert(
+                    'Alerta', 'PIN Inválido!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                    { cancelable: false }
+                );
+
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("catch()")
+            console.log("erro: ")
+            console.log(error.response.data)
+
+            Alert.alert(
+                'Alerta', 'PIN Inválido!',
+                [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                { cancelable: false }
+            );
+            return false
+        })
+}
+
+export async function esqueciMinhaSenha(login) {
+    return await axios.put(urlBase + `cadastrar/alterar/${login}`)
+        .then((res) => {
+            console.log("then()")
+            if (res.status == 200) {
+                console.log("E-mail enviado")
+                console.log("Usuário: " + login)
+
+                Alert.alert(
+                    'Sucesso','E-mail enviado!',
+                    [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                    { cancelable: false }
+                );
+
+                return true
+            } else {
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("catch()")
+            console.log("erro: " + error.response.status + "\n" + error.response.data)
+
+            Alert.alert(
+                'Alerta', 'Erro ao enviar e-mail!',
+                [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                { cancelable: false }
+            );
+
+            return false
+        })
+}
 //PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES
 
 //lista as propriedades dos pacientes, de acordo com o definido

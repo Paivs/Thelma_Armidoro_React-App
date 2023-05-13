@@ -47,6 +47,7 @@ export const RectangleCadastro = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
+
     console.log("handleSumit")
     if (senha == senhaNovamente) {
       console.log("bateu")

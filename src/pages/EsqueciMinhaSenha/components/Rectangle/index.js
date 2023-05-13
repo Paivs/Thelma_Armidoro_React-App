@@ -1,45 +1,44 @@
-import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import React, { useState, useContext } from 'react';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
+import { PinPopup } from "../PIN/index.js"
+import { validarPin, esqueciMinhaSenha } from "../../../../services/api.js"
+import { DataStateContextEsqueciMinhaSenha } from "../DataCenter/index.js"
 
-import { login } from "../../services/api"
 
-
-export const RectangleHomePage = ({ navigation }) => {
+export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [senhaOculta, setSenhaOculta] = useState(true);
+  const { email, setEmail, pin, setPin } = useContext(DataStateContextEsqueciMinhaSenha)
 
-  const toggleSenhaOculta = () => {
-    setSenhaOculta(!senhaOculta);
-  };
+  const [editavel, setEditavel] = useState(true)
+  const [pinpopup, setPinPopup] = useState(false)
 
-  const handleSubmit = async () => {
-    console.log("entrar do login")
-    const foi = await login(email.trim(), senha) 
+  const handleEnvio = async (newPin) => {
+    if (pin !== null) {
+      setPin(newPin);
+    }
+
+    const foi = await validarPin(email, newPin)
 
     if (foi) {
-      navigation.navigate('MinhaConta');
+      setPinPopup(false)
+      console.log("VAMO QUE VAMO CARAIO")
+      // navigation.navigate('LoginCadastro');
     }
+
+    setEditavel(false)
+
+  }
+
+  const handleSubmit = async () => {
+    const foi = esqueciMinhaSenha(email)
+    setPinPopup(true)
   };
 
-  const handleLoginGoogle = async () => {
-    console.log('Entrar com Google');
-  };
-
-  const handleCadastrar = () => {
-    navigation.navigate('Cadastro');
-  };
-
-  const handleEsqueciMinhaSenha = () => {
-    navigation.navigate('EsqueciMinhaSenha');
-  };
 
   return (
-    <View style={[styles.rectangle, {height: heightRectangle}]}>
+    <View style={[styles.rectangle, { height: heightRectangle }]}>
       <View style={styles.form}>
         <View style={styles.formControl}>
           <Text style={styles.label}>E-mail:</Text>
@@ -49,43 +48,19 @@ export const RectangleHomePage = ({ navigation }) => {
             keyboardType="email-address"
             onChangeText={(text) => setEmail(text)}
             value={email}
+            editable={editavel}
           />
         </View>
-        
-        <View style={styles.inputSenhaContainer}>
-        <Text style={styles.label}>Senha:</Text>
-        <View style={styles.inputSenha}>
-          <TextInput
-            style={styles.inputSenhaTexto}
-            value={senha}
-            onChangeText={setSenha}
-            placeholder="Digite sua senha"
-            secureTextEntry={senhaOculta}
-          />
-          <TouchableOpacity
-            style={styles.btnOcultarSenha}
-            onPress={toggleSenhaOculta}
-          >
-            <Text style={styles.btnOcultarSenhaTexto}>
-              {toggleSenhaOculta ? 'Ocultar' : 'Mostrar'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+
+        <PinPopup
+          show={pinpopup}
+          usuario={email}
+          close={handleEnvio} />
 
         <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
-          <Text style={styles.btnEntrarTexto}>Entrar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btnEntrarGoogle} onPress={handleLoginGoogle}>
-          <Text style={styles.btnEntrarGoogleTexto}>Entrar com Google</Text>
+          <Text style={styles.btnEntrarTexto}>Enviar</Text>
         </TouchableOpacity>
         <View style={styles.linksContainer}>
-          <TouchableOpacity onPress={handleCadastrar}>
-            <Text style={styles.link}>Cadastrar-se</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleEsqueciMinhaSenha}>
-            <Text style={styles.link}>Esqueci minha senha</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -95,7 +70,7 @@ export const RectangleHomePage = ({ navigation }) => {
 const styles = StyleSheet.create({
   rectangle: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -30,
     backgroundColor: '#8868A5',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
@@ -130,7 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 12,
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: '#9b7bb2',
   },
   inputSenha: {
