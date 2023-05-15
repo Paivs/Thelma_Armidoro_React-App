@@ -59,7 +59,7 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}> 
+    <View> 
       {!userInfo ? (
         <Button
           title="Sign in with Google"
@@ -69,15 +69,15 @@ export default function App() {
           }}
         />
       ) : (
-        <View style={styles.card}>
+        <View style={card}>
           {userInfo?.picture && (
-            <Image source={{ uri: userInfo?.picture }} style={styles.image} />
+            <Image source={{ uri: userInfo?.picture }} />
           )}
-          <Text style={styles.text}>Email: {userInfo.email}</Text>
-          <Text style={styles.text}>
+          <Text >Email: {userInfo.email}</Text>
+          <Text >
             Verified: {userInfo.verified_email ? "yes" : "no"}
           </Text>
-          <Text style={styles.text}>Name: {userInfo.name}</Text>
+          <Text >Name: {userInfo.name}</Text>
           {/* <Text style={styles.text}>{JSON.stringify(userInfo, null, 2)}</Text> */}
         </View>
       )}
