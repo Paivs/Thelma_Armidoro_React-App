@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DateInput from "../../../../../components/DateInput/index.js"
 import { TextInputMask } from 'react-native-masked-text';
 import EstadoCivil from "../EstadoCivil/index.js"
+import { getCredentials } from "../../../../../services/saveData.js"
+import {DataStateContext} from "../../../components/DataCenter/index.js"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [nome, setNome] = useState('');
-  const [nascimento, setNascimento] = useState('');
-  const [CPF, setCPF] = useState('');
-  const [naturalidade, setNaturalidade] = useState('');
-  const [estadoCivil, setEstadoCivil] = useState('');
+  const { nome, setNome, email, setEmail, cpf, setCpf, nascimento, setNascimento, estadoCivil, setEstadoCivil, nacionalidade, setNacionalidade } = useContext(DataStateContext);
+  const { telefone, setTelefone, telefoneFixo, setTelefoneFixo } = useContext(DataStateContext)
 
   const handleDateChange = (date) => {
-    setNascimento(date);
+    const dateString = date;
+    const dateParts = dateString.split("/");
+
+    // Formato: YYYY-MM-DDTHH:mm:ss.sssZ
+    const formattedDate = `${dateParts[0]}-${dateParts[1]}-${dateParts[2]}T23:07:54.913Z`;
+
+
+    setNascimento(formattedDate);
   };
 
   const handleEnvio = async () => {
@@ -24,14 +30,14 @@ export const Rectangle = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
+
+    const username = await getCredentials()
+
+    setEmail(username.username)
+
     navigation.navigate('Dados Profissao');
   };
 
-  const renderVirtualizedList = () => {
-    return (
-      <EstadoCivil/>
-    );
-  };
 
 
   return (
@@ -58,25 +64,55 @@ export const Rectangle = ({ navigation }) => {
           <TextInputMask
             style={styles.input}
             type={'cpf'}
-            value={CPF}
-            onChangeText={text => setCPF(text)}
-            placeholder="Digite seu CPF"
+            value={cpf}
+            onChangeText={text => setCpf(text)}
+            placeholder="Digite seu cpf"
           />
         </View>
 
         <View style={styles.formControl}>
-          <Text style={styles.label}>Naturalidade:</Text>
+          <Text style={styles.label}>Nacionalidade:</Text>
           <TextInput
             style={styles.input}
             placeholder="Digite sua naturalidade"
-            onChangeText={(text) => setNaturalidade(text)}
-            value={naturalidade}
+            onChangeText={(text) => setNacionalidade(text)}
+            value={nacionalidade}
           />
         </View>
 
         <View style={styles.formControl}>
-          <Text style={styles.label}>Estado Civil:</Text>
-          {renderVirtualizedList()}
+          <Text style={styles.label}>Estado civil:</Text>
+          <EstadoCivil 
+            onStatusChange={(text) => setEstadoCivil(text)}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Celular:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'custom'}
+            value={telefone}
+            onChangeText={text => setTelefone(text)}
+            placeholder="Digite seu celular"
+            options={{
+              mask: "+99 (99) 999999999"
+            }}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Telefone fixo:</Text>
+          <TextInputMask
+            style={styles.input}
+            type={'custom'}
+            value={telefoneFixo}
+            onChangeText={text => setTelefoneFixo(text)}
+            placeholder="Digite o telefone fixo"
+            options={{
+              mask: "+99 (99) 99999999"
+            }}
+          />
         </View>
 
 

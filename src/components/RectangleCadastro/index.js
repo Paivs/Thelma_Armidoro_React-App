@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { PinPopup } from "../PIN/index.js"
 import { cadastrarUsuario, cadastrarUsuarioPin } from "../../services/api.js"
@@ -39,7 +39,7 @@ export const RectangleCadastro = ({ navigation }) => {
 
     if (foi) {
       setPinPopup(false)
-      navigation.navigate('Login');
+      navigation.navigate('LoginCadastro');
     }
 
     setEditavel(false)
@@ -47,19 +47,22 @@ export const RectangleCadastro = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
-    // if (senha == senhaNovamente) {
-    //   const passou = cadastrarUsuario(email.trim(), senha)
-    //   setPinPopup(true)
 
-    // } else {
-    //   Alert.alert(
-    //     'Erro', 'As senhas não correspondem!',
-    //     [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
-    //     { cancelable: false }
-    //   );
-    // }
+    console.log("handleSumit")
+    if (senha == senhaNovamente) {
+      console.log("bateu")
+      const passou = cadastrarUsuario(email.trim(), senha)
+      setPinPopup(true)
+    } else {
+      console.log("não bateu")
+      Alert.alert(
+        'Erro', 'As senhas não correspondem!',
+        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        { cancelable: false }
+      );
+    }
 
-    navigation.navigate('Dados Pessoais');
+    
   };
 
 

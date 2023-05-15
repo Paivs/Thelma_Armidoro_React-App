@@ -35,7 +35,7 @@ export const RectangleHomePage = ({ navigation }) => {
   };
 
   const handleEsqueciMinhaSenha = () => {
-    console.log('Esqueci minha senha');
+    navigation.navigate('EsqueciMinhaSenha');
   };
 
   return (

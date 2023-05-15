@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import DateInput from "../../../../../components/DateInput/index.js"
 import { TextInputMask } from 'react-native-masked-text';
+import { cadastrarPaciente } from "../../../../../services/api.js"
+import { getCredentials } from "../../../../../services/saveData.js"
+import { DataStateContext } from "../../../components/DataCenter/index.js"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [nomeContato, setNomeContato] = useState('');
-  const [vinculo, setVinculo] = useState('');
-  const [celularContato, setCelularContato] = useState('');
+  const { contatoEmergencia, setContatoEmergencia } = useContext(DataStateContext);
+  
+  const {
+    nome,
+    email,
+    telefone,
+    telefoneFixo,
+    cpf,
+    nascimento,
+    estadoCivil,
+    curso,
+    profissao,
+    cargo,
+    nacionalidade,
+    endereco,
+    } = useContext(DataStateContext);
 
   const handleDateChange = (date) => {
     setNascimento(date);
@@ -21,7 +36,55 @@ export const Rectangle = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
-    navigation.navigate('MinhaConta');
+    
+
+    const data = {
+      "nome": nome,
+      "email": email,
+      "telefone": telefone,
+      "telefone_fixo": telefoneFixo,
+      "cpf": cpf,
+      "nascimento": nascimento,
+      "estado_civil": estadoCivil,
+      "curso": curso,
+      "profissao": profissao,
+      "cargo": cargo,
+      "nacionalidade": nacionalidade,
+      "endereco": {
+        "logradouro": endereco.logradouro,
+        "bairro": endereco.bairro,
+        "cep": endereco.cep,
+        "cidade": endereco.cidade,
+        "uf": endereco.uf,
+        "complemento": endereco.complemento,
+        "numero": endereco.numero
+      },
+      "contatoEmergencia": {
+        "contato_nome": contatoEmergencia.contato_nome,
+        "contato_vinculo": contatoEmergencia.contato_vinculo,
+        "contato_telefone": contatoEmergencia.contato_telefone
+      }
+    }
+
+    const getToken = await getCredentials()
+
+    const foi = await cadastrarPaciente(getToken.token, data)
+
+    if(foi){
+      console.log("------------- Enviado paciente:")
+      console.log(data)
+      navigation.navigate('MinhaConta');
+    }else{
+      console.log("------------- não foi")
+    }
+    
+  };
+
+  const handleInputChange = (field, value) => {
+    setContatoEmergencia((prevContatoEmergencia) => ({
+      ...prevContatoEmergencia,
+      [field]: value,
+    }));
   };
 
 
@@ -32,9 +95,9 @@ export const Rectangle = ({ navigation }) => {
           <Text style={styles.label}>Nome do contato:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite seu nome completo"
-            onChangeText={(text) => setNomeContato(text)}
-            value={nomeContato}
+            placeholder="Digite o nome completo do contato"
+            onChangeText={(value) => handleInputChange('contato_nome', value)}
+            value={contatoEmergencia.contato_nome}
           />
         </View>
 
@@ -43,8 +106,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite o vínculo do contato com você"
-            onChangeText={(text) => setVinculo(text)}
-            value={vinculo}
+            onChangeText={(value) => handleInputChange('contato_vinculo', value)}
+            value={contatoEmergencia.contato_vinculo}
           />
         </View>
 
@@ -53,8 +116,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInputMask
             style={styles.input}
             type={'custom'}
-            value={celularContato}
-            onChangeText={text => setCelularContato(text)}
+            value={contatoEmergencia.contato_telefone}
+            onChangeText={(value) => handleInputChange('contato_telefone', value)}
             placeholder="Digite o celular do contato"
             options={{
               mask: "+99 (99) 999999999"

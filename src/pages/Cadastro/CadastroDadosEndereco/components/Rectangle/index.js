@@ -1,22 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
+import { DataStateContext } from "../../../components/DataCenter/index.js"
 
 
 export const Rectangle = ({ navigation }) => {
+  const { endereco, setEndereco } = useContext(DataStateContext);
+
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
-
-  const [logradouro, setLogradouro] = useState('');
-  const [CEP, setCEP] = useState('');
-  const [complemento, setComplemento] = useState('');
-  const [bairro, setBairro] = useState('');
-  const [cidade, setCidade] = useState('');
-  const [estado, setEstado] = useState('');
-  const [pais, setPais] = useState('');
-  const [celular, setCelular] = useState('');
-
 
 
   const handleEnvio = async () => {
@@ -38,11 +31,11 @@ export const Rectangle = ({ navigation }) => {
           <TextInputMask
             style={styles.input}
             type={'custom'}
-            value={CEP}
-            onChangeText={text => setCEP(text)}
-            placeholder="Digite seu CPF"
+            value={endereco.cep}
+            onChangeText={text => setEndereco({ ...endereco, cep: text})}
+            placeholder="Digite seu CEP"
             options={{
-              mask: "9999-999"
+              mask: "99999999"
             }}
           />
         </View>
@@ -52,8 +45,18 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite seu endereço (logradouro)"
-            onChangeText={(text) => setLogradouro(text)}
-            value={logradouro}
+            onChangeText={(text) => setEndereco({ ...endereco, logradouro: text})}
+            value={endereco.logradouro}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Número:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite o número do seu endereço"
+            onChangeText={(text) => setEndereco({ ...endereco, numero: text})}
+            value={endereco.numero}
           />
         </View>
 
@@ -62,8 +65,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite o complemento"
-            onChangeText={(text) => setComplemento(text)}
-            value={complemento}
+            onChangeText={(text) => setEndereco({ ...endereco, complemento: text})}
+            value={endereco.complemento}
           />
         </View>
 
@@ -72,8 +75,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite seu bairro"
-            onChangeText={(text) => setBairro(text)}
-            value={bairro}
+            onChangeText={(text) => setEndereco({ ...endereco, bairro: text})}
+            value={endereco.bairro}
           />
         </View>
 
@@ -82,8 +85,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite sua cidade"
-            onChangeText={(text) => setCidade(text)}
-            value={cidade}
+            onChangeText={(text) => setEndereco({ ...endereco, cidade: text}) }
+            value={endereco.cidade}
           />
         </View>
 
@@ -92,8 +95,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite sua estado"
-            onChangeText={(text) => setEstado(text)}
-            value={estado}
+            onChangeText={(text) => setEndereco({ ...endereco, uf: text}) }
+            value={endereco.uf}
           />
         </View>
 
@@ -102,22 +105,8 @@ export const Rectangle = ({ navigation }) => {
           <TextInput
             style={styles.input}
             placeholder="Digite seu país"
-            onChangeText={(text) => setPais(text)}
-            value={pais}
-          />
-        </View>
-
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Celular:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'custom'}
-            value={celular}
-            onChangeText={text => setCelular(text)}
-            placeholder="Digite seu celular"
-            options={{
-              mask: "+99 (99) 999999999"
-            }}
+            onChangeText={(text) => setEndereco({ ...endereco, pais: text})}
+            value={endereco.pais}
           />
         </View>
 

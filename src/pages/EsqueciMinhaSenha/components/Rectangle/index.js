@@ -1,62 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import DatePicker from 'react-native-modern-datepicker';
+import React, { useState, useContext } from 'react';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
+import { PinPopup } from "../PIN/index.js"
+import { validarPin, esqueciMinhaSenha } from "../../../../services/api.js"
+import { DataStateContextEsqueciMinhaSenha } from "../DataCenter/index.js"
 
-const DateInput = ({ label, onChange, value }) => {
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showValue, setShowValue] = useState(null);
 
-  const handleDateChange = (date) => {
-    setShowDatePicker(false);
+export const Rectangle = ({ navigation }) => {
+  const windowHeight = useWindowDimensions().height;
+  const heightRectangle = windowHeight * 0.65;
 
-    const dateString = date;
-    const dateParts = dateString.split("/");
+  const { email, setEmail, pin, setPin } = useContext(DataStateContextEsqueciMinhaSenha)
 
-    // Formato: YYYY-MM-DDTHH:mm:ss.sssZ
-    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+  const [editavel, setEditavel] = useState(true)
+  const [pinpopup, setPinPopup] = useState(false)
 
-    setShowValue(formattedDate)
-    onChange(date);
+  const handleEnvio = async (newPin) => {
+    if (pin !== null) {
+      setPin(newPin);
+    }
+
+    const foi = await validarPin(email, newPin)
+
+    if (foi) {
+      setPinPopup(false)
+      console.log("VAMO QUE VAMO CARAIO")
+      // navigation.navigate('LoginCadastro');
+    }
+
+    setEditavel(false)
+
+  }
+
+  const handleSubmit = async () => {
+    const foi = esqueciMinhaSenha(email)
+    setPinPopup(true)
   };
 
-  return (
-    <View>
-      <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
-        {value && (
-          <Text style={styles.label}>Data: {showValue}</Text>
-        )}
-        {!value && (
-          <Text style={styles.label}>Selecione uma data</Text>
-        )}
-      </TouchableOpacity>
 
-      {showDatePicker && (
-        <DatePicker
-          mode="calendar"
-          onSelectedChange={handleDateChange}
-          current={selectedDate}
-          options={{
-            backgroundColor: '#ffffff',
-          }}
-        />
-      )}
+  return (
+    <View style={[styles.rectangle, { height: heightRectangle }]}>
+      <View style={styles.form}>
+        <View style={styles.formControl}>
+          <Text style={styles.label}>E-mail:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu e-mail"
+            keyboardType="email-address"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            editable={editavel}
+          />
+        </View>
+
+        <PinPopup
+          show={pinpopup}
+          usuario={email}
+          close={handleEnvio} />
+
+        <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
+          <Text style={styles.btnEntrarTexto}>Enviar</Text>
+        </TouchableOpacity>
+        <View style={styles.linksContainer}>
+        </View>
+      </View>
     </View>
   );
 };
 
-export default DateInput;
-
-
 const styles = StyleSheet.create({
-  button: {
-    padding: 10,
-    alignItems: 'center',
-    marginVertical: 10,
-    backgroundColor: '#51fbaa',
-    borderRadius: 5,
-    justifyContent: 'center',
-  },
   rectangle: {
     position: 'absolute',
     bottom: -30,
@@ -75,11 +86,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     fontSize: 16,
-  },
-  sublabel: {
-    marginBottom: 5,
-    color: '#fff',
-    fontSize: 15,
   },
   input: {
     borderWidth: 1,
