@@ -76,9 +76,6 @@ export const RectangleHomePage = ({ navigation }) => {
         <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
           <Text style={styles.btnEntrarTexto}>Entrar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnEntrarGoogle} onPress={handleLoginGoogle}>
-          <Text style={styles.btnEntrarGoogleTexto}>Entrar com Google</Text>
-        </TouchableOpacity>
         <View style={styles.linksContainer}>
           <TouchableOpacity onPress={handleCadastrar}>
             <Text style={styles.link}>Cadastrar-se</Text>

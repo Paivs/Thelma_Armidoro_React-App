@@ -3,7 +3,6 @@ import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacit
 import { FontAwesome } from '@expo/vector-icons';
 import DateInput from "../../../../../components/DateInput/index.js"
 import { TextInputMask } from 'react-native-masked-text';
-import EstadoCivil from "../EstadoCivil/index.js"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
