@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, ImageBackground, View, Image, Text, useWindowDimensions } from 'react-native';
 import { RectangleHomePage } from "../../components/RectangleHomePage/index.js"
-import { useNavigation } from '@react-navigation/native';
-import BotaoGoogle  from '../../services/entrarGoogle.js'
+
 
 export function Login({ navigation }) {
   const windowWidth = useWindowDimensions().width;
@@ -26,7 +25,7 @@ export function Login({ navigation }) {
         </View>
 
         <RectangleHomePage navigation={navigation}/>
-        <BotaoGoogle/>
+
 
       </View>
     </ImageBackground>

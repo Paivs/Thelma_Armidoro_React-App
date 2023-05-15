@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, ImageBackground, View, Image, Text, useWindowDimensions } from 'react-native';
-import { Rectangle } from "./components/Rectangle/index.js"
-import { useNavigation } from '@react-navigation/native';
+import { RectangleEmail } from "./components/RectangleEmail/index.js"
+import { RectangleSenha } from "./components/RectangleSenha/index.js"
 
 export function EsqueciMinhaSenha({ navigation }) {
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;
   const loginIconSize = Math.min(windowWidth, windowHeight) * 0.2;
+  const [troca, setTroca] = useState(false);
+
+  const handleTroca = () => {
+    setTroca(true)
+  }
 
 
   return (
@@ -24,7 +29,8 @@ export function EsqueciMinhaSenha({ navigation }) {
           <Text style={styles.instructionsText}>Insira seu e-mail para continuar</Text>
         </View>
 
-        <Rectangle navigation={navigation}/>
+        {!troca && <RectangleEmail navigation={navigation} troca={handleTroca}/>}
+        {troca && <RectangleSenha navigation={navigation}/>}
 
       </View>
     </ImageBackground>

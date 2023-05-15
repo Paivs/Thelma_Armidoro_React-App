@@ -210,8 +210,43 @@ export async function esqueciMinhaSenha(login) {
                 console.log("E-mail enviado")
                 console.log("Usuário: " + login)
 
+                return true
+            } else {
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("catch()")
+            console.log("erro: " + error.response.status + "\n" + error.response.data)
+
+            Alert.alert(
+                'Alerta', 'Erro ao enviar e-mail!',
+                [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
+                { cancelable: false }
+            );
+
+            return false
+        })
+}
+
+export async function esqueciMinhaSenhaPin(login, senha, pin) {
+    return await axios.post(urlBase + `cadastrar/alterar`,{
+        "login": login,
+        "senha": senha,
+        "pin": {
+          "login": login,
+          "pin": pin
+        }
+      })
+        .then((res) => {
+            console.log("then()")
+            if (res.status == 200) {
+                console.log("Senha Alterada")
+                console.log("Usuário: " + login)
+                console.log("Senha: " + senha)
+
                 Alert.alert(
-                    'Sucesso','E-mail enviado!',
+                    'Sucesso', 'Senha alterada!',
                     [{text: 'OK',onPress: () => console.log('Botão OK pressionado')},],
                     { cancelable: false }
                 );

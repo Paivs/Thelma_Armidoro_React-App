@@ -7,7 +7,6 @@ const DataStateProviderEsqueciMinhaSenha = ({ children }) => {
   const [pin, setPin] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [senhaNova, setSenhaNova] = useState('');
 
   return (
     <DataStateContextEsqueciMinhaSenha.Provider
@@ -18,8 +17,6 @@ const DataStateProviderEsqueciMinhaSenha = ({ children }) => {
         setEmail,
         senha,
         setSenha,
-        senhaNova,
-        setSenhaNova,
       }}
     >
       {children}

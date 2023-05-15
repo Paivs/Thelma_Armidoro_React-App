@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Keyboard } from 'react-native';
 import { PinPopup } from "../PIN/index.js"
 import { validarPin, esqueciMinhaSenha } from "../../../../services/api.js"
 import { DataStateContextEsqueciMinhaSenha } from "../DataCenter/index.js"
 
 
-export const Rectangle = ({ navigation }) => {
+export const RectangleEmail = ({ troca, navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
@@ -20,10 +20,12 @@ export const Rectangle = ({ navigation }) => {
     }
 
     const foi = await validarPin(email, newPin)
+    Keyboard.dismiss()
 
     if (foi) {
       setPinPopup(false)
       console.log("VAMO QUE VAMO CARAIO")
+      troca()
       // navigation.navigate('LoginCadastro');
     }
 
