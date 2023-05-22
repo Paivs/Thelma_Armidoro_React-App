@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, Text, ScrollView, ImageBackground } from 'react-native';
 import { styles } from "./styles.js"
-import Perfil from "../../../components/Contato"
+import Perfil from "./components/Contato"
 import ButtonHome from "./components/ButtonHome/index.js"
 
 
@@ -22,7 +22,11 @@ export default function Home({ navigation }) {
 
         <Perfil imageUrl={imageUrl} phoneNumber={phoneNumber} />
 
-          <Text style={styles.description}>Lorem ipsum dolor sit amet. Ut voluptate enim et omnis praesentium in numquam minima qui maiores aspernatur id maxime eveniet aut aliquama. </Text>
+          <Text style={styles.descriptionTop}>Estamos aqui para tornar o processo de agendamento de suas sessões o mais conveniente e eficiente possível.
+          </Text>
+          <Text style={styles.description}>
+          Com alguns toques na tela, você poderá garantir seu encontro com a psicóloga e cuidar do seu bem-estar mental.
+          </Text>
 
         <ButtonHome/>
 

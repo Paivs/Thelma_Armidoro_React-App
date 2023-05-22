@@ -40,4 +40,12 @@ export const styles = StyleSheet.create({
     textAlign: "justify",
     width: "75%",
   },
+  descriptionTop: {
+    margin: 20,
+    marginBottom: -15,
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: "justify",
+    width: "75%",
+  },
 });

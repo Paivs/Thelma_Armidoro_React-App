@@ -33,12 +33,18 @@ export default styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   conChamada: {
-marginTop: 55,
-marginBottom: 15,
-textAlign: "left",
+    marginTop: 55,
+    marginBottom: 15,
+    textAlign: "left",
   },
   line: {
     width: '65%',
     borderBottomWidth: 2,
+  },
+  conData: {
+    textAlign: "left",
+    marginLeft: 40,
+    marginTop: -5,
+    marginBottom: 15,
   },
 });

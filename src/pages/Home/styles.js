@@ -14,15 +14,18 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 175,
   },
-  header: {
+  title: {
+    margin: 25,
     marginBottom: 0,
-    marginTop: 20,
-    alignItems: 'center',
+    color: "#282A3A",
+    fontWeight: "bold",
+    fontSize: 24,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  menus: {
+    margin: 0,
+    marginLeft: 15,
   },
+
   subHeaderText: {
     fontSize: 16,
     color: 'gray',

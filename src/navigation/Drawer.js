@@ -1,49 +1,61 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { Image, TouchableOpacity } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
+import { Image, TouchableOpacity, View, Text, SafeAreaView } from 'react-native';
+import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 
-import DiarioEmocoes from "../pages/DiarioEmocoes/index.js"
-import DiarioSonhos from "../pages/DiarioSonhos/index.js"
-import Lembretes from "../pages/Lembretes/index.js"
-import MinhaConta from "../pages/MinhaConta/index.js"
-import Home from "../pages/Home/index.js"
-import Consulta from "../pages/Consultas/index.js"
+import DrawerHeader from './components/DrawerHeader/index';
 
-const Drawer = createDrawerNavigator()
+import DiarioEmocoes from "../pages/DiarioEmocoes/index.js";
+import DiarioSonhos from "../pages/DiarioSonhos/index.js";
+import Lembretes from "../pages/Lembretes/index.js";
+import MinhaConta from "../pages/MinhaConta/index.js";
+import Home from "../pages/Home/index.js";
+import Consulta from "../pages/Consultas/index.js";
+
+const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigation() {
-
   return (
-      <Drawer.Navigator initialRouteName="Home" 
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         drawerStyle: {
           width: '60%',
-      },
-      drawerActiveTintColor: "white",
-      drawerActiveBackgroundColor: "#282A3A",
-      drawerStyle:{
-        backgroundColor: "#F7EFE5"
-      },
-      headerStyle: {
-        backgroundColor: "#F7EFE5"
-      },
-      headerLeft: () => <CustomDrawerButton />,
-  }}>
-        {/* Tela a tela abaixo */}
-        <Drawer.Screen name="Thelma Armidoro" component={Home} options={{ headerTitle: '' }}/>
-        <Drawer.Screen name="Consultas" component={Consulta} options={{ headerTitle: '' }}/>
-        <Drawer.Screen name="Diário de Emoções" component={DiarioEmocoes} options={{ headerTitle: '' }} />
-        <Drawer.Screen name="Diário dos Sonhos" component={DiarioSonhos} options={{ headerTitle: '' }}/>
-        <Drawer.Screen name="Lembretes" component={Lembretes} options={{ headerTitle: '' }}/>
-        <Drawer.Screen name="Minha Conta" component={MinhaConta} options={{ headerTitle: '' }}/>
-
-      </Drawer.Navigator>
+        },
+        drawerActiveTintColor: "white",
+        drawerActiveBackgroundColor: "#282A3A",
+        drawerStyle: {
+          backgroundColor: "#F7EFE5"
+        },
+        headerStyle: {
+          backgroundColor: "#F7EFE5"
+        },
+        headerLeft: () => <CustomDrawerButton />,
+      }}
+    >
+      {/* Tela a tela abaixo */}
+      <Drawer.Screen name="Thelma Armidoro" component={Home} options={{ headerTitle: '' }}/>
+      <Drawer.Screen name="Consultas" component={Consulta} options={{ headerTitle: '' }}/>
+      <Drawer.Screen name="Diário de Emoções" component={DiarioEmocoes} options={{ headerTitle: '' }} />
+      <Drawer.Screen name="Diário dos Sonhos" component={DiarioSonhos} options={{ headerTitle: '' }}/>
+      <Drawer.Screen name="Lembretes" component={Lembretes} options={{ headerTitle: '' }}/>
+      <Drawer.Screen name="Minha Conta" component={MinhaConta} options={{ headerTitle: '' }}/>
+    </Drawer.Navigator>
   );
 }
 
-
+const CustomDrawerContent = (props) => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <DrawerHeader />
+        <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+      </DrawerContentScrollView>
+    </SafeAreaView>
+  );
+};
 
 const CustomDrawerButton = () => {
   const navigation = useNavigation();

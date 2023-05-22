@@ -2,12 +2,19 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, Linking, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import NotificationService from "../../../../../services/NotificationService.js"
 
 export default function ButtonHome() {
+    
+  const handleNotification = async () => {
+    console.log("chegou")
+    NotificationService.scheduleNotification('Título da notificação', 'Corpo da notificação', 5);
+    console.log("passou")
+  };
 
     return (
-        <TouchableOpacity style={styles.container}>
-            <Text style={styles.title}>Iniciar Consulta</Text>
+        <TouchableOpacity style={styles.container} onPress={handleNotification}>
+            <Text style={styles.title}>Marcar Consulta</Text>
         </TouchableOpacity>
     );
 };

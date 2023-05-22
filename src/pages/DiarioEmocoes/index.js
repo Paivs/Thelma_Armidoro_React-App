@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, KeyboardAvoidingView } from 'react-native';
+import { View, Text, ImageBackground, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { Rectangle } from "./components/Rectangle/index.js"
 import styles from "./styles.js"
+import NotificationService from "../../services/NotificationService.js"
 
 import { getPacienteData } from "../../services/saveData.js"
 
 export default function DiarioEmocoes() {
   const [nome, setNome] = useState('');
   const [dia, setDia] = useState('');
+  const [diaAnterior, setDiaAnterior] = useState('');
+
+  const handleNotification = async () => {
+    console.log("chegou")
+    NotificationService.scheduleNotification('Título da notificação', 'Corpo da notificação', 5);
+    console.log("passou")
+  };
 
   const getUsername = async () => {
     console.log('CHAMA');
@@ -39,12 +47,14 @@ export default function DiarioEmocoes() {
     // Formatar a data completa
     const dataFormatada = `${diaSemanaAtual}, ${diaAtual} de ${mesAtual}`;
 
+    setDiaAnterior(diaAtual - 1)
     setDia(dataFormatada)
   };
 
   useEffect(() => {
     getUsername();
     getDate();
+    handleNotification();
   }, []);
 
   return (
@@ -64,7 +74,9 @@ export default function DiarioEmocoes() {
       </View>
 
       <View style={styles.conData}>
-        <Text style={styles.dataAnterior}>18 ... </Text>
+      <TouchableOpacity>
+          <Text style={styles.dataAnterior}>{diaAnterior} ... </Text>
+        </TouchableOpacity>
         <Text style={styles.dataAtual}>{dia}</Text>
       </View>
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, KeyboardAvoidingView } from 'react-native';
+import { View, Text, ImageBackground, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { Rectangle } from "./components/Rectangle/index.js"
 import styles from "./styles.js"
 import { format, registerLocale } from 'date-fns';
@@ -9,6 +9,7 @@ import { getPacienteData } from "../../services/saveData.js"
 export default function DiarioSonhos() {
   const [nome, setNome] = useState('');
   const [dia, setDia] = useState('');
+  const [diaAnterior, setDiaAnterior] = useState('');
 
   const getUsername = async () => {
     console.log('CHAMA');
@@ -29,17 +30,18 @@ export default function DiarioSonhos() {
     // Obter o dia da semana em português
     const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const diaSemanaAtual = diasSemana[currentDate.getDay()];
-    
+
     // Obter o dia do mês com dois dígitos
     const diaAtual = currentDate.getDate().toString().padStart(2, '0');
-    
+
     // Obter o nome do mês em português
     const mesesAno = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const mesAtual = mesesAno[currentDate.getMonth()];
-    
+
     // Formatar a data completa
     const dataFormatada = `${diaSemanaAtual}, ${diaAtual} de ${mesAtual}`;
 
+    setDiaAnterior(diaAtual - 1)
     setDia(dataFormatada)
   };
 
@@ -65,7 +67,11 @@ export default function DiarioSonhos() {
       </View>
 
       <View style={styles.conData}>
-        <Text style={styles.dataAnterior}>18 ... </Text>
+
+        <TouchableOpacity>
+          <Text style={styles.dataAnterior}>{diaAnterior} ... </Text>
+        </TouchableOpacity>
+
         <Text style={styles.dataAtual}>{dia}</Text>
       </View>
 
