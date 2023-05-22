@@ -1,9 +1,18 @@
 import React from 'react';
-import {View, Text} from "react-native";
-import Styles from './styles'; 
+import { View, Text, ImageBackground } from 'react-native';
+import styles from "./styles.js"
 
-export default props => {
-  <View style={ Styles.container }>
-    <Text style={Styles.text}>Diário de Emoções</Text>
-  </View>
+export default function MinhaConta() {
+  return (
+    <ImageBackground
+    source={require('../../../assets/fundo2.png')}
+    style={styles.background}
+  >
+
+    <View style={styles.container}>
+      <Text style={styles.title}>Minha Conta</Text>
+      <View style={styles.line} />
+    </View>
+    </ImageBackground>
+  );
 }

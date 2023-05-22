@@ -35,7 +35,7 @@ export const RectangleSenha = ({ navigation }) => {
       const foi = await esqueciMinhaSenhaPin(email, senhaPrimeiro, pin)
 
       if(foi){
-        navigation.navigate('MinhaConta');
+        navigation.navigate('Login');
       }
 
     } else {

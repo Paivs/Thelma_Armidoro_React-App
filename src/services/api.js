@@ -1,5 +1,6 @@
 import axios from "axios"
-import { storeUserData, getUserData, getCredentials } from "./saveData";
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { storeUserData, storePacienteData } from "./saveData";
 import { Alert } from "react-native"
 
 const urlBase = "http://10.0.2.2:8080/"
@@ -14,6 +15,7 @@ export async function login(username, password) {
             console.log("then()")
             if (res.status == 200) {
                 storeUserData(username, password, res.data.token);
+                getPacienteUserData(username, res.data.token)
 
                 console.log("Acesso autorizado")
                 console.log("Usuário: " + username + "\nToken: " + res.data.token)
@@ -48,6 +50,50 @@ export async function login(username, password) {
             );
             return false
         })
+}
+
+async function getPacienteUserData(login, token){
+    
+    //const navigation = useNavigation();
+
+    const instance = axios.create({
+        baseURL: urlBase + `usuario/${login}`,
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            "Access-Control-Allow-Origin": "*"
+        }
+    })
+
+    await instance.get()
+    .then((res) => {
+        console.log("then()")
+        console.log(res.data)
+
+        if (res.status == 200) {
+            storePacienteData(res.data)
+
+            return true
+        } else {
+
+            //navigation.navigate('Dados Pessoais');
+
+            return false
+        }
+    })
+    .catch((error) => {
+        console.log("catch()")
+        console.log("erro: " + error.response.status + "\n" + error.response.data)
+
+        Alert.alert(
+            'Alerta', 'Nenhum paciente com esse login. Faça seu cadastro!',
+            [{text: 'OK', onPress: () => console.log('Botão OK pressionado')}],
+            { cancelable: false }
+        );
+
+        //navigation.navigate('Dados Pessoais');
+
+        return false
+    })
 }
 
 export async function cadastrarUsuario(username, password) {

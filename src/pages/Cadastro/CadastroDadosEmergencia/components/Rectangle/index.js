@@ -75,7 +75,7 @@ export const Rectangle = ({ navigation }) => {
     if(foi){
       console.log("------------- Enviado paciente:")
       console.log(data)
-      navigation.navigate('MinhaConta');
+      navigation.navigate('Home');
     }else{
       console.log("------------- não foi")
     }

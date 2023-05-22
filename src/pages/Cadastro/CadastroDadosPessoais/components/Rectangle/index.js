@@ -74,7 +74,7 @@ export const Rectangle = ({ navigation }) => {
           <Text style={styles.label}>Nacionalidade:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite sua naturalidade"
+            placeholder="Digite sua nacionalidade"
             onChangeText={(text) => setNacionalidade(text)}
             value={nacionalidade}
           />

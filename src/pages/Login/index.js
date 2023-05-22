@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, ImageBackground, View, Image, Text, useWindowDimensions } from 'react-native';
 import { RectangleHomePage } from "../../components/RectangleHomePage/index.js"
 
@@ -7,6 +7,10 @@ export function Login({ navigation }) {
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;
   const loginIconSize = Math.min(windowWidth, windowHeight) * 0.2;
+
+  useEffect(() => {
+    navigation.navigate('Home');
+  }, []); // Executa apenas uma vez durante a montagem do componente
 
 
   return (

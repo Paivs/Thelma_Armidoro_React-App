@@ -17,7 +17,7 @@ import { CadastroDadosProfissao } from "../pages/Cadastro/CadastroDadosProfissao
 import { DataStateProvider } from '../pages/Cadastro/components/DataCenter/index.js';
 import { DataStateProviderEsqueciMinhaSenha } from "../pages/EsqueciMinhaSenha/components/DataCenter/index"
 
-import ShowBottomTabs from "./Bottom"
+import Drawer from "./Drawer"
 
 const Stack = createStackNavigator()
 
@@ -43,7 +43,7 @@ export default StackNavigation => {
                     <Stack.Screen name="Dados Endereco" component={CadastroDadosEndereco} />
                     <Stack.Screen name="Dados Emergencia" component={CadastroDadosEmergencia} />
 
-                    <Stack.Screen name="MinhaConta" component={ShowBottomTabs} />
+                    <Stack.Screen name="Home" component={Drawer} />
                 </Stack.Navigator>
             </DataStateProviderEsqueciMinhaSenha>
         </DataStateProvider>

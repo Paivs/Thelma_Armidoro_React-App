@@ -17,6 +17,56 @@ import { encryptPassword, decryptPassword } from "../services/encriptador.js"
   }
 };
 
+// função para fazer login e salvar os dados da sessão no AsyncStorage
+export async function storePacienteData(pacienteData) {
+  const {
+    nome,
+    email,
+    telefone,
+    cpf,
+    nascimento,
+    estado_civil,
+    curso,
+    profissao,
+    cargo,
+    nacionalidade,
+    endereco,
+    contatoEmergencia
+  } = pacienteData;
+
+  try {
+    // Salva os dados da sessão no AsyncStorage
+    await AsyncStorage.setItem('nome', nome);
+    await AsyncStorage.setItem('email', email);
+    await AsyncStorage.setItem('telefone', telefone);
+    await AsyncStorage.setItem('cpf', cpf);
+    await AsyncStorage.setItem('nascimento', nascimento);
+    await AsyncStorage.setItem('estado_civil', estado_civil);
+    await AsyncStorage.setItem('curso', curso);
+    await AsyncStorage.setItem('profissao', profissao);
+    await AsyncStorage.setItem('cargo', cargo);
+    await AsyncStorage.setItem('nacionalidade', nacionalidade);
+
+    // Salva os dados de endereço
+    await AsyncStorage.setItem('endereco.logradouro', endereco.logradouro);
+    await AsyncStorage.setItem('endereco.bairro', endereco.bairro);
+    await AsyncStorage.setItem('endereco.cep', endereco.cep);
+    await AsyncStorage.setItem('endereco.cidade', endereco.cidade);
+    await AsyncStorage.setItem('endereco.uf', endereco.uf);
+    await AsyncStorage.setItem('endereco.complemento', endereco.complemento);
+    await AsyncStorage.setItem('endereco.numero', endereco.numero);
+
+    // Salva os dados de contato de emergência
+    await AsyncStorage.setItem('contatoEmergencia.contato_nome', contatoEmergencia.contato_nome);
+    await AsyncStorage.setItem('contatoEmergencia.contato_vinculo', contatoEmergencia.contato_vinculo);
+    await AsyncStorage.setItem('contatoEmergencia.contato_telefone', contatoEmergencia.contato_telefone);
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 
 
 export async function getCredentials(){
@@ -34,6 +84,48 @@ export async function getCredentials(){
       return null;
     }
   };
+
+  export async function getPacienteData() {
+    try {
+      const pacienteData = {};
+  
+      // Recupera os valores salvos no AsyncStorage
+      pacienteData.nome = await AsyncStorage.getItem('nome');
+      pacienteData.email = await AsyncStorage.getItem('email');
+      pacienteData.telefone = await AsyncStorage.getItem('telefone');
+      pacienteData.cpf = await AsyncStorage.getItem('cpf');
+      pacienteData.nascimento = await AsyncStorage.getItem('nascimento');
+      pacienteData.estado_civil = await AsyncStorage.getItem('estado_civil');
+      pacienteData.curso = await AsyncStorage.getItem('curso');
+      pacienteData.profissao = await AsyncStorage.getItem('profissao');
+      pacienteData.cargo = await AsyncStorage.getItem('cargo');
+      pacienteData.nacionalidade = await AsyncStorage.getItem('nacionalidade');
+  
+      // Recupera os valores do endereço
+      pacienteData.endereco = {
+        logradouro: await AsyncStorage.getItem('endereco.logradouro'),
+        bairro: await AsyncStorage.getItem('endereco.bairro'),
+        cep: await AsyncStorage.getItem('endereco.cep'),
+        cidade: await AsyncStorage.getItem('endereco.cidade'),
+        uf: await AsyncStorage.getItem('endereco.uf'),
+        complemento: await AsyncStorage.getItem('endereco.complemento'),
+        numero: await AsyncStorage.getItem('endereco.numero'),
+      };
+  
+      // Recupera os valores de contato de emergência
+      pacienteData.contatoEmergencia = {
+        contato_nome: await AsyncStorage.getItem('contatoEmergencia.contato_nome'),
+        contato_vinculo: await AsyncStorage.getItem('contatoEmergencia.contato_vinculo'),
+        contato_telefone: await AsyncStorage.getItem('contatoEmergencia.contato_telefone'),
+      };
+  
+      return pacienteData;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+  
 
 
 export async function clearUserData(){
