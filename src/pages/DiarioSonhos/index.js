@@ -1,18 +1,111 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, ImageBackground, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
-import { Rectangle } from "./components/Rectangle/index.js"
+import Rectangle from "./components/Rectangle/index.js"
 import styles from "./styles.js"
-import { format, registerLocale } from 'date-fns';
 
 import { getPacienteData } from "../../services/saveData.js"
 
-export default function DiarioSonhos() {
+const mesesAno = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+export default function DiarioSonhos({ navigation }) {
   const [nome, setNome] = useState('');
   const [dia, setDia] = useState('');
+  const [diaReal, setDiaReal] = useState('');
   const [diaAnterior, setDiaAnterior] = useState('');
+  const [mes, setMes] = useState('');
+  const [ano, setAno] = useState('');
+
+  const rectangleRef = useRef(null);
+  const salvar = () => {
+    rectangleRef.current.salvar(); // Chama a função salvar do componente Rectangle
+  };
+  const update = () => {
+    header();
+    rectangleRef.current.pegarAtual(); // Chama a função salvar do componente Rectangle
+  };
+
+
+  const minusDiaAnterior = () => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+  
+    if (diaAnterior > 1) {
+      if (diaAnterior - 1 >= currentDay - 15) {
+        setDia(diaAnterior);
+        setDiaAnterior(diaAnterior - 1);
+        update();
+      }
+    } else {
+      const currentMonth = currentDate.getMonth();
+      let previousMonth, previousYear;
+  
+      if (currentMonth === 0) {
+        // Janeiro (índice 0)
+        previousMonth = 11; // Dezembro (índice 11)
+        previousYear = currentDate.getFullYear() - 1;
+      } else {
+        previousMonth = currentMonth - 1;
+        previousYear = currentDate.getFullYear();
+      }
+  
+      const previousDate = new Date(previousYear, previousMonth + 1, 0);
+      const lastDayOfPreviousMonth = previousDate.getDate();
+  
+      if (lastDayOfPreviousMonth > dia) {
+        setDia(lastDayOfPreviousMonth);
+        setDiaAnterior(lastDayOfPreviousMonth - 1);
+        setMes(mesesAno[previousMonth]);
+        setAno(previousYear);
+      } else {
+        setDia(lastDayOfPreviousMonth);
+        setDiaAnterior(lastDayOfPreviousMonth);
+        setMes(mesesAno[previousMonth]);
+        setAno(previousYear);
+      }
+      update();
+    }
+  };
+  
+
+
+  const plusDiaAtual = () => {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDate();
+    const lastDayOfMonth = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth());
+  
+    if (dia + 1 <= lastDayOfMonth && dia + 1 <= currentDay) {
+      setDia(dia + 1);
+      setDiaAnterior(dia);
+      setMes(mes);
+      setAno(currentDate.getFullYear());
+      update();
+    } else if (dia !== currentDay) {
+      const nextMonth = getNextMonth(currentDate.getMonth());
+      const nextYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+  
+      setDia(1);
+      setDiaAnterior(lastDayOfMonth);
+      setMes(nextMonth);
+      setAno(nextYear);
+      update();
+    }
+  };
+  
+
+  const getLastDayOfMonth = (year, month) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getNextMonth = (currentMonth) => {
+    const nextMonthIndex = currentMonth + 1;
+    if (nextMonthIndex > 11) {
+      return mesesAno[0]; // Janeiro
+    }
+    return mesesAno[nextMonthIndex];
+  };
+
 
   const getUsername = async () => {
-    console.log('CHAMA');
     try {
       const storedUsername = await getPacienteData();
       if (storedUsername !== null) {
@@ -23,27 +116,44 @@ export default function DiarioSonhos() {
     }
   };
 
-  const getDate = async () => {
-
+  const getDate = () => {
     const currentDate = new Date();
-
-    // Obter o dia da semana em português
     const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
     const diaSemanaAtual = diasSemana[currentDate.getDay()];
-
-    // Obter o dia do mês com dois dígitos
-    const diaAtual = currentDate.getDate().toString().padStart(2, '0');
-
-    // Obter o nome do mês em português
-    const mesesAno = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const diaAtual = currentDate.getDate();
     const mesAtual = mesesAno[currentDate.getMonth()];
-
-    // Formatar a data completa
-    const dataFormatada = `${diaSemanaAtual}, ${diaAtual} de ${mesAtual}`;
-
-    setDiaAnterior(diaAtual - 1)
-    setDia(dataFormatada)
+    const ano = currentDate.getFullYear();
+    setDia(diaAtual);
+    setDiaReal(diaAtual);
+    setDiaAnterior(diaAtual - 1);
+    setMes(mesAtual);
+    setAno(ano)
   };
+
+  const header = () => {
+
+    const currentDate = new Date();
+    const diaAtual = currentDate.getDate(); 
+
+    navigation.setOptions({
+      headerRight: () => {
+        if (dia == diaAtual) {
+          return <>
+            <TouchableOpacity onPress={salvar} style={styles.botaoDireita}>
+              <Text style={styles.botaoDireitaText}>Salvar</Text>
+            </TouchableOpacity>
+          </>
+        } else {
+          return <></>
+        }
+      }
+    });
+
+  }
+
+  useEffect(() => {
+    header();
+  }, [dia, diaReal]);
 
   useEffect(() => {
     getUsername();
@@ -55,32 +165,25 @@ export default function DiarioSonhos() {
       source={require('../../../assets/fundo2.png')}
       style={styles.background}
     >
-
       <View style={styles.container}>
         <Text style={styles.title}>Diário de Sonhos</Text>
         <View style={styles.line} />
-
         <View style={styles.conChamada}>
           <Text style={styles.chamada}>Bom dia {nome}!</Text>
           <Text style={styles.chamada}>Como foram seus sonhos?</Text>
         </View>
-      </View>
-
+      </View> 
       <View style={styles.conData}>
-
-        <TouchableOpacity>
-          <Text style={styles.dataAnterior}>{diaAnterior} ... </Text>
+        <TouchableOpacity onPress={minusDiaAnterior}>
+          <Text style={styles.dataAnterior}>{diaAnterior} ...</Text>
         </TouchableOpacity>
-
-        <Text style={styles.dataAtual}>{dia}</Text>
+        <TouchableOpacity onPress={plusDiaAtual}>
+          <Text style={styles.dataAtual}>{dia} de {mes}</Text>
+        </TouchableOpacity>
       </View>
-
       <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
-        <Rectangle />
+        <Rectangle ref={rectangleRef} onSalvar={salvar} onUpdate={update} data={`${ano}-${mes}-${dia}`} />
       </KeyboardAvoidingView>
-
-
-
     </ImageBackground>
   );
 }

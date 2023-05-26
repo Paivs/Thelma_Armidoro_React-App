@@ -16,6 +16,17 @@ export default styles = StyleSheet.create({
     color: "#282A3A",
     marginBottom: 10,
   },
+  botaoDireita: {
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: "#282A3A",
+  },
+  botaoDireitaText: {
+    margin: 5,
+    marginRight: 10,
+    marginLeft: 10,
+  },
   dataAtual: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -31,7 +42,7 @@ export default styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 40,
-    marginTop: 15,
+    marginTop: 2,
     marginBottom: 15,
   },
   chamada: {

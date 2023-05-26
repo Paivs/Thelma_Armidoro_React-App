@@ -1,21 +1,31 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Menus({title, icon}) {
+export default function Menus({ title, icon }) {
+    const navigation = useNavigation();
+
+    const handlePress = () => {
+        navigation.navigate(title)
+    }
+
     return (
-        <View style={styles.container}>
-            <View style={styles.iconContainer}>
-                <Icon
-                    name={icon}
-                    type="font-awesome"
-                    color="white"
-                    size={35}
-                />
+        <TouchableOpacity onPress={handlePress}>
+            <View style={styles.container}>
+                <View style={styles.iconContainer}>
+                    <Icon
+                        name={icon}
+                        type="font-awesome"
+                        color="white"
+                        size={35}
+                    />
+                </View>
+                <Text style={styles.title} multiline>{title}</Text>
             </View>
-            <Text style={styles.title} multiline>{title}</Text>
-        </View>
+
+        </TouchableOpacity>
     );
 }
 

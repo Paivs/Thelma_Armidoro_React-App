@@ -5,7 +5,7 @@ import NaoConsulta from "./NaoConsulta/index"
 
 
 export default function Consultas({ navigation }) {
-  const [consulta, setConsulta] = useState(true)
+  const [consulta, setConsulta] = useState(false)
 
   return (
     <>

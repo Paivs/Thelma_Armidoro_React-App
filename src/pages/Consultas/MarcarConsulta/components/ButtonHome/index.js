@@ -3,14 +3,14 @@ import { View, Text, Image, TouchableOpacity, Linking, StyleSheet } from 'react-
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import NotificationService from "../../../../../services/NotificationService.js"
-import { useNavigation } from '@react-navigation/native';
 
 export default function ButtonHome() {
-    const navigation = useNavigation();
-
-    const handleNotification = async () => {
-        navigation.navigate("Marcar Consulta")
-    };
+    
+  const handleNotification = async () => {
+    console.log("chegou")
+    NotificationService.scheduleNotification('Título da notificação', 'Corpo da notificação', 5);
+    console.log("passou")
+  };
 
     return (
         <TouchableOpacity style={styles.container} onPress={handleNotification}>

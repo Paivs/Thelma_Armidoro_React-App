@@ -3,6 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { Image, TouchableOpacity, View, Text, SafeAreaView } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import DrawerHeader from './components/DrawerHeader/index';
 
@@ -12,8 +13,17 @@ import Lembretes from "../pages/Lembretes/index.js";
 import MinhaConta from "../pages/MinhaConta/index.js";
 import Home from "../pages/Home/index.js";
 import Consulta from "../pages/Consultas/index.js";
+import MarcarConsulta from "../pages/Consultas/MarcarConsulta/index.js";
 
 const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+
+const ConsultaStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Consultas">
+    <Stack.Screen name="Consultas" component={Consulta} options={{ headerTitle: "" }} />
+    <Stack.Screen name="Marcar Consulta" component={MarcarConsulta} options={{ headerTitle: "" }} />
+  </Stack.Navigator>
+);
 
 export default function DrawerNavigation() {
   return (
@@ -36,12 +46,12 @@ export default function DrawerNavigation() {
       }}
     >
       {/* Tela a tela abaixo */}
-      <Drawer.Screen name="Thelma Armidoro" component={Home} options={{ headerTitle: '' }}/>
-      <Drawer.Screen name="Consultas" component={Consulta} options={{ headerTitle: '' }}/>
+      <Drawer.Screen name="Thelma Armidoro" component={Home} options={{ headerTitle: '' }} />
+      <Drawer.Screen name="Consulta" component={ConsultaStack} options={{ headerTitle: '' }} />
       <Drawer.Screen name="Diário de Emoções" component={DiarioEmocoes} options={{ headerTitle: '' }} />
-      <Drawer.Screen name="Diário dos Sonhos" component={DiarioSonhos} options={{ headerTitle: '' }}/>
-      <Drawer.Screen name="Lembretes" component={Lembretes} options={{ headerTitle: '' }}/>
-      <Drawer.Screen name="Minha Conta" component={MinhaConta} options={{ headerTitle: '' }}/>
+      <Drawer.Screen name="Diário dos Sonhos" component={DiarioSonhos} options={{ headerTitle: '' }} />
+      <Drawer.Screen name="Lembretes" component={Lembretes} options={{ headerTitle: '' }} />
+      <Drawer.Screen name="Minha Conta" component={MinhaConta} options={{ headerTitle: '' }} />
     </Drawer.Navigator>
   );
 }
@@ -50,7 +60,7 @@ const CustomDrawerContent = (props) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <DrawerHeader />
-        <DrawerContentScrollView {...props}>
+      <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
     </SafeAreaView>

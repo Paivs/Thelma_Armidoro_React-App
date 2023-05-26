@@ -6,6 +6,17 @@ export default styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
   },
+  botaoDireita: {
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: 3,
+    borderColor: "#282A3A",
+  },
+  botaoDireitaText: {
+    margin: 5,
+    marginRight: 10,
+    marginLeft: 10,
+  },
   container: {
     alignItems: 'center',
     marginBottom: 20,

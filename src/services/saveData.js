@@ -20,6 +20,7 @@ import { encryptPassword, decryptPassword } from "../services/encriptador.js"
 // função para fazer login e salvar os dados da sessão no AsyncStorage
 export async function storePacienteData(pacienteData) {
   const {
+    id,
     nome,
     email,
     telefone,
@@ -36,6 +37,7 @@ export async function storePacienteData(pacienteData) {
 
   try {
     // Salva os dados da sessão no AsyncStorage
+    await AsyncStorage.setItem('id', JSON.stringify(id));
     await AsyncStorage.setItem('nome', nome);
     await AsyncStorage.setItem('email', email);
     await AsyncStorage.setItem('telefone', telefone);
@@ -67,8 +69,6 @@ export async function storePacienteData(pacienteData) {
 }
 
 
-
-
 export async function getCredentials(){
     try {
       // recupera as credenciais salvas no AsyncStorage
@@ -90,6 +90,7 @@ export async function getCredentials(){
       const pacienteData = {};
   
       // Recupera os valores salvos no AsyncStorage
+      pacienteData.id = await AsyncStorage.getItem('id');
       pacienteData.nome = await AsyncStorage.getItem('nome');
       pacienteData.email = await AsyncStorage.getItem('email');
       pacienteData.telefone = await AsyncStorage.getItem('telefone');
@@ -126,6 +127,17 @@ export async function getCredentials(){
     }
   }
   
+  export async function getPacienteId() {
+    try {
+
+      const id = await AsyncStorage.getItem('id');
+  
+      return id;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 
 
 export async function clearUserData(){

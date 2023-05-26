@@ -5,7 +5,7 @@ import Perfil from "../../../components/Contato"
 import ButtonHome from "./components/ButtonHome/index.js"
 
 
-export default function Home({ navigation }) {
+export default function TemConsulta({ navigation }) {
 
   const imageUrl = 'https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'; // Substitua pela URL real da imagem
   const phoneNumber = '5511980697346'; // Substitua pelo número de telefone desejado

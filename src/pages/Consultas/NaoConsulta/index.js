@@ -3,9 +3,10 @@ import { View, Text, ScrollView, ImageBackground } from 'react-native';
 import { styles } from "./styles.js"
 import Perfil from "./components/Contato"
 import ButtonHome from "./components/ButtonHome/index.js"
+import { useNavigation } from '@react-navigation/native';
 
 
-export default function Home({ navigation }) {
+export default function NaoConsulta({ navigation }) {
 
   const imageUrl = 'https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'; // Substitua pela URL real da imagem
   const phoneNumber = '5511980697346'; // Substitua pelo número de telefone desejado
@@ -35,3 +36,9 @@ export default function Home({ navigation }) {
     </ImageBackground>
   );
 }
+
+const irMarcar = () => {
+  const navigation = useNavigation();
+
+  navigation.navigate("")
+};

@@ -1,14 +1,29 @@
-import * as React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, ScrollView, ImageBackground, StyleSheet } from 'react-native';
 import { styles } from "./styles.js"
 import Menus from "./components/Menus/index.js"
 import Emocoes from "./components/Emocoes/index.js"
 import RectangleLembrete from "./components/RectangleLembrete/index.js"
 
+import { getPacienteData, getPacienteId } from "../../services/saveData.js"
+
 export default function Home({ navigation }) {
 
   const imageUrl = 'https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'; // Substitua pela URL real da imagem
   const phoneNumber = '5511980697346'; // Substitua pelo número de telefone desejado
+
+  const pegaLa = async () => {
+    console.log("credenciais")
+    const credenciais = await getPacienteData()
+    console.log(credenciais)
+
+    const id = await getPacienteId()
+    console.log(id)
+  }
+
+  useEffect(() => {
+    
+  }, []); 
 
   return (
     <ImageBackground
@@ -19,7 +34,7 @@ export default function Home({ navigation }) {
       <ScrollView>
         <Text style={styles.title}>Menu</Text>
         <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
-          <Menus title={"Consultas"} icon={"comments"} />
+          <Menus title={"Consulta"} icon={"comments"} />
           <Menus title={"Diário de Emoções"} icon={"heart"} />
           <Menus title={"Diário dos Sonhos"} icon={"book"} />
           <Menus title={"Lembretes"} icon={"bell"} />
