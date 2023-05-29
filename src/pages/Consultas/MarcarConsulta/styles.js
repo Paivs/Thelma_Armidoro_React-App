@@ -8,6 +8,10 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#674188',
   },
+  line: {
+    width: '65%',
+    borderBottomWidth: 2,
+  },
   container: {
     flex: 1,
     alignItems: 'center',

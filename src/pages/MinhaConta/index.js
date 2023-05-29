@@ -1,7 +1,27 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ImageBackground } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Platform,
+  ScrollView,
+  Keyboard
+} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import Perfil from './components/Perfil/index.js';
+import Senha from './components/Senha/index.js';
+import Endereco from './components/Endereco/index.js';
+import Telefone from './components/Telefone/index.js';
 
-export default function MinhaConta() {
+export default function MinhaConta({ navigation }) {
+  const isFocused = useIsFocused();
+  const [keyboardActive, setKeyboardActive] = useState(false); // Track keyboard visibility
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState({
@@ -38,78 +58,87 @@ export default function MinhaConta() {
     });
   };
 
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardActive(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardActive(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      navigation.setOptions({
+        headerStyle: {
+          backgroundColor: '#282A3A', // Defina a cor desejada aqui
+          elevation: 0, // Remover sombra do cabeçalho
+        },
+        headerLeft: () => <CustomDrawerButton />,
+      });
+    }
+  }, [isFocused]);
+
+  const CustomDrawerContent = (props) => {
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <DrawerHeader />
+        <DrawerContentScrollView {...props}>
+          <DrawerItemList {...props} />
+        </DrawerContentScrollView>
+      </SafeAreaView>
+    );
+  };
+
+  const CustomDrawerButton = () => {
+    const handlePress = () => {
+      navigation.toggleDrawer(); // Abre o menu lateral
+    };
+
+    return (
+      <TouchableOpacity onPress={handlePress} style={{ marginLeft: 15 }}>
+        <Image
+          source={require('../../../assets/btnNavegacaoBranco.png')}
+          style={{ width: 35, height: 35 }} // Tamanho do ícone
+        />
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <ImageBackground
-    source={require('../../../assets/fundo1.png')}
-    style={styles.background}
-  >
-    <View style={styles.container}>
-      <Text style={styles.title}>Minha Conta</Text>
-      <View style={styles.separator} />
-      <Text>Nome:</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={handleNameChange}
-      />
-      <Text>Telefone:</Text>
-      <TextInput
-        style={styles.input}
-        value={phone}
-        onChangeText={handlePhoneChange}
-      />
+    <ImageBackground source={require('../../../assets/fundoMinhaConta.png')} style={styles.background}>
+      {!keyboardActive && ( // Conditionally render rectangleTop if keyboard is not active
+        <View style={styles.rectangleTop}>
+          <Text style={styles.title}>Minha Conta</Text>
+          <Perfil />
+        </View>
+      )}
 
-      <Text>Logradouro:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
+      <ScrollView>
+        <View style={styles.content}>
 
-      <Text>Número:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
+          <View style={styles.senhaContainer}>
+            <Senha />
+          </View>
 
-      <Text>Bairro:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
+          <View style={styles.senhaContainer}>
+            <Endereco />
+          </View>
 
-      <Text>Complemento:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
+          <View style={styles.senhaContainer}>
+            <Telefone />
+          </View>
 
-      <Text>CEP:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
+        </View>
 
-      <Text>Cidade:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
-
-      <Text>UF:</Text>
-      <TextInput
-        style={styles.input}
-        value={address.logradouro}
-        onChangeText={(text) => handleAddressChange('logradouro', text)}
-      />
-
-      <Button title="Salvar" onPress={handleSave} />
-    </View>
+        <View style={styles.horizontalLine} />
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -119,16 +148,39 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
-    backgroundColor: '#674188',
+    backgroundColor: '#674188'
   },
-  container: {
+  rectangleTop: {
+    backgroundColor: '#282A3A',
+    height: '20%',
+    width: '100%',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    marginTop: -1,
+    marginBottom: 0,
+    zIndex: 1
+  },
+  content: {
     flex: 1,
-    padding: 20
+    marginTop: '5%',
+    paddingHorizontal: 5
+  },
+  horizontalLine: {
+    width: '50%',
+    height: 2,
+    backgroundColor: 'black',
+    alignSelf: 'center',
+    marginBottom: '10%',
+    marginTop: "10%",
   },
   title: {
-    fontSize: 24,
-    textAlign: 'center',
-    marginVertical: 10
+    fontSize: 28,
+    textAlign: 'left',
+    marginTop: 5,
+    marginBottom: 0,
+    marginHorizontal: 20,
+    fontWeight: 'bold',
+    color: 'white'
   },
   separator: {
     height: 2,
@@ -139,6 +191,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
+    marginBottom: 10
+  },
+  senhaContainer: {
     marginBottom: 10
   }
 });

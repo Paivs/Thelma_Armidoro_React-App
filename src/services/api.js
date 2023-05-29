@@ -6,7 +6,7 @@ import 'moment/locale/pt-br';
 import { format } from 'date-fns';
 import { Alert } from "react-native"
 
-const urlBase = "http://10.0.2.2:8080/"
+const urlBase = "http://192.168.15.100:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -368,6 +368,7 @@ export async function salvarDiario(titulo, texto, tipo, paciente, token) {
         .catch((error) => {
             console.log("catch()")
             console.log(error)
+            
             return false
         })
 }
@@ -403,6 +404,17 @@ export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
         }
     } catch (error) {
         console.log(error);
+
+        Alert.alert(
+            'Erro!', `Não foi possível visualizar o diário`,
+            [{
+                text: 'OK', onPress: () => {
+                    console.log('Botão OK pressionado')
+                }
+            },],
+            { cancelable: false }
+        );
+
         return false;
     }
 }

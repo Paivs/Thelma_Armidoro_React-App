@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { View, Text, ScrollView, ImageBackground } from 'react-native';
+import React, {useState} from 'react';
+import { View, Text, ScrollView, ImageBackground, TextInput } from 'react-native';
 import { styles } from "./styles.js"
 import Perfil from "../../../components/Contato"
 import ButtonHome from "./components/ButtonHome/index.js"
@@ -7,8 +7,16 @@ import ButtonHome from "./components/ButtonHome/index.js"
 
 export default function TemConsulta({ navigation }) {
 
-  const imageUrl = 'https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'; // Substitua pela URL real da imagem
-  const phoneNumber = '5511980697346'; // Substitua pelo número de telefone desejado
+  const [imageUrl, setImageUrl] = useState('https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'); // Substitua pela URL real da imagem
+  const [phoneNumber, setPhoneNumber] = useState('5511980697346'); // Substitua pelo número de telefone desejado
+  const [mensagem, setMensagem] = useState("")
+  const [mensagemReal, setMensagemReal] = useState("")
+
+  const handleMensagem = (item) => {
+    const mensagemAtualizada = item.nativeEvent.text.replace(/ /g, '%20');
+    setMensagem(item);
+    setMensagemReal(mensagemAtualizada)
+  }
 
   return (
     <ImageBackground
@@ -22,9 +30,17 @@ export default function TemConsulta({ navigation }) {
 
         <Perfil imageUrl={imageUrl} phoneNumber={phoneNumber} />
 
-          <Text style={styles.description}>Lorem ipsum dolor sit amet. Ut voluptate enim et omnis praesentium in numquam minima qui maiores aspernatur id maxime eveniet aut aliquama. </Text>
+          <Text style={styles.description}>Este é o momento da sua consulta, assim que estiver pronto pode escrever sua mensagem e mandá-la ao seu(a) psicólogo. Tenha uma ótima consulta, obrigado por confiar em nós...</Text>
 
-        <ButtonHome/>
+          <Text style={styles.label}>Mensagem:</Text>
+          <TextInput style={styles.input} 
+          multiline 
+          placeholder='Digite sua mensagem'
+          value={mensagem}
+          onChange={item => handleMensagem(item)}
+          ></TextInput>
+
+        <ButtonHome mensagem={mensagemReal} phoneNumber={phoneNumber}/>
 
     </View>
 

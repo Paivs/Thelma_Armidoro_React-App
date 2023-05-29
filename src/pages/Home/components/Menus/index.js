@@ -31,14 +31,14 @@ export default function Menus({ title, icon }) {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 10,
+        margin: 5,
         padding: 10,
         borderRadius: 10,
         backgroundColor: "#282A3A",
         alignItems: 'center',
         justifyContent: 'center',
         height: 115,
-        width: 105,
+        width: 110,
     },
     iconContainer: {
         alignItems: 'center',

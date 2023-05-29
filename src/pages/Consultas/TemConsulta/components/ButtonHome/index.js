@@ -3,10 +3,15 @@ import { View, Text, Image, TouchableOpacity, Linking, StyleSheet } from 'react-
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function ButtonHome() {
+export default function ButtonHome({mensagem, phoneNumber}) {
+
+    const openWhatsApp = () => {
+        const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${mensagem}`;
+        Linking.openURL(whatsappUrl);
+      };
 
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={openWhatsApp}>
             <Text style={styles.title}>Iniciar Consulta</Text>
         </TouchableOpacity>
     );

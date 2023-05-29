@@ -184,7 +184,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
-    textDecorationLine: 'underline',
   },
   inputSenhaContainer: {
     marginBottom: 20,

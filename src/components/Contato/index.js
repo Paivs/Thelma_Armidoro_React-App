@@ -4,10 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
 const PersonWithWhatsApp = ({ imageUrl, phoneNumber }) => {
-  const openWhatsApp = () => {
-    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}`;
-    Linking.openURL(whatsappUrl);
-  };
+
 
   return (
     <View style={styles.container}>
@@ -27,10 +24,8 @@ const PersonWithWhatsApp = ({ imageUrl, phoneNumber }) => {
           <View style={styles.dividerVertical} />
 
           <View style={styles.iconTextContainer}>
-            <TouchableOpacity onPress={openWhatsApp}>
               <Ionicons name="chatbox-outline" size={45} color="white" />
               <Text style={styles.iconText}>Consulta</Text>
-            </TouchableOpacity>
           </View>
         </View>
       </View>
