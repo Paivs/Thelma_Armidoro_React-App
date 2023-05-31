@@ -7,10 +7,14 @@ import NaoConsulta from "./NaoConsulta/index"
 export default function Consultas({ navigation }) {
   const [consulta, setConsulta] = useState(false)
 
+  const vira =() => {
+    setConsulta(true)
+  }
+
   return (
     <>
       {consulta && <TemConsulta />}
-      {!consulta && <NaoConsulta />}
+      {!consulta && <NaoConsulta marcado={vira}/>}
     </>
   );
 }

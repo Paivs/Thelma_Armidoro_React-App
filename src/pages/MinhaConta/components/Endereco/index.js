@@ -4,23 +4,36 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import {alterarEndereco} from "../../../../services/api.js"
 
 export default function Endereco() {
   const [expanded, setExpanded] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [cep, setCep] = useState('');
+  const [logradouro, setLogradouro] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [numero, setNumero] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [uf, setUf] = useState('');
 
   const handleIconPress = () => {
     setExpanded(!expanded);
   };
 
-  const handleChangePassword = () => {
-    // Logic to change the password here
-    console.log('Current password:', currentPassword);
-    console.log('New password:', newPassword);
-    console.log('Confirm new password:', confirmNewPassword);
+  const handleChangeEndereco = async () => {
+    // Lógica para alterar a senha aqui
+
+    const endereco = {
+      "logradouro": logradouro,
+      "bairro": bairro,
+      "cep": cep,
+      "cidade": cidade,
+      "uf": uf,
+      "complemento": complemento,
+      "numero": numero,
+    }
+
+    await alterarEndereco(endereco)
   };
 
   return (
@@ -43,71 +56,63 @@ export default function Endereco() {
         animation={expanded ? 'fadeIn' : 'fadeOut'}
         duration={450}
       >
-
         <Text style={styles.label}>CEP</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={cep}
+          onChangeText={setCep}
           placeholder="Digite o novo CEP"
-          secureTextEntry
         />
 
         <Text style={styles.label}>Logradouro</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={logradouro}
+          onChangeText={setLogradouro}
           placeholder="Digite o novo logradouro"
-          secureTextEntry
         />
 
         <Text style={styles.label}>Bairro</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={bairro}
+          onChangeText={setBairro}
           placeholder="Digite o novo bairro"
-          secureTextEntry
         />
 
         <Text style={styles.label}>Número</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={numero}
+          onChangeText={setNumero}
           placeholder="Digite o novo número"
-          secureTextEntry
         />
 
         <Text style={styles.label}>Complemento</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={complemento}
+          onChangeText={setComplemento}
           placeholder="Digite o complemento"
-          secureTextEntry
         />
 
         <Text style={styles.label}>Cidade</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={cidade}
+          onChangeText={setCidade}
           placeholder="Digite a nova cidade"
-          secureTextEntry
         />
 
         <Text style={styles.label}>UF</Text>
         <TextInput
           style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
+          value={uf}
+          onChangeText={setUf}
           placeholder="Digite o novo UF"
-          secureTextEntry
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
+        <TouchableOpacity style={styles.button} onPress={handleChangeEndereco}>
           <Text style={styles.buttonText}>Alterar</Text>
         </TouchableOpacity>
       </Animatable.View>
@@ -117,9 +122,10 @@ export default function Endereco() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F7EFE5",
+    backgroundColor: '#F7EFE5',
     borderRadius: 20,
-    borderWidth: 15,
+    borderWidth: 10,
+    paddingTop: 15,
     borderColor: '#282A3A',
     padding: 10,
     marginHorizontal: 15,

@@ -124,7 +124,7 @@ export default function MinhaConta({ navigation }) {
         <View style={styles.content}>
 
           <View style={styles.senhaContainer}>
-            <Senha />
+            <Senha navigation={navigation}/>
           </View>
 
           <View style={styles.senhaContainer}>
@@ -138,6 +138,10 @@ export default function MinhaConta({ navigation }) {
         </View>
 
         <View style={styles.horizontalLine} />
+
+        <TouchableOpacity onPress={() => {navigation.navigate("Login")}} style={styles.ConbuttonLogout}>
+          <Text style={styles.buttonLogout}>Logout</Text>
+        </TouchableOpacity>
       </ScrollView>
     </ImageBackground>
   );
@@ -170,8 +174,8 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: 'black',
     alignSelf: 'center',
-    marginBottom: '10%',
-    marginTop: "10%",
+    marginBottom: 40,
+    marginTop: 20,
   },
   title: {
     fontSize: 28,
@@ -195,5 +199,21 @@ const styles = StyleSheet.create({
   },
   senhaContainer: {
     marginBottom: 10
+  },
+  buttonLogout: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+  },
+  ConbuttonLogout: {
+    borderRadius: 15,
+    width: "90%",
+    height: 50,
+    padding: 5,
+    textAlign: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#282A3A"
   }
 });

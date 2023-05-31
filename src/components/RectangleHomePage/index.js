@@ -22,7 +22,7 @@ export const RectangleHomePage = ({ navigation }) => {
     const foi = await login(email.trim(), senha) 
 
     if (foi) {
-      navigation.navigate('Home');
+      navigation.navigate('Home', { reset: true });
     }
   };
 

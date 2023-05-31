@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Switch, Dimensions, Alert, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Switch, Dimensions, Alert, TextInput, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import PsychologistPicker from './components/Psicologos/index.js';
 
@@ -13,16 +13,30 @@ export default function MarcarConsulta({ navigation }) {
   const [numberWeeks, setNumberWeeks] = useState(null);
 
   const handleAgendar = () => {
-    // Lógica para agendar a consulta
+    setSelectedDates({});
+    if (recurrent) {
+      const currentDate = new Date();
+      const currentDay = currentDate.getDay();
+      const daysToAdd = dayOfWeek - currentDay + (dayOfWeek < currentDay ? 7 : 0); // Calcula o número de dias a serem adicionados para chegar ao próximo dia da semana selecionado
+
+      const next12WeeksDates = {};
+      for (let i = 0; i < (numberWeeks * 4); i++) {
+        const nextDate = new Date(currentDate.getTime() + (daysToAdd + i * 7) * 24 * 60 * 60 * 1000);
+        const dateString = nextDate.toISOString().split('T')[0];
+        next12WeeksDates[dateString] = { selected: true, marked: true };
+      }
+
+      setSelectedDates({ ...next12WeeksDates });
+    }
   };
 
-const handleRecurrenceToggle = () => {
-  if (!recurrent) {
-    setSelectedDates({});
-    setSelectedDayOfWeek(null);
-  }
-  setRecurrent(!recurrent);
-};
+  const handleRecurrenceToggle = () => {
+    if (!recurrent) {
+      setSelectedDates({});
+      setSelectedDayOfWeek(null);
+    }
+    setRecurrent(!recurrent);
+  };
 
 
   const handleDateSelect = (date) => {
@@ -48,23 +62,8 @@ const handleRecurrenceToggle = () => {
 
   const handleDayOfWeekSelect = (dayOfWeek) => {
     setSelectedDayOfWeek(dayOfWeek);
-    setSelectedDates({});
-    if (recurrent) {
-      const currentDate = new Date();
-      const currentDay = currentDate.getDay();
-      const daysToAdd = dayOfWeek - currentDay + (dayOfWeek < currentDay ? 7 : 0); // Calcula o número de dias a serem adicionados para chegar ao próximo dia da semana selecionado
-  
-      const next12WeeksDates = {};
-      for (let i = 0; i < numberWeeks; i++) {
-        const nextDate = new Date(currentDate.getTime() + (daysToAdd + i * 7) * 24 * 60 * 60 * 1000);
-        const dateString = nextDate.toISOString().split('T')[0];
-        next12WeeksDates[dateString] = { selected: true, marked: true };
-      }
-  
-      setSelectedDates({ ...next12WeeksDates });
-    }
   };
-  
+
 
   const screenWidth = Dimensions.get('window').width;
   const calendarWidth = screenWidth * 0.9;
@@ -80,138 +79,146 @@ const handleRecurrenceToggle = () => {
             // Lógica para lidar com a alteração do psicólogo selecionado
           }}
         />
-{!recurrent &&
-        <View style={styles.calendarContainer}>
-          <Calendar
-            onDayPress={(day) => handleDateSelect(day.dateString)}
-            markedDates={{ ...selectedDates }}
-            style={{ width: calendarWidth, borderRadius: 15, borderColor: '#282A3A' }}
-            theme={{
-              calendarBackground: 'white',
-              textSectionTitleColor: '#282A3A',
-              selectedDayBackgroundColor: '#282A3A',
-              selectedDayTextColor: 'white',
-              todayTextColor: 'blue',
-              dayTextColor: '#282A3A',
-              textDisabledColor: 'gray',
-              dotColor: 'white',
-              selectedDotColor: '#282A3A',
-              arrowColor: '#282A3A',
-              monthTextColor: '#282A3A',
-              indicatorColor: '#282A3A',
-              textDayFontSize: 14,
-              textMonthFontSize: 16,
-              textDayHeaderFontSize: 14,
-            }}
-          />
-        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+
+        {!recurrent &&
+          <View style={styles.calendarContainer}>
+            <Calendar
+              onDayPress={(day) => handleDateSelect(day.dateString)}
+              markedDates={{ ...selectedDates }}
+              style={{ width: calendarWidth, borderRadius: 15, borderColor: '#282A3A' }}
+              theme={{
+                calendarBackground: 'white',
+                textSectionTitleColor: '#282A3A',
+                selectedDayBackgroundColor: '#282A3A',
+                selectedDayTextColor: 'white',
+                todayTextColor: 'blue',
+                dayTextColor: '#282A3A',
+                textDisabledColor: 'gray',
+                dotColor: 'white',
+                selectedDotColor: '#282A3A',
+                arrowColor: '#282A3A',
+                monthTextColor: '#282A3A',
+                indicatorColor: '#282A3A',
+                textDayFontSize: 14,
+                textMonthFontSize: 16,
+                textDayHeaderFontSize: 14,
+              }}
+            />
+          </View>
         }
 
-          {recurrent && (
-            <View style={styles.dayOfWeekContainer}>
-              <Text style={styles.dayOfWeekText}>Selecione o dia da semana:</Text>
-              <View style={styles.dayOfWeekButtonsContainer}>
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 0 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(0)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 0 && styles.dayOfWeekButtonTextSelected]}>Domingo</Text>
-                </TouchableOpacity>
+        {recurrent && (
+          <View style={styles.dayOfWeekContainer}>
+            <Text style={styles.dayOfWeekText}>Selecione o dia da semana:</Text>
+            <View style={styles.dayOfWeekButtonsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 0 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(0)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 0 && styles.dayOfWeekButtonTextSelected]}>Domingo</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 1 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(1)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 1 && styles.dayOfWeekButtonTextSelected]}>Segunda</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 1 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(1)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 1 && styles.dayOfWeekButtonTextSelected]}>Segunda</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 2 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(2)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 2 && styles.dayOfWeekButtonTextSelected]}>Terça</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 2 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(2)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 2 && styles.dayOfWeekButtonTextSelected]}>Terça</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 3 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(3)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 3 && styles.dayOfWeekButtonTextSelected]}>Quarta</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 3 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(3)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 3 && styles.dayOfWeekButtonTextSelected]}>Quarta</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 4 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(4)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 4 && styles.dayOfWeekButtonTextSelected]}>Quinta</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 4 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(4)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 4 && styles.dayOfWeekButtonTextSelected]}>Quinta</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 5 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(5)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 5 && styles.dayOfWeekButtonTextSelected]}>Sexta</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 5 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(5)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 5 && styles.dayOfWeekButtonTextSelected]}>Sexta</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[
-                    styles.dayOfWeekButton,
-                    selectedDayOfWeek === 6 && styles.selectedDayOfWeekButton,
-                  ]}
-                  onPress={() => handleDayOfWeekSelect(6)}
-                >
-                  <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 6 && styles.dayOfWeekButtonTextSelected]}>Sábado</Text>
-                </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.dayOfWeekButton,
+                  selectedDayOfWeek === 6 && styles.selectedDayOfWeekButton,
+                ]}
+                onPress={() => handleDayOfWeekSelect(6)}
+              >
+                <Text style={[styles.dayOfWeekButtonText, selectedDayOfWeek === 6 && styles.dayOfWeekButtonTextSelected]}>Sábado</Text>
+              </TouchableOpacity>
 
-                <Text style={[styles.dayOfWeekText, {marginTop: 5}]}>Quantidade de semanas:</Text>
-                <TextInput 
+              <Text style={[styles.dayOfWeekText, { marginTop: 5 }]}>Quantidade de meses:</Text>
+              <TextInput
                 style={styles.inputSemanas}
                 keyboardType='numeric'
-                placeholder='Digite o número de semanas que terá consulta'
+                placeholder='Digite o número de meses que terá consulta'
                 value={numberWeeks}
                 onChange={setNumberWeeks}
-                ></TextInput>
+              ></TextInput>
 
-              </View>
             </View>
-          )}
 
-          <View style={styles.switchContainer}>
-            <Switch
-              value={recurrent}
-              onValueChange={handleRecurrenceToggle}
-              style={styles.switch}
-              thumbColor="#ffffff"
-              trackColor={{ false: '#cccccc', true: '#282A3A' }}
-            />
-            <Text style={styles.switchText}>Consulta recorrente</Text>
           </View>
+        )}
 
-          <View style={styles.line} />
+        <View style={styles.switchContainer}>
+          <Switch
+            value={recurrent}
+            onValueChange={handleRecurrenceToggle}
+            style={styles.switch}
+            thumbColor="#ffffff"
+            trackColor={{ false: '#cccccc', true: '#282A3A' }}
+          />
+          <Text style={styles.switchText}>Consulta recorrente</Text>
+        </View>
 
-          <TouchableOpacity onPress={handleAgendar} style={styles.button}>
-            <Text style={styles.buttonText}>Agendar</Text>
-          </TouchableOpacity>
+        <View style={styles.line} />
+
+        <TouchableOpacity onPress={handleAgendar} style={styles.button}>
+          <Text style={styles.buttonText}>Agendar</Text>
+        </TouchableOpacity>
+
+        </ScrollView>
 
       </View>
+
+      
 
 
 
@@ -229,6 +236,7 @@ const styles = StyleSheet.create({
   line: {
     width: '65%',
     borderBottomWidth: 2,
+    alignSelf: "center",
     margin: 15,
   },
   switchContainer: {

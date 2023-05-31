@@ -5,7 +5,7 @@ import { Picker } from "@react-native-picker/picker"
 import { DataStateContext } from "../../../components/DataCenter/index.js"
 
 export default function EstadoCivil({onStatusChange}) {
-    let [valor, setValor] = useState('')
+    let [valor, setValor] = useState('SOLTEIRO')
 
     const handleStatusChange = (itemValue) => {
         setValor(itemValue);
@@ -32,5 +32,6 @@ const styles = {
     container: {
         backgroundColor: '#fff',
         borderRadius: 10,
+        marginBottom: 10,
     },
 };

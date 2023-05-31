@@ -26,6 +26,10 @@ export const RectangleCadastro = ({ navigation }) => {
     setSenhaOcultaNovamente(!senhaOcultaNovamente);
   };
 
+  const togglePin = () => {
+    setPinPopup(false)
+  }
+
   const handleEnvio = async (newPin) => {
     if (pin !== null) {
       setPin(newPin);
@@ -39,7 +43,7 @@ export const RectangleCadastro = ({ navigation }) => {
 
     if (foi) {
       setPinPopup(false)
-      navigation.navigate('LoginCadastro');
+      navigation.navigate('LoginCadastro', { reset: true });
     }
 
     setEditavel(false)
@@ -49,10 +53,11 @@ export const RectangleCadastro = ({ navigation }) => {
   const handleSubmit = async () => {
 
     console.log("handleSumit")
+
     if (senha == senhaNovamente) {
       console.log("bateu")
-      const passou = cadastrarUsuario(email.trim(), senha)
       setPinPopup(true)
+      const passou = await cadastrarUsuario(email.trim(), senha)
     } else {
       console.log("não bateu")
       Alert.alert(
@@ -83,6 +88,7 @@ export const RectangleCadastro = ({ navigation }) => {
 
           <PinPopup
         show={pinpopup}
+        setShow={togglePin}
         usuario={email}
         senha={senha}
         pin={pin}

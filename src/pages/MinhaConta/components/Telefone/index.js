@@ -1,30 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import { alterarTelefone } from "../../../../services/api.js"
+import {getPacienteData} from "../../../../services/saveData.js"
 
 export default function Senha() {
   const [expanded, setExpanded] = useState(false);
   const [telefone, setTelefone] = useState('');
   const [telefoneFixo, setTelefoneFixo] = useState('');
 
+  const [telefoneAtual, setTelefoneAtual] = useState('');
+  const [telefoneFixoAtual, setTelefoneFixoAtual] = useState('');
+
+  useEffect(() => {
+    handleChangeValues()
+  }, []);
+
+  const handleChangeValues = async () => {
+    const data = await getPacienteData()
+    setTelefoneAtual(data.telefone)
+    setTelefoneFixoAtual(data.telefoneFixo)
+  }
+
   const handleIconPress = () => {
     setExpanded(!expanded);
   };
 
-  const handleChangePassword = () => {
+  const handleChangeTelefone = async () => {
     // Logic to change the password here
-    console.log('Current password:', currentPassword);
-    console.log('New password:', newPassword);
-    console.log('Confirm new password:', confirmNewPassword);
+    console.log('telefone:', telefone);
+    console.log('telefoneFixo:', telefoneFixo);
+
+    await alterarTelefone(telefone, telefoneFixo);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.iconContainer}>
-          <FontAwesome name="lock" size={24} color="#282A3A" style={styles.icon} />
+          <FontAwesome name="phone" size={24} color="#282A3A" style={styles.icon} />
           <Text style={styles.text}>Telefone</Text>
         </View>
         <Ionicons
@@ -43,11 +59,11 @@ export default function Senha() {
         <View style={styles.conAtual}>
           <View style={styles.valoresAtuais}>
             <Text style={styles.atual}>Telefone: </Text>
-            <Text style={styles.atual}>+55 11 980697346</Text>
+            <Text style={styles.atual}>{telefoneAtual}</Text>
           </View>
           <View style={styles.valoresAtuais}>
             <Text style={styles.atual}>Telefone fixo: </Text>
-            <Text style={styles.atual}>+55 11 23259953</Text>
+            <Text style={styles.atual}>{telefoneFixoAtual}</Text>
           </View>
         </View>
 
@@ -57,7 +73,6 @@ export default function Senha() {
           value={telefone}
           onChangeText={setTelefone}
           placeholder="Digite o novo telefone atual"
-          secureTextEntry
         />
 
         <Text style={styles.label}>Telefone fixo novo</Text>
@@ -66,10 +81,9 @@ export default function Senha() {
           value={telefoneFixo}
           onChangeText={setTelefoneFixo}
           placeholder="Digite o novo telefone fixo"
-          secureTextEntry
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
+        <TouchableOpacity style={styles.button} onPress={handleChangeTelefone}>
           <Text style={styles.buttonText}>Alterar</Text>
         </TouchableOpacity>
       </Animatable.View>
@@ -81,8 +95,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F7EFE5",
     borderRadius: 20,
-    borderWidth: 15,
+    borderWidth: 10,
     borderColor: '#282A3A',
+    paddingTop: 15,
     padding: 10,
     marginHorizontal: 15,
     marginTop: 0,

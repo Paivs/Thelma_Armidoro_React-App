@@ -10,7 +10,7 @@ export function Login({ navigation }) {
 
   useEffect(() => {
     navigation.navigate('Home');
-  }, []); // Executa apenas uma vez durante a montagem do componente
+  }, []); 
 
 
   return (

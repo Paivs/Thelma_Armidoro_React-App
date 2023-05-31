@@ -3,22 +3,47 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-nativ
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
+import { alterarSenha } from '../../../../services/api.js';
 
-export default function Senha() {
+export default function Senha({ navigation }) {
   const [expanded, setExpanded] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
   const handleIconPress = () => {
     setExpanded(!expanded);
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     // Logic to change the password here
     console.log('Current password:', currentPassword);
     console.log('New password:', newPassword);
     console.log('Confirm new password:', confirmNewPassword);
+
+    const foi = await alterarSenha(currentPassword, newPassword);
+
+    console.log('foifoifoifoifoifoi');
+    console.log(foi);
+
+    if (foi) {
+      navigation.navigate('Login');
+    }
+  };
+
+  const toggleShowCurrentPassword = () => {
+    setShowCurrentPassword(!showCurrentPassword);
+  };
+
+  const toggleShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleShowConfirmNewPassword = () => {
+    setShowConfirmNewPassword(!showConfirmNewPassword);
   };
 
   return (
@@ -42,29 +67,59 @@ export default function Senha() {
         duration={450}
       >
         <Text style={styles.label}>Senha atual</Text>
-        <TextInput
-          style={styles.input}
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
-          placeholder="Digite a senha atual"
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.input}
+            value={currentPassword}
+            onChangeText={setCurrentPassword}
+            placeholder="Digite a senha atual"
+            secureTextEntry={!showCurrentPassword}
+          />
+          <TouchableOpacity style={styles.passwordVisibilityIcon} onPress={toggleShowCurrentPassword}>
+            <FontAwesome
+              name={showCurrentPassword ? 'eye' : 'eye-slash'}
+              size={20}
+              color="#282A3A"
+            />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.label}>Nova senha</Text>
-        <TextInput
-          style={styles.input}
-          value={newPassword}
-          onChangeText={setNewPassword}
-          placeholder="Digite a nova senha"
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.input}
+            value={newPassword}
+            onChangeText={setNewPassword}
+            placeholder="Digite a nova senha"
+            secureTextEntry={!showNewPassword}
+          />
+          <TouchableOpacity style={styles.passwordVisibilityIcon} onPress={toggleShowNewPassword}>
+            <FontAwesome
+              name={showNewPassword ? 'eye' : 'eye-slash'}
+              size={20}
+              color="#282A3A"
+            />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.label}>Confirmar nova senha</Text>
-        <TextInput
-          style={styles.input}
-          value={confirmNewPassword}
-          onChangeText={setConfirmNewPassword}
-          placeholder="Confirme a nova senha"
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.input}
+            value={confirmNewPassword}
+            onChangeText={setConfirmNewPassword}
+            placeholder="Confirme a nova senha"
+            secureTextEntry={!showConfirmNewPassword}
+          />
+          <TouchableOpacity
+            style={styles.passwordVisibilityIcon}
+            onPress={toggleShowConfirmNewPassword}
+          >
+            <FontAwesome
+              name={showConfirmNewPassword ? 'eye' : 'eye-slash'}
+              size={20}
+              color="#282A3A"
+            />
+          </TouchableOpacity>
+        </View>
         <TouchableOpacity style={styles.button} onPress={handleChangePassword}>
           <Text style={styles.buttonText}>Alterar</Text>
         </TouchableOpacity>
@@ -75,14 +130,16 @@ export default function Senha() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#F7EFE5",
+    backgroundColor: '#F7EFE5',
     borderRadius: 20,
-    borderWidth: 15,
+    borderWidth: 10,
     borderColor: '#282A3A',
     padding: 10,
+    paddingTop: 15,
     marginHorizontal: 15,
-    marginTop: 0,
+    marginTop: 20,
     marginBottom: 15,
+    justifyContent: 'center',
   },
   header: {
     flexDirection: 'row',
@@ -119,6 +176,18 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+    flex: 1,
+    paddingRight: 30, // Espaço para o ícone à direita
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Alinha ao centro horizontalmente
+  },
+  passwordVisibilityIcon: {
+    position: 'absolute',
+    right: 10, // Alinha à direita
+    justifyContent: "center",
   },
   button: {
     backgroundColor: '#282A3A',

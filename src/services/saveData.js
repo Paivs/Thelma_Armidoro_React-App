@@ -24,6 +24,7 @@ export async function storePacienteData(pacienteData) {
     nome,
     email,
     telefone,
+    telefone_fixo,
     cpf,
     nascimento,
     estado_civil,
@@ -41,6 +42,7 @@ export async function storePacienteData(pacienteData) {
     await AsyncStorage.setItem('nome', nome);
     await AsyncStorage.setItem('email', email);
     await AsyncStorage.setItem('telefone', telefone);
+    await AsyncStorage.setItem('telefone_fixo', telefone_fixo);
     await AsyncStorage.setItem('cpf', cpf);
     await AsyncStorage.setItem('nascimento', nascimento);
     await AsyncStorage.setItem('estado_civil', estado_civil);
@@ -94,6 +96,7 @@ export async function getCredentials(){
       pacienteData.nome = await AsyncStorage.getItem('nome');
       pacienteData.email = await AsyncStorage.getItem('email');
       pacienteData.telefone = await AsyncStorage.getItem('telefone');
+      pacienteData.telefoneFixo = await AsyncStorage.getItem('telefone_fixo');
       pacienteData.cpf = await AsyncStorage.getItem('cpf');
       pacienteData.nascimento = await AsyncStorage.getItem('nascimento');
       pacienteData.estado_civil = await AsyncStorage.getItem('estado_civil');

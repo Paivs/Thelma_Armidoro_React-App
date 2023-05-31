@@ -5,7 +5,7 @@ import { cadastrarUsuarioPin } from "../../services/api.js"
 
 const { height } = Dimensions.get('window')
 
-export const PinPopup = ({show, close, pin}) => {
+export const PinPopup = ({show, close, pin, setShow}) => {
   const [localPin, setPin] = useState(pin);
   const [state, setState] = useState({
     opacity: new Animated.Value(0),
@@ -57,7 +57,9 @@ export const PinPopup = ({show, close, pin}) => {
           ]
         }]}
       >
+        <TouchableOpacity onPress={setShow}>
         <View style={styles.indicator} />
+        </TouchableOpacity>
 
         <Text style={styles.label}>PIN</Text>
       <TextInput

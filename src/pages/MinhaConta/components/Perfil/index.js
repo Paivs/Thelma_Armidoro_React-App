@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { getPacienteData } from "../../../../services/saveData.js"
+import { Feather } from '@expo/vector-icons';
 
 export default function Perfil() {
     const [nome, setNome] = useState('');
@@ -25,7 +26,9 @@ export default function Perfil() {
     return (
         <View style={styles.centralizador}>
             <View style={styles.container}>
-                <View style={styles.icon} />
+                <View style={styles.icon}>
+                    <Feather name="user" size={50} color="#282A3A" />
+                </View>
 
                 <View style={styles.textContainer}>
                     <Text style={styles.nome}>{nome}</Text>
@@ -52,11 +55,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     icon: {
-        backgroundColor: "#282A3A",
+        backgroundColor: "rgba(195, 172, 208, 0.3)",
         marginLeft: 10,
-        width: 50,
-        height: 50,
         borderRadius: 15,
+        borderColor: "#282A3A",
+        borderWidth: 5,
         zIndex: 999,
     },
     textContainer: {

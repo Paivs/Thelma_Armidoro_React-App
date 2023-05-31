@@ -5,11 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import NotificationService from "../../../../../services/NotificationService.js"
 import { useNavigation } from '@react-navigation/native';
 
-export default function ButtonHome() {
+export default function ButtonHome({marcado}) {
     const navigation = useNavigation();
 
     const handleNotification = async () => {
-        navigation.navigate("Marcar Consulta")
+        navigation.navigate("Marcar Consulta", { marcado: marcado })
     };
 
     return (

@@ -1,12 +1,12 @@
 import axios from "axios"
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { storeUserData, storePacienteData, getPacienteId } from "./saveData";
+import { storeUserData, storePacienteData, getPacienteId, getCredentials, getPacienteData } from "./saveData";
 import moment from 'moment-timezone';
 import 'moment/locale/pt-br';
 import { format } from 'date-fns';
 import { Alert } from "react-native"
 
-const urlBase = "http://192.168.15.100:8080/"
+const urlBase = "http://10.0.2.2:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -133,7 +133,7 @@ export async function cadastrarUsuario(username, password) {
             }
         })
         .catch((error) => {
-            console.log("erro: " + error.response.status + " - " + error.response.data)
+            console.log("erro: " + error.status + " - " + error.response.data)
 
             Alert.alert(
                 'Alerta', 'Requisição de cadastro inválida!',
@@ -254,6 +254,11 @@ export async function validarPin(login, PIN) {
 }
 
 export async function esqueciMinhaSenha(login) {
+
+    console.log("\n")
+    console.log("esqueciMinhaSenha")
+    console.log("=------------------------------------=")
+
     return await axios.put(urlBase + `cadastrar/alterar/${login}`)
         .then((res) => {
             console.log("then()")
@@ -281,6 +286,24 @@ export async function esqueciMinhaSenha(login) {
 }
 
 export async function esqueciMinhaSenhaPin(login, senha, pin) {
+
+    console.log("\n")
+    console.log("esqueciMinhaSenhaPin")
+    console.log("=------------------------------------=")
+
+    const data = {
+        "login": login,
+        "senha": senha,
+        "pin": {
+            "login": login,
+            "pin": pin
+        }
+    }
+
+    console.log("post em " + urlBase + `cadastrar/alterar` )
+    console.log(data)
+
+
     return await axios.post(urlBase + `cadastrar/alterar`, {
         "login": login,
         "senha": senha,
@@ -331,6 +354,10 @@ export async function salvarDiario(titulo, texto, tipo, paciente, token) {
         "paciente": paciente
     }
 
+    console.log("\n")
+    console.log("salvarDiario")
+    console.log("=------------------------------------=")
+
     console.log("post em: " + urlBase + `diarios`)
     console.log(data)
 
@@ -376,6 +403,9 @@ export async function salvarDiario(titulo, texto, tipo, paciente, token) {
 
 export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
 
+    const currentDate = new Date();
+    const formattedDateToday = format(currentDate, 'yyyy-MM-dd');
+
     const formattedDate = dataFormatada;
 
     let endpoint = tipo ? "emocoes" : "sonhos";
@@ -387,6 +417,10 @@ export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
             "Access-Control-Allow-Origin": "*"
         }
     });
+
+    console.log("\n")
+    console.log("pegarAtualDiario")
+    console.log("=------------------------------------=")
 
     console.log("GET: " + `diarios/${endpoint}/${paciente}/${formattedDate}`)
 
@@ -405,15 +439,19 @@ export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
     } catch (error) {
         console.log(error);
 
-        Alert.alert(
-            'Erro!', `Não foi possível visualizar o diário`,
-            [{
-                text: 'OK', onPress: () => {
-                    console.log('Botão OK pressionado')
-                }
-            },],
-            { cancelable: false }
-        );
+        if(formattedDateToday != formattedDate){
+            Alert.alert(
+                'Erro!', `Não foi possível visualizar o diário`,
+                [{
+                    text: 'OK', onPress: () => {
+                        console.log('Botão OK pressionado')
+                    }
+                },],
+                { cancelable: false }
+            );
+            console.log(formattedDateToday)
+            console.log(formattedDate)
+        }
 
         return false;
     }
@@ -433,6 +471,10 @@ export async function pegarAtualDiarioAnterior(tipo, paciente, token) {
         }
     });
 
+    console.log("\n")
+    console.log("pegarAtualDiarioAnterior")
+    console.log("=------------------------------------=")
+
     console.log("GET: " + `diarios/${endpoint}/${paciente}/${formattedDate}`)
 
     try {
@@ -451,6 +493,222 @@ export async function pegarAtualDiarioAnterior(tipo, paciente, token) {
         console.log("Error:", error);
         return false;
     }
+}
+
+//MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA
+
+export async function alterarSenha(senhaAntiga, senhaNova) {
+
+    console.log("\n")
+    console.log("alterarSenha")
+    console.log("=------------------------------------=")
+
+    const credenciais = await getCredentials()
+
+    const data = {
+        "login": credenciais.username,
+        "senhaAntiga": senhaAntiga,
+        "senhaNova": senhaNova,
+    }
+
+    console.log("put em: " + urlBase + `usuario`)
+    console.log(data)
+
+    const instance = axios.create({
+        baseURL: urlBase,
+        headers: {
+            'Authorization': `Bearer ${credenciais.token}`,
+            "Access-Control-Allow-Origin": "*"
+        }
+    })
+
+    await instance.put("usuario", data)
+        .then((res) => {
+            console.log("then()")
+
+            if (res.status == 200) {
+
+                Alert.alert(
+                    'Sucesso', `Senha alterada!`,
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log('Botão OK pressionado')
+                        }
+                    },],
+                    { cancelable: false }
+                );
+
+                return true
+            } else {
+
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("catch()")
+            console.log(error)
+
+            Alert.alert(
+                'Erro', `A senha não foi alterada!`,
+                [{
+                    text: 'OK', onPress: () => {
+                        console.log('Botão OK pressionado')
+                    }
+                },],
+                { cancelable: false }
+            );
+            
+            return false
+        })
+}
+
+export async function alterarEndereco(endereco) {
+
+    console.log("\n")
+    console.log("alterarEndereco")
+    console.log("=------------------------------------=")
+
+    const credenciais = await getCredentials()
+    const paciente = await getPacienteData()
+
+    const data = {
+        "id": paciente.id,
+        endereco,
+      }
+
+    console.log("put em: " + urlBase + `pacientes`)
+    console.log(data)
+
+    const instance = axios.create({
+        baseURL: urlBase,
+        headers: {
+            'Authorization': `Bearer ${credenciais.token}`,
+            "Access-Control-Allow-Origin": "*"
+        }
+    })
+
+    await instance.put("pacientes", data)
+        .then((res) => {
+            console.log("then()")
+
+            if (res.status == 200) {
+
+                Alert.alert(
+                    'Sucesso', `Endereço alterado!`,
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log('Botão OK pressionado')
+                        }
+                    },],
+                    { cancelable: false }
+                );
+
+                return true
+            } else {
+
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("catch()")
+            console.log(error)
+
+            Alert.alert(
+                'Erro', `O endereço não foi alterado!`,
+                [{
+                    text: 'OK', onPress: () => {
+                        console.log('Botão OK pressionado')
+                    }
+                },],
+                { cancelable: false }
+            );
+            
+            return false
+        })
+}
+
+export async function alterarTelefone(telefone, telefoneFixo) {
+
+    console.log("\n")
+    console.log("alterarEndereco")
+    console.log("=------------------------------------=")
+
+    const credenciais = await getCredentials()
+    const paciente = await getPacienteData()
+
+    let data = { }
+
+    if(isNaN(telefoneFixo) || telefoneFixo == ""){
+        console.log("telefone fixo não será alterado")
+        data = {
+            "id": paciente.id,
+            "telefone": telefone,
+          }
+    }else if(isNaN(telefone) || telefone == ""){
+        console.log("telefone não será alterado")
+        data = {
+            "id": paciente.id,
+            "telefoneFixo": telefone,
+          }
+    }else{
+        console.log("Ambos telefones serão alterados")
+        data = {
+            "id": paciente.id,
+            "telefone": telefone,
+            "telefoneFixo": telefoneFixo,
+          }
+    }
+
+
+    console.log("put em: " + urlBase + `pacientes`)
+    console.log(data)
+
+    const instance = axios.create({
+        baseURL: urlBase,
+        headers: {
+            'Authorization': `Bearer ${credenciais.token}`,
+            "Access-Control-Allow-Origin": "*"
+        }
+    })
+
+    await instance.put("pacientes", data)
+        .then((res) => {
+            console.log("then()")
+
+            if (res.status == 200) {
+
+                Alert.alert(
+                    'Sucesso', `Telefone(s) alterado(s)!`,
+                    [{
+                        text: 'OK', onPress: () => {
+                            console.log('Botão OK pressionado')
+                        }
+                    },],
+                    { cancelable: false }
+                );
+
+                return true
+            } else {
+
+                return false
+            }
+        })
+        .catch((error) => {
+            console.log("catch()")
+            console.log(error)
+
+            Alert.alert(
+                'Erro', `O valor não foi alterado!`,
+                [{
+                    text: 'OK', onPress: () => {
+                        console.log('Botão OK pressionado')
+                    }
+                },],
+                { cancelable: false }
+            );
+            
+            return false
+        })
 }
 
 //PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES
