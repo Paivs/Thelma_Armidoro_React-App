@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Switch, Dimensions, Alert, TextInput, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import PsychologistPicker from './components/Psicologos/index.js';
@@ -11,6 +11,7 @@ export default function MarcarConsulta({ navigation }) {
   const [selectedDates, setSelectedDates] = useState({});
   const [selectedDayOfWeek, setSelectedDayOfWeek] = useState(null);
   const [numberWeeks, setNumberWeeks] = useState(null);
+
 
   const handleAgendar = () => {
     setSelectedDates({});
@@ -75,9 +76,7 @@ export default function MarcarConsulta({ navigation }) {
         <View style={styles.line} />
 
         <PsychologistPicker
-          onPsychologistChange={(psychologist) => {
-            // Lógica para lidar com a alteração do psicólogo selecionado
-          }}
+          onPsychologistChange={(psychologist) => {}}
         />
 
         <ScrollView showsVerticalScrollIndicator={false}>

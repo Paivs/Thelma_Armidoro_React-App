@@ -8,10 +8,10 @@ const DrawerHeader = () => {
   const [email, setEmail] = useState('');
 
   const getUsernameAndEmail = async () => {
-    console.log('CHAMA');
     try {
       const storedUsername = await getPacienteData();
       if (storedUsername !== null) {
+        console.log("Informações drawer prontas!")
         setNome(storedUsername.nome);
         setEmail(storedUsername.email);
       }

@@ -300,7 +300,7 @@ export async function esqueciMinhaSenhaPin(login, senha, pin) {
         }
     }
 
-    console.log("post em " + urlBase + `cadastrar/alterar` )
+    console.log("post em " + urlBase + `cadastrar/alterar`)
     console.log(data)
 
 
@@ -395,18 +395,30 @@ export async function salvarDiario(titulo, texto, tipo, paciente, token) {
         .catch((error) => {
             console.log("catch()")
             console.log(error)
-            
+
             return false
         })
 }
 
+const formatarDia = (data) => {
+    const partesData = data.split('-');
+    const dia = partesData[2];
+
+    if (dia.length === 1) {
+        partesData[2] = `0${dia}`;
+        return partesData.join('-');
+    }
+
+    return data;
+};
 
 export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
 
     const currentDate = new Date();
     const formattedDateToday = format(currentDate, 'yyyy-MM-dd');
 
-    const formattedDate = dataFormatada;
+    const formattedDate = formatarDia(dataFormatada);
+
 
     let endpoint = tipo ? "emocoes" : "sonhos";
 
@@ -439,16 +451,16 @@ export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
     } catch (error) {
         console.log(error);
 
-        if(formattedDateToday != formattedDate){
-            Alert.alert(
-                'Erro!', `Não foi possível visualizar o diário`,
-                [{
-                    text: 'OK', onPress: () => {
-                        console.log('Botão OK pressionado')
-                    }
-                },],
-                { cancelable: false }
-            );
+        if (formattedDateToday != formattedDate) {
+            // Alert.alert(
+            //     'Erro!', `Não foi possível visualizar o diário`,
+            //     [{
+            //         text: 'OK', onPress: () => {
+            //             console.log('Botão OK pressionado')
+            //         }
+            //     },],
+            //     { cancelable: false }
+            // );
             console.log(formattedDateToday)
             console.log(formattedDate)
         }
@@ -557,7 +569,7 @@ export async function alterarSenha(senhaAntiga, senhaNova) {
                 },],
                 { cancelable: false }
             );
-            
+
             return false
         })
 }
@@ -574,7 +586,7 @@ export async function alterarEndereco(endereco) {
     const data = {
         "id": paciente.id,
         endereco,
-      }
+    }
 
     console.log("put em: " + urlBase + `pacientes`)
     console.log(data)
@@ -622,7 +634,7 @@ export async function alterarEndereco(endereco) {
                 },],
                 { cancelable: false }
             );
-            
+
             return false
         })
 }
@@ -636,27 +648,27 @@ export async function alterarTelefone(telefone, telefoneFixo) {
     const credenciais = await getCredentials()
     const paciente = await getPacienteData()
 
-    let data = { }
+    let data = {}
 
-    if(isNaN(telefoneFixo) || telefoneFixo == ""){
+    if (isNaN(telefoneFixo) || telefoneFixo == "") {
         console.log("telefone fixo não será alterado")
         data = {
             "id": paciente.id,
             "telefone": telefone,
-          }
-    }else if(isNaN(telefone) || telefone == ""){
+        }
+    } else if (isNaN(telefone) || telefone == "") {
         console.log("telefone não será alterado")
         data = {
             "id": paciente.id,
             "telefoneFixo": telefone,
-          }
-    }else{
+        }
+    } else {
         console.log("Ambos telefones serão alterados")
         data = {
             "id": paciente.id,
             "telefone": telefone,
             "telefoneFixo": telefoneFixo,
-          }
+        }
     }
 
 
@@ -706,10 +718,64 @@ export async function alterarTelefone(telefone, telefoneFixo) {
                 },],
                 { cancelable: false }
             );
-            
+
             return false
         })
 }
+
+
+
+
+
+//PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA  
+export async function listaMedicos() {
+  try {
+    const credenciais = await getCredentials();
+
+    const url = urlBase + "medicos";
+    console.log("Realizando uma requisição GET em: " + url);
+    console.log("Token: " + credenciais.token);
+
+    const instance = axios.create({
+      baseURL: urlBase,
+      headers: {
+        'Authorization': `Bearer ${credenciais.token}`,
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+
+    const response = await instance.get("medicos");
+
+    if (response.status === 200) {
+      const retorno = response.data.content.map(medico => ({
+        "crm": medico.crm,
+        "email": medico.email,
+        "id": medico.id,
+        "nome": medico.nome,
+      }));
+
+      console.log(retorno);
+      return retorno;
+    } else {
+      console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+      throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+    }
+  } catch (error) {
+    console.log("Erro:", error);
+    throw error;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 //PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES
 

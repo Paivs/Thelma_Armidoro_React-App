@@ -9,7 +9,7 @@ export function Login({ navigation }) {
   const loginIconSize = Math.min(windowWidth, windowHeight) * 0.2;
 
   useEffect(() => {
-    navigation.navigate('Home');
+    //navigation.navigate('Home');
   }, []); 
 
 

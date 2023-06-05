@@ -9,7 +9,7 @@ export default function ButtonHome({marcado}) {
     const navigation = useNavigation();
 
     const handleNotification = async () => {
-        navigation.navigate("Marcar Consulta", { marcado: marcado })
+        navigation.navigate("Marcar Consulta")
     };
 
     return (
