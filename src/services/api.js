@@ -1,6 +1,6 @@
 import axios from "axios"
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { storeUserData, storePacienteData, getPacienteId, getCredentials, getPacienteData } from "./saveData";
+import { storeUserData, storePacienteData, getPacienteId, getCredentials, getPacienteData, storeLogado } from "./saveData";
 import moment from 'moment-timezone';
 import 'moment/locale/pt-br';
 import { format } from 'date-fns';
@@ -22,6 +22,8 @@ export async function login(username, password) {
 
                 console.log("Acesso autorizado")
                 console.log("Usuário: " + username + "\nToken: " + res.data.token)
+
+                storeLogado(true)
 
                 Alert.alert(
                     'Sucesso', 'Login autorizado!',

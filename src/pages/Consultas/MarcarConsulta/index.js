@@ -179,9 +179,9 @@ export default function MarcarConsulta({ navigation }) {
           }
 
           {dateSelected &&
-            <View>
+            <View style={[{alignItems: "center"}]}>
+                <Text style={[styles.dayOfWeekText, { marginTop: 10, marginRight: 10, marginBottom: 0, fontWeight: "bold" }]}>Selecione o horário:</Text>
               <View style={styles.inputContainer}>
-                <Text style={[styles.dayOfWeekText, { marginTop: 10, marginRight: 10, fontWeight: "bold" }]}>Selecione o horário:</Text>
 
                 <TextInputMask
                   style={styles.input}
@@ -199,6 +199,7 @@ export default function MarcarConsulta({ navigation }) {
 
                   }}
                   placeholder="HH"
+                  placeholderTextColor={"gray"}
                   options={{
                     mask: "99"
                   }}
@@ -222,6 +223,7 @@ export default function MarcarConsulta({ navigation }) {
 
                   }}
                   placeholder="MM"
+                  placeholderTextColor={"gray"}
                   options={{
                     mask: "99"
                   }}
@@ -531,6 +533,9 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderRadius: 4,
     paddingHorizontal: 10,
+    color: "white",
+    backgroundColor: "#282A3A",
+    textAlign: "center",
   },
   colon: {
     fontSize: 20,

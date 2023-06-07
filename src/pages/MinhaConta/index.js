@@ -17,6 +17,7 @@ import Perfil from './components/Perfil/index.js';
 import Senha from './components/Senha/index.js';
 import Endereco from './components/Endereco/index.js';
 import Telefone from './components/Telefone/index.js';
+import {storeLogado} from "../../services/saveData.js"
 
 export default function MinhaConta({ navigation }) {
   const isFocused = useIsFocused();
@@ -33,6 +34,11 @@ export default function MinhaConta({ navigation }) {
     cidade: 'Santo André',
     uf: 'SP'
   });
+
+  const handleLogout = async () => {
+    navigation.navigate("Login")
+    storeLogado(false)
+  }
 
   const handleNameChange = (text) => {
     setName(text);
@@ -139,7 +145,7 @@ export default function MinhaConta({ navigation }) {
 
         <View style={styles.horizontalLine} />
 
-        <TouchableOpacity onPress={() => {navigation.navigate("Login")}} style={styles.ConbuttonLogout}>
+        <TouchableOpacity onPress={handleLogout} style={styles.ConbuttonLogout}>
           <Text style={styles.buttonLogout}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>

@@ -33,6 +33,26 @@ export async function getCredentials(){
   }
 };
 
+export async function storeLogado(valor){
+  try {
+    await AsyncStorage.setItem('logado', JSON.stringify(valor));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export async function getLogado(){
+  try {
+    // recupera as credenciais salvas no AsyncStorage
+    const logado = await AsyncStorage.getItem('logado');
+    // retorna um objeto com as credenciais
+    return logado;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 // função para salvar as informações de consulta
 export async function storeConsultaData (temConsulta){
 
@@ -58,6 +78,10 @@ export async function getConsulta(){
 
 // função para fazer login e salvar os dados da sessão no AsyncStorage
 export async function storePacienteData(pacienteData) {
+
+  console.log("\nstorePacienteData\n")
+  console.log(pacienteData)
+
   const {
     id,
     nome,
@@ -150,6 +174,21 @@ export async function getPacienteData() {
       console.log(error);
       return null;
     }
+}
+
+export async function getPacienteDataDrawer() {
+  try {
+    const pacienteData = {};
+
+    // Recupera os valores salvos no AsyncStorage
+    pacienteData.nome = await AsyncStorage.getItem('nome');
+    pacienteData.email = await AsyncStorage.getItem('email');
+
+    return pacienteData;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
   
 export async function getPacienteId() {
