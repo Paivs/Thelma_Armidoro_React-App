@@ -729,48 +729,199 @@ export async function alterarTelefone(telefone, telefoneFixo) {
 
 //PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA  
 export async function listaMedicos() {
-  try {
-    const credenciais = await getCredentials();
+    try {
+        const credenciais = await getCredentials();
 
-    const url = urlBase + "medicos";
-    console.log("Realizando uma requisição GET em: " + url);
-    console.log("Token: " + credenciais.token);
+        const url = urlBase + "medicos";
+        console.log("Realizando uma requisição GET em: " + url);
+        console.log("Token: " + credenciais.token);
 
-    const instance = axios.create({
-      baseURL: urlBase,
-      headers: {
-        'Authorization': `Bearer ${credenciais.token}`,
-        "Access-Control-Allow-Origin": "*"
-      }
-    });
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${credenciais.token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        });
 
-    const response = await instance.get("medicos");
+        const response = await instance.get("medicos");
 
-    if (response.status === 200) {
-      const retorno = response.data.content.map(medico => ({
-        "crm": medico.crm,
-        "email": medico.email,
-        "id": medico.id,
-        "nome": medico.nome,
-      }));
+        if (response.status === 200) {
+            const retorno = response.data.content.map(medico => ({
+                "crm": medico.crm,
+                "email": medico.email,
+                "id": medico.id,
+                "nome": medico.nome,
+            }));
 
-      console.log(retorno);
-      return retorno;
-    } else {
-      console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
-      throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+            console.log(retorno);
+            return retorno;
+        } else {
+            console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+            throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+        }
+    } catch (error) {
+        console.log("Erro:", error);
+        throw error;
     }
-  } catch (error) {
-    console.log("Erro:", error);
-    throw error;
-  }
 }
 
 
 
 
 
+//CONSULTA - CONSULTA - CONSULTA - CONSULTA - CONSULTA - CONSULTA - CONSULTA  
+export async function listaConsultas() {
+    try {
+        const credenciais = await getCredentials();
+        const id = await getPacienteId();
 
+        const url = urlBase + "consultas";
+        console.log("Realizando uma requisição GET em: " + url);
+        console.log("Token: " + credenciais.token);
+
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${credenciais.token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        });
+
+        const response = await instance.get(`consultas/${id}`);
+
+        if (response.status === 200) {
+            const retorno = response.data.content.map(consulta => ({
+                "id": consulta.id,
+                "idMedico": consulta.idMedico,
+                "idPaciente": consulta.idPaciente,
+                "data": consulta.data
+            }));
+
+            console.log(retorno);
+            return retorno;
+        } else {
+            console.log(`Erro logica: ${response.status}\nDescrição: ${response.data}`);
+            throw new Error(`Erro logica: ${response.status}\nDescrição: ${response.data}`);
+        }
+    } catch (error) {
+        console.log("Erro:", error.response.data);
+        throw error;
+    }
+}
+
+export async function temConsulta() {
+    try {
+        const credenciais = await getCredentials();
+        const id = await getPacienteId();
+
+        const url = urlBase + `consultas/contem/${id}`;
+        console.log("Realizando uma requisição GET em: " + url);
+        console.log("Token: " + credenciais.token);
+
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${credenciais.token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        });
+
+        const response = await instance.get(`consultas/contem/${id}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    return true;
+                } else if (response.status == 400) {
+                    return false;
+                } else {
+                    console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+                }
+            })
+            .catch((error) => {
+                console.log("erro")
+                console.log(error)
+                return false;
+            })
+            return response
+    } catch (error) {
+        console.log("Erro grave:", error);
+        console.log(error)
+        return false;
+    }
+    
+}
+
+export async function marcarUmaConsulta(data, idMedico) {
+    try {
+        const credenciais = await getCredentials();
+        const id = await getPacienteId();
+
+        const url = urlBase + "consultas";
+        console.log("Realizando uma requisição post em: " + url);
+        console.log("Token: " + credenciais.token);
+
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${credenciais.token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        });
+
+        const response = await instance.post(`consultas`, {
+            "idMedico": idMedico,
+            "idPaciente": id,
+            "data": data
+        });
+
+        if (response.status === 200) {
+            console.log("FOI");
+            return true;
+        } else {
+            console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+            return false;
+        }
+    } catch (error) {
+        console.log("Erro:", error.response.data);
+        alert(error.response.data)
+        return false;
+    }
+}
+
+export async function tempoConsulta() {
+    try {
+      const credenciais = await getCredentials();
+      const id = await getPacienteId();
+  
+      const url = urlBase + `consultas/tempo/${id}`;
+      console.log("Realizando uma requisição GET em: " + url);
+      console.log("Token: " + credenciais.token);
+  
+      const instance = axios.create({
+        baseURL: urlBase,
+        headers: {
+          'Authorization': `Bearer ${credenciais.token}`,
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
+  
+      const response = await instance.get(`consultas/tempo/${id}`);
+      if (response.status === 200) {
+        tempoRestante = response.data.valor;
+        console.log(tempoRestante)
+        return tempoRestante;
+      } else if(response.status === 400){
+        return "Indeterminado"
+        }
+        else {
+        console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+        throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+      }
+    } catch (error) {
+      console.log("Erro:", error);
+      return "Indeterminado"
+    }
+  }
 
 
 
@@ -812,7 +963,7 @@ export async function listaPacientes(token) {
 //cadastrar paciente
 //OBS: acrescentar tratativa de erro, retornar o que está errado
 export async function cadastrarPaciente(token, paciente) {
-
+    try {
     const url = urlBase + "pacientes"
     console.log("Realizando uma requisição post em: " + url)
     console.log("Token: " + token)
@@ -825,44 +976,44 @@ export async function cadastrarPaciente(token, paciente) {
         }
     })
 
-    const pacientes = await instance.post("/pacientes", paciente)
-        .then((res) => {
-            if (res.status == 201) {
+    const res = await instance.post("/pacientes", paciente)
+        if (res.status == 201) {
 
-                console.log("Requisição concluída com sucesso")
-                console.log(res.data)
+            console.log("Requisição concluída com sucesso")
+            console.log(res.data)
 
-                return true
-            } else if (res.status == 400) {
-                console.log(`Erro 400: ${res.status}\nDescrição: ${res.data}`)
+            return true
+        } else if (res.status == 400) {
+            console.log(`Erro 400: ${res.status}\nDescrição: ${res.data}`)
 
-                Alert.alert(
-                    'Erro ao cadastrar novo usuário',
-                    res.array.forEach(element => {
-                        return `${element.campo}: ${element.mensagem}`
-                    }),
-                    [
-                        {
-                            text: 'OK',
-                            onPress: () => console.log('Botão OK pressionado'),
-                        },
-                    ],
-                    { cancelable: false }
-                );
-                return false
-            }
-            else {
-                console.log(`Erro: ${res.status}\nDescrição: ${res.data}`)
-
-                return false
-            }
-        })
-        .catch((error) => {
-            console.log("Erro: " + error.status)
-            console.log("Descrição: " + error.response.data)
-            console.log({ error })
+            Alert.alert(
+                'Erro ao cadastrar novo usuário',
+                res.array.forEach(element => {
+                    return `${element.campo}: ${element.mensagem}`
+                }),
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => console.log('Botão OK pressionado'),
+                    },
+                ],
+                { cancelable: false }
+            );
+        }else{
             return false
-        })
+        }
+    } catch (error) {
+        const err = error.response.data
+
+        alert(
+        err.forEach(err => {
+            return `Campo: ${err.campo}\nErro: ${err.mensagem}`;
+          })
+        )
+
+
+        return false
+    }
 }
 
 //alterar paciente

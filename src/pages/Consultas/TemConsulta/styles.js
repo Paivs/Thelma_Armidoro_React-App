@@ -19,6 +19,18 @@ export const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
   },
+  botaoDireita: {
+    marginRight: 10,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: "#282A3A",
+    zIndex: 9999,
+  },
+  botaoDireitaText: {
+    margin: 5,
+    marginRight: 10,
+    marginLeft: 10,
+  },
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',

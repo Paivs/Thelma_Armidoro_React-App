@@ -6,7 +6,7 @@ import ButtonHome from "./components/ButtonHome/index.js"
 import { useNavigation } from '@react-navigation/native';
 
 
-export default function NaoConsulta({ navigation, marcado }) {
+export default function NaoConsulta({ navigation }) {
 
   const imageUrl = 'https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'; // Substitua pela URL real da imagem
   const phoneNumber = '5511980697346'; // Substitua pelo número de telefone desejado
@@ -29,7 +29,7 @@ export default function NaoConsulta({ navigation, marcado }) {
           Com alguns toques na tela, você poderá garantir seu encontro com a psicóloga e cuidar do seu bem-estar mental.
           </Text>
 
-        <ButtonHome marcado={marcado}/>
+        <ButtonHome/>
 
     </View>
 

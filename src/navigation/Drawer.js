@@ -14,6 +14,8 @@ import MinhaConta from "../pages/MinhaConta/index.js";
 import Home from "../pages/Home/index.js";
 import Consulta from "../pages/Consultas/index.js";
 import MarcarConsulta from "../pages/Consultas/MarcarConsulta/index.js";
+import NaoConsulta from "../pages/Consultas/NaoConsulta/index.js";
+import TemConsulta from "../pages/Consultas/TemConsulta/index.js";
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -21,6 +23,8 @@ const Stack = createStackNavigator();
 const ConsultaStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Consultas">
     <Stack.Screen name="Consultas" component={Consulta} options={{ headerTitle: "" }} />
+    <Stack.Screen name="Sem Consulta" component={NaoConsulta} options={{ headerTitle: "" }} />
+    <Stack.Screen name="Com Consulta" component={TemConsulta} options={{ headerTitle: "" }} />
     <Stack.Screen name="Marcar Consulta" component={MarcarConsulta} options={{ headerTitle: "" }} />
   </Stack.Navigator>
 );

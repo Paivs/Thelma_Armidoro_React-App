@@ -3,7 +3,7 @@ import { encryptPassword, decryptPassword } from "../services/encriptador.js"
 
 
 // função para fazer login e salvar os dados da sessão no AsyncStorage
-  export async function storeUserData (username, password, token){
+export async function storeUserData (username, password, token){
   //const encryptedPassword = encryptPassword(password);
 
   try {
@@ -14,6 +14,45 @@ import { encryptPassword, decryptPassword } from "../services/encriptador.js"
     await AsyncStorage.setItem('loginTime', new Date().getTime().toString());
   } catch (error) {
     console.log(error);
+  }
+};
+
+export async function getCredentials(){
+  try {
+    // recupera as credenciais salvas no AsyncStorage
+    const username = await AsyncStorage.getItem('username');
+    const passwordC = await AsyncStorage.getItem('password');
+    const password = 123//decryptPassword(passwordC);
+    const token = await AsyncStorage.getItem('token');
+
+    // retorna um objeto com as credenciais
+    return { username, password, token };
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+// função para salvar as informações de consulta
+export async function storeConsultaData (temConsulta){
+
+  try {
+    await AsyncStorage.setItem('temConsulta', temConsulta);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export async function getConsulta(){
+  try {
+    // recupera as credenciais salvas no AsyncStorage
+    const temConsulta = await AsyncStorage.getItem('temConsulta');
+
+    // retorna um objeto com as credenciais
+    return temConsulta;
+  } catch (error) {
+    console.log(error);
+    return null;
   }
 };
 
@@ -70,24 +109,7 @@ export async function storePacienteData(pacienteData) {
   }
 }
 
-
-export async function getCredentials(){
-    try {
-      // recupera as credenciais salvas no AsyncStorage
-      const username = await AsyncStorage.getItem('username');
-      const passwordC = await AsyncStorage.getItem('password');
-      const password = 123//decryptPassword(passwordC);
-      const token = await AsyncStorage.getItem('token');
-  
-      // retorna um objeto com as credenciais
-      return { username, password, token };
-    } catch (error) {
-      console.log(error);
-      return null;
-    }
-  };
-
-  export async function getPacienteData() {
+export async function getPacienteData() {
     try {
       const pacienteData = {};
   
@@ -128,9 +150,9 @@ export async function getCredentials(){
       console.log(error);
       return null;
     }
-  }
+}
   
-  export async function getPacienteId() {
+export async function getPacienteId() {
     try {
 
       const id = await AsyncStorage.getItem('id');
@@ -140,7 +162,7 @@ export async function getCredentials(){
       console.log(error);
       return null;
     }
-  }
+}
 
 
 export async function clearUserData(){

@@ -76,7 +76,7 @@ export default function DiarioSonhos({ navigation }) {
     if (dia + 1 <= lastDayOfMonth && dia + 1 <= currentDay) {
       setDia(dia + 1);
       setDiaAnterior(dia);
-      setMes(mes);
+      //setMes(mes);
       setAno(currentDate.getFullYear());
       update();
     } else if (dia !== currentDay) {
