@@ -113,7 +113,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.thelmaarmidoro"
+    namespace 'com.anonymous.ThelmaArmidoro'
     defaultConfig {
         applicationId 'com.anonymous.ThelmaArmidoro'
         minSdkVersion rootProject.ext.minSdkVersion

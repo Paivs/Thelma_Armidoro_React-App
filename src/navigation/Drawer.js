@@ -6,6 +6,7 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import { createStackNavigator } from '@react-navigation/stack';
 
 import DrawerHeader from './components/DrawerHeader/index';
+import DrawerFooter from './components/DrawerFooter/index';
 
 import DiarioEmocoes from "../pages/DiarioEmocoes/index.js";
 import DiarioSonhos from "../pages/DiarioSonhos/index.js";
@@ -67,6 +68,7 @@ const CustomDrawerContent = (props) => {
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
       </DrawerContentScrollView>
+      <DrawerFooter />
     </SafeAreaView>
   );
 };

@@ -6,7 +6,7 @@ import 'moment/locale/pt-br';
 import { format } from 'date-fns';
 import { Alert } from "react-native"
 
-const urlBase = "http://10.0.2.2:8080/"
+const urlBase = "http://89.116.214.128:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
@@ -19,9 +19,6 @@ export async function login(username, password) {
             if (res.status == 200) {
                 storeUserData(username, password, res.data.token);
                 getPacienteUserData(username, res.data.token)
-
-                console.log("Acesso autorizado")
-                console.log("Usuário: " + username + "\nToken: " + res.data.token)
 
                 storeLogado(true)
 
@@ -125,24 +122,12 @@ export async function cadastrarUsuario(username, password) {
             } else {
                 console.log("erro: " + res.status + "\n" + res.data)
 
-                Alert.alert(
-                    'Alerta', 'Requisição de cadastro inválida!',
-                    [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
-                    { cancelable: false }
-                );
-
-                return false
+                return true
             }
         })
         .catch((error) => {
             console.log("erro: " + error.status + " - " + error.response.data)
-
-            Alert.alert(
-                'Alerta', 'Requisição de cadastro inválida!',
-                [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
-                { cancelable: false }
-            );
-            return null
+            return true
         })
 }
 
@@ -528,13 +513,7 @@ export async function alterarSenha(senhaAntiga, senhaNova) {
     console.log("put em: " + urlBase + `usuario`)
     console.log(data)
 
-    const instance = axios.create({
-        baseURL: urlBase,
-        headers: {
-            'Authorization': `Bearer ${credenciais.token}`,
-            "Access-Control-Allow-Origin": "*"
-        }
-    })
+ 
 
     await instance.put("usuario", data)
         .then((res) => {

@@ -9,8 +9,8 @@ export const RectangleHomePage = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
-  const [email, setEmail] = useState('contatogppe@gmail.com');
-  const [senha, setSenha] = useState('Thelma@123');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
   const [senhaOculta, setSenhaOculta] = useState(true);
 
   const toggleSenhaOculta = () => {
