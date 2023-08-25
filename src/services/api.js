@@ -947,7 +947,7 @@ export async function cadastrarPaciente(token, paciente) {
     try {
     const url = urlBase + "pacientes"
     console.log("Realizando uma requisição post em: " + url)
-    console.log("Token: " + token)
+    console.log(paciente)
 
     const instance = axios.create({
         baseURL: urlBase,

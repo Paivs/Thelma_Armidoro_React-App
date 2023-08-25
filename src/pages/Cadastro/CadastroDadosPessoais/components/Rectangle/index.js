@@ -1,11 +1,12 @@
-import React, { useState, useContext } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import DateInput from "../../../../../components/DateInput/index.js"
 import { TextInputMask } from 'react-native-masked-text';
 import EstadoCivil from "../EstadoCivil/index.js"
 import { getCredentials } from "../../../../../services/saveData.js"
-import {DataStateContext} from "../../../components/DataCenter/index.js"
+import { DataStateContext } from "../../../components/DataCenter/index.js"
+import { ValidarTelefoneFixo, ValidarCelular, ValidarEmail, ValidarNacionalidade, ValidarDataNascimento, ValidarNome, ValidarCPF } from "../validator/index.js"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
@@ -13,6 +14,10 @@ export const Rectangle = ({ navigation }) => {
 
   const { nome, setNome, email, setEmail, cpf, setCpf, nascimento, setNascimento, estadoCivil, setEstadoCivil, nacionalidade, setNacionalidade } = useContext(DataStateContext);
   const { telefone, setTelefone, telefoneFixo, setTelefoneFixo } = useContext(DataStateContext)
+
+  useEffect(() => {
+    setEstadoCivil("SOLTEIRO")
+  }, [])
 
   const handleDateChange = (date) => {
     const dateString = date;
@@ -31,11 +36,42 @@ export const Rectangle = ({ navigation }) => {
 
   const handleSubmit = async () => {
 
-    const username = await getCredentials()
+    let erros = []
 
+    const username = await getCredentials()
     setEmail(username.username)
 
-    navigation.navigate('Dados Profissao');
+    // if(!ValidarEmail(email)) erros.push("E-mail")
+    if (!ValidarNome(nome)) erros.push("Nome")
+    if (!ValidarCPF(cpf)) erros.push("CPF")
+    if (!ValidarCelular(telefone)) erros.push("Celular")
+    if (!ValidarTelefoneFixo(telefoneFixo)) erros.push("Celular")
+    if (!ValidarDataNascimento(nascimento)) erros.push("Data Nascimento")
+    if (!ValidarNacionalidade(nacionalidade)) erros.push("Nacionalidade")
+
+    let texto = ""
+
+    console.log("\nErros")
+    erros.forEach(c => {
+      console.log(c)
+      texto = texto + "- " + c + "\n"
+    })
+    console.log("---\n")
+
+    if (erros.length == 0) {
+
+      const [day, month, year] = nascimento.split('/').map(Number);
+      const localDateTime = new Date(Date.UTC(year, month - 1, day));
+      const isoFormatted = localDateTime.toISOString();
+      setNascimento(isoFormatted)
+      navigation.navigate('Dados Profissao');
+    } else {
+      Alert.alert(
+        'Alerta!', "Os seguintes campos foram preenchidos incorretamentes:\n" + texto,
+        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        { cancelable: false }
+      );
+    }
   };
 
 
@@ -43,85 +79,94 @@ export const Rectangle = ({ navigation }) => {
   return (
     <View style={[styles.rectangle, { height: heightRectangle }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.form}>
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Nome e sobrenome:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu nome completo"
-            onChangeText={(text) => setNome(text)}
-            value={nome}
-          />
-        </View>
+        <View style={styles.form}>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Nome e sobrenome:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite seu nome completo"
+              onChangeText={(text) => setNome(text)}
+              value={nome}
+            />
+          </View>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Data de nascimento:</Text>
-          <DateInput onChange={handleDateChange} value={nascimento} />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Data de nascimento:</Text>
+            <TextInputMask
+              style={styles.input}
+              type={'custom'}
+              value={nascimento}
+              onChangeText={text => setNascimento(text)}
+              placeholder="Digite no padrão: DD/MM/AAAA"
+              options={{
+                mask: "99/99/9999"
+              }}
+            />
+          </View>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>CPF:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'cpf'}
-            value={cpf}
-            onChangeText={text => setCpf(text)}
-            placeholder="Digite seu cpf"
-          />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>CPF:</Text>
+            <TextInputMask
+              style={styles.input}
+              type={'cpf'}
+              value={cpf}
+              onChangeText={text => setCpf(text)}
+              placeholder="Digite seu cpf"
+            />
+          </View>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Nacionalidade:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua nacionalidade"
-            onChangeText={(text) => setNacionalidade(text)}
-            value={nacionalidade}
-          />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Nacionalidade:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite sua nacionalidade"
+              onChangeText={(text) => setNacionalidade(text)}
+              value={nacionalidade}
+            />
+          </View>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Estado civil:</Text>
-          <EstadoCivil 
-            onStatusChange={(text) => setEstadoCivil(text)}
-          />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Estado civil:</Text>
+            <EstadoCivil
+              onStatusChange={(text) => setEstadoCivil(text)}
+            />
+          </View>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Celular:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'custom'}
-            value={telefone}
-            onChangeText={text => setTelefone(text)}
-            placeholder="Digite seu celular"
-            options={{
-              mask: "+99 (99) 999999999"
-            }}
-          />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Celular:</Text>
+            <TextInputMask
+              style={styles.input}
+              type={'custom'}
+              value={telefone}
+              onChangeText={text => setTelefone(text)}
+              placeholder="Digite seu celular"
+              options={{
+                mask: "+99 (99) 999999999"
+              }}
+            />
+          </View>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Telefone fixo:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'custom'}
-            value={telefoneFixo}
-            onChangeText={text => setTelefoneFixo(text)}
-            placeholder="Digite o telefone fixo"
-            options={{
-              mask: "+99 (99) 99999999"
-            }}
-          />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>Telefone fixo:</Text>
+            <TextInputMask
+              style={styles.input}
+              type={'custom'}
+              value={telefoneFixo}
+              onChangeText={text => setTelefoneFixo(text)}
+              placeholder="Digite o telefone fixo"
+              options={{
+                mask: "+99 (99) 99999999"
+              }}
+            />
+          </View>
 
 
-        <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
-          <Text style={styles.btnEntrarTexto}>Próximo</Text>
-        </TouchableOpacity>
-        <View style={styles.linksContainer}>
+          <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
+            <Text style={styles.btnEntrarTexto}>Próximo</Text>
+          </TouchableOpacity>
+          <View style={styles.linksContainer}>
+          </View>
         </View>
-      </View>
       </ScrollView>
     </View>
   );

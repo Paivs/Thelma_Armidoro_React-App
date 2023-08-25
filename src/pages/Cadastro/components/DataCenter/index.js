@@ -14,6 +14,7 @@ const DataStateProvider = ({ children }) => {
   const [profissao, setProfissao] = useState('');
   const [cargo, setCargo] = useState('');
   const [nacionalidade, setNacionalidade] = useState('');
+  const [grau_escolaridade, setGrau_escolaridade] = useState('');
   const [endereco, setEndereco] = useState({
     logradouro: '',
     bairro: '',
@@ -22,6 +23,7 @@ const DataStateProvider = ({ children }) => {
     uf: '',
     complemento: '',
     numero: '',
+    pais: '',
   });
   const [contatoEmergencia, setContatoEmergencia] = useState({
     contato_nome: '',
@@ -46,6 +48,8 @@ const DataStateProvider = ({ children }) => {
         setNascimento,
         estadoCivil,
         setEstadoCivil,
+        grau_escolaridade,
+        setGrau_escolaridade,
         curso,
         setCurso,
         profissao,

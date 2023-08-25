@@ -111,7 +111,7 @@ export const RectangleSenha = ({ navigation }) => {
 const styles = StyleSheet.create({
   rectangle: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -30,
     backgroundColor: '#8868A5',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,

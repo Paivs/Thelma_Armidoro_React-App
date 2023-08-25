@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
 import { cadastrarPaciente } from "../../../../../services/api.js"
 import { getCredentials } from "../../../../../services/saveData.js"
 import { DataStateContext } from "../../../components/DataCenter/index.js"
+import { ValidarCelular, ValidarVinculo, ValidarNome } from "../validator/index.js"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
@@ -20,6 +21,7 @@ export const Rectangle = ({ navigation }) => {
     cpf,
     nascimento,
     estadoCivil,
+    grau_escolaridade,
     curso,
     profissao,
     cargo,
@@ -36,49 +38,78 @@ export const Rectangle = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
-    
 
-    const data = {
-      "nome": nome,
-      "email": email,
-      "telefone": telefone,
-      "telefone_fixo": telefoneFixo,
-      "cpf": cpf,
-      "nascimento": nascimento,
-      "estado_civil": estadoCivil,
-      "curso": curso,
-      "profissao": profissao,
-      "cargo": cargo,
-      "nacionalidade": nacionalidade,
-      "endereco": {
-        "logradouro": endereco.logradouro,
-        "bairro": endereco.bairro,
-        "cep": endereco.cep,
-        "cidade": endereco.cidade,
-        "uf": endereco.uf,
-        "complemento": endereco.complemento,
-        "numero": endereco.numero
-      },
-      "contatoEmergencia": {
-        "contato_nome": contatoEmergencia.contato_nome,
-        "contato_vinculo": contatoEmergencia.contato_vinculo,
-        "contato_telefone": contatoEmergencia.contato_telefone
+    let erros = []
+
+    if (!ValidarNome(contatoEmergencia.contato_nome)) erros.push("Nome")
+    if (!ValidarVinculo(contatoEmergencia.contato_vinculo)) erros.push("Vínculo")
+    if (!ValidarCelular(contatoEmergencia.contato_telefone)) erros.push("Celular")
+
+    let texto = ""
+
+    console.log("\nErros")
+    erros.forEach(c => {
+      console.log(c)
+      texto = texto + "- " + c + "\n"
+    })
+    console.log("---\n")
+
+    if (erros.length == 0) {
+
+      const data = {
+        "nome": nome,
+        "email": email,
+        "telefone": telefone,
+        "telefone_fixo": telefoneFixo,
+        "cpf": cpf,
+        "nascimento": nascimento,
+        "estado_civil": estadoCivil,
+        "curso": curso,
+        "profissao": profissao,
+        "cargo": cargo,
+        "nacionalidade": nacionalidade,
+        "grau_escolaridade": grau_escolaridade,
+        "endereco": {
+          "logradouro": endereco.logradouro,
+          "bairro": endereco.bairro,
+          "cep": endereco.cep,
+          "cidade": endereco.cidade,
+          "uf": endereco.uf,
+          "complemento": endereco.complemento,
+          "numero": endereco.numero,
+          "pais": endereco.pais
+        },
+        "contatoEmergencia": {
+          "contato_nome": contatoEmergencia.contato_nome,
+          "contato_vinculo": contatoEmergencia.contato_vinculo,
+          "contato_telefone": contatoEmergencia.contato_telefone
+        }
       }
+  
+      const getToken = await getCredentials()
+  
+      
+  
+      const foi = await cadastrarPaciente(getToken.token, data)
+  
+      if(foi){
+        console.log("------------- Enviado paciente:")
+        console.log(data)
+        navigation.navigate('Home');
+      }else{
+        console.log("------------- não foi")
+      }
+
+    } else {
+      Alert.alert(
+        'Alerta!', "Os seguintes campos foram preenchidos incorretamentes:\n" + texto,
+        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        { cancelable: false }
+      );
     }
-
-    const getToken = await getCredentials()
-
     
 
-    const foi = await cadastrarPaciente(getToken.token, data)
-
-    if(foi){
-      console.log("------------- Enviado paciente:")
-      console.log(data)
-      navigation.navigate('Home');
-    }else{
-      console.log("------------- não foi")
-    }
+   
     
   };
 

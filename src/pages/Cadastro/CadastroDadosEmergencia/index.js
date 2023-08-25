@@ -30,3 +30,4 @@ export function CadastroDadosEmergencia({ navigation }) {
     </ImageBackground>
   );
 };
+

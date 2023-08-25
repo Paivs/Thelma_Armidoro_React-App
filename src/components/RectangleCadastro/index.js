@@ -150,7 +150,7 @@ export const RectangleCadastro = ({ navigation }) => {
 const styles = StyleSheet.create({
   rectangle: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -35,
     backgroundColor: '#8868A5',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,

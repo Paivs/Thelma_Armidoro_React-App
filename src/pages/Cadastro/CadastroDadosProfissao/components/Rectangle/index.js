@@ -1,27 +1,50 @@
-import React, { useState, useContext } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import GrauEscolaridade from "../GrauEscolaridade/index.js"
 import { DataStateContext } from '../../../components/DataCenter/index.js';
+import { ValidarCargo, ValidarProfissao, ValidarCurso } from "../validator/index.js"
 
 
 export const Rectangle = ({ navigation }) => {
-  const { profissao, setProfissao, cargo, setCargo, curso, setCurso } = useContext(DataStateContext);
+  const { profissao, setProfissao, cargo, setCargo, curso, setCurso, grau_escolaridade, setGrau_escolaridade } = useContext(DataStateContext);
 
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
+  useEffect(() => {
+    setGrau_escolaridade('SEM_ESCOLARIDADE')
+  }, [])
+
 
   const handleSubmit = async () => {
-    navigation.navigate('Dados Endereco');
-  };
 
-  const renderVirtualizedList = () => {
-    return (
-      <GrauEscolaridade/>
-    );
-  };
+    let erros = []
 
+    if(!ValidarCargo(cargo)) erros.push("Cargo")
+    if(!ValidarProfissao(profissao)) erros.push("Profissão")
+    if(!ValidarCurso(curso)) erros.push("Curso")
+
+    let texto = ""
+
+    console.log("\nErros")
+    erros.forEach(c => {
+      console.log(c)
+      texto = texto + "- " + c + "\n"
+    })
+    console.log("---\n")
+    
+    if(erros.length == 0){
+      navigation.navigate('Dados Endereco');
+    }else{
+      Alert.alert(
+        'Alerta!', "Os seguintes campos foram preenchidos incorretamentes:\n" + texto,
+        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        { cancelable: false }
+      );      
+    }
+
+  };
 
   return (
       <View style={[styles.rectangle, { height: heightRectangle }]}>
@@ -29,7 +52,9 @@ export const Rectangle = ({ navigation }) => {
 
         <View style={styles.formControl}>
           <Text style={styles.label}>Grau de escolaridade:</Text>
-          {renderVirtualizedList()}
+          <GrauEscolaridade
+              onStatusChange={(text) => setGrau_escolaridade(text)}
+            />
         </View>
 
         <View style={styles.formControl}>

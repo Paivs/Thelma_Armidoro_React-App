@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     paddingLeft: '10%',
     paddingTop: '25%',
+    marginTop: '10%',
   },
   iconContainer: {
     marginBottom: 20,

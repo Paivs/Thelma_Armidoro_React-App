@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 import { login } from "../../services/api"
@@ -32,6 +32,7 @@ export const RectangleHomePage = ({ navigation }) => {
 
   const handleCadastrar = () => {
     navigation.navigate('Cadastro');
+    // navigation.navigate('Dados Pessoais');
   };
 
   const handleEsqueciMinhaSenha = () => {
@@ -40,6 +41,10 @@ export const RectangleHomePage = ({ navigation }) => {
 
   return (
     <View style={[styles.rectangle, {height: heightRectangle}]}>
+          <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.form}>
         <View style={styles.formControl}>
           <Text style={styles.label}>E-mail:</Text>
@@ -71,6 +76,7 @@ export const RectangleHomePage = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
         </View>
+        
       </View>
 
         <TouchableOpacity style={styles.btnEntrar} onPress={handleSubmit}>
@@ -85,6 +91,7 @@ export const RectangleHomePage = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -92,13 +99,14 @@ export const RectangleHomePage = ({ navigation }) => {
 const styles = StyleSheet.create({
   rectangle: {
     position: 'absolute',
-    bottom: 0,
+    bottom: -35,
     backgroundColor: '#8868A5',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     width: '100%',
     paddingHorizontal: 40,
     paddingVertical: 30,
+    paddingTop: 50,
   },
   inputContainer: {
     marginBottom: 20,

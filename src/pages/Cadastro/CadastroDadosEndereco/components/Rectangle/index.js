@@ -1,8 +1,19 @@
 import React, { useContext, useState } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
 import { DataStateContext } from "../../../components/DataCenter/index.js"
+import { buscaCEP } from "../../../../../services/cep.js"
+import {
+  ValidarCEP,
+  ValidarLogradouro,
+  ValidarBairro,
+  ValidarNumero,
+  ValidarComplemento,
+  ValidarCidade,
+  ValidarEstado,
+  ValidarPais
+} from '../validator/index.js';
 
 
 export const Rectangle = ({ navigation }) => {
@@ -17,7 +28,37 @@ export const Rectangle = ({ navigation }) => {
   }
 
   const handleSubmit = async () => {
-    navigation.navigate('Dados Emergencia');
+
+    let erros = []
+
+    if(!ValidarCEP(endereco.cep)) erros.push("CEP")
+    if(!ValidarLogradouro(endereco.logradouro)) erros.push("Logradouro")
+    if(!ValidarBairro(endereco.bairro)) erros.push("Bairro")
+    if(!ValidarNumero(endereco.numero)) erros.push("Número")
+    if(!ValidarComplemento(endereco.complemento)) erros.push("Complemento")
+    if(!ValidarCidade(endereco.cidade)) erros.push("Cidade")
+    if(!ValidarEstado(endereco.uf)) erros.push("Estado")
+    if(!ValidarPais(endereco.pais)) erros.push("País")
+
+    let texto = ""
+
+    console.log("\nErros")
+    erros.forEach(c => {
+      console.log(c)
+      texto = texto + "- " + c + "\n"
+    })
+    console.log("---\n")
+
+    if (erros.length == 0) {
+      navigation.navigate('Dados Emergencia');
+    } else {
+      Alert.alert(
+        'Alerta!', "Os seguintes campos foram preenchidos incorretamentes:\n" + texto,
+        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        { cancelable: false }
+      );
+    }
+    
   };
 
 
@@ -94,7 +135,7 @@ export const Rectangle = ({ navigation }) => {
           <Text style={styles.label}>Estado:</Text>
           <TextInput
             style={styles.input}
-            placeholder="Digite sua estado"
+            placeholder="Digite sua estado. Ex: SP"
             onChangeText={(text) => setEndereco({ ...endereco, uf: text}) }
             value={endereco.uf}
           />
