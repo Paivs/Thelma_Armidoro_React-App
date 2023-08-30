@@ -57,7 +57,7 @@ export const Rectangle = ({ navigation }) => {
             onPress={toggleSenhaOculta}
           >
             <Text style={styles.btnOcultarSenhaTexto}>
-              {toggleSenhaOculta ? 'Ocultar' : 'Mostrar'}
+              {senhaOculta ? 'Mostrar' : 'Ocultar'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -102,17 +102,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginBottom: 10
   },
-  inputSenhaContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    marginBottom: 20,
-    backgroundColor: '#9b7bb2',
-  },
+  // inputSenhaContainer: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   borderWidth: 1,
+  //   borderColor: '#ccc',
+  //   borderRadius: 5,
+  //   paddingHorizontal: 10,
+  //   paddingVertical: 12,
+  //   marginBottom: 20,
+  //   backgroundColor: '#9b7bb2',
+  // },
   inputSenha: {
     flex: 1,
     fontSize: 16,

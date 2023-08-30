@@ -39,6 +39,9 @@
       "eas": {
         "projectId": "5c41b679-1e38-46e3-b297-fdb3bea4b130"
       }
-    }
+    },
+    "plugins": [
+      "@notifee/react-native"
+    ]
   }
 }

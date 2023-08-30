@@ -16,7 +16,7 @@ export const Rectangle = ({ navigation }) => {
   const { telefone, setTelefone, telefoneFixo, setTelefoneFixo } = useContext(DataStateContext)
 
   useEffect(() => {
-    setEstadoCivil("SOLTEIRO")
+    setEstadoCivil(0)
   }, [])
 
   const handleDateChange = (date) => {

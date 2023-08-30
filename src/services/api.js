@@ -6,14 +6,17 @@ import 'moment/locale/pt-br';
 import { format } from 'date-fns';
 import { Alert } from "react-native"
 
-const urlBase = "http://89.116.214.128:8080/"
+// const urlBase = "http://89.116.214.129:8080/"
+const urlBase = "http://10.0.2.2:8080/"
 
 export async function login(username, password) {
     return await axios.post(urlBase + "login",
         {
             "login": username,
             "senha": password
-        })
+        }, {
+        timeout: 7500 // 7,5 segundos
+    })
         .then((res) => {
             console.log("then()")
             if (res.status == 200) {
@@ -43,10 +46,9 @@ export async function login(username, password) {
         })
         .catch((error) => {
             console.log("catch()")
-            console.log("erro: " + error.response.status + "\n" + error.response.data)
 
             Alert.alert(
-                'Alerta', 'Login não autorizado!',
+                'Erro', 'Não há conexão ao servidor',
                 [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') }],
                 { cancelable: false }
             );
@@ -108,27 +110,35 @@ export async function cadastrarUsuario(username, password) {
         },],
         { cancelable: false }
     );
-    return await axios.post(urlBase + "cadastrar",
-        {
-            "login": username,
-            "senha": password
-        })
-        .then((res) => {
-            if (res.status == 200) {
-                console.log("Requisição de cadastro realizada: " + res.status)
-                console.log(res.data)
+    try {
+        return await axios.post(urlBase + "cadastrar",
+            {
+                "login": username,
+                "senha": password
+            })
+            .then((res) => {
+                console.log("then() \n" + res)
 
-                return true
-            } else {
-                console.log("erro: " + res.status + "\n" + res.data)
+                if (res.status == 200) {
+                    console.log("Requisição de cadastro realizada: " + res.status)
+                    console.log(res.data)
 
+                    return true
+                } else {
+                    console.log("erro: " + res.status + "\n" + res.data)
+
+                    return true
+                }
+            })
+            .catch((error) => {
+                console.log("catch() \n" + error)
+                console.log("erro: " + error.status + " - " + error.response.data)
                 return true
-            }
-        })
-        .catch((error) => {
-            console.log("erro: " + error.status + " - " + error.response.data)
-            return true
-        })
+            })
+    } catch (error) {
+        console.log("ERRO GRAVE")
+        console.log(error)
+    }
 }
 
 export async function cadastrarUsuarioPin(login, senha, pin) {
@@ -494,6 +504,43 @@ export async function pegarAtualDiarioAnterior(tipo, paciente, token) {
     }
 }
 
+export async function listarDiarios(tipo) {
+    try {
+        const credenciais = await getCredentials();
+
+        const url = urlBase + "diarios/" + tipo + "/listar/" + credenciais.username;
+        console.log("Realizando uma requisição GET em: " + url);
+        console.log("Token: " + credenciais.token);
+
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${credenciais.token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        });
+
+        const response = await instance.get(`diarios/${tipo}/listar/${credenciais.username}`);
+
+        if (response.status === 200) {
+            const retorno = response.data.content.map(diario => ({
+                "titulo": diario.titulo,
+                "texto": diario.texto,
+                "data": diario.data,
+            }));
+
+            console.log(retorno);
+            return retorno;
+        } else {
+            console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+            throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+        }
+    } catch (error) {
+        console.log("Erro:", error);
+        throw error;
+    }
+}
+
 //MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA
 
 export async function alterarSenha(senhaAntiga, senhaNova) {
@@ -513,7 +560,7 @@ export async function alterarSenha(senhaAntiga, senhaNova) {
     console.log("put em: " + urlBase + `usuario`)
     console.log(data)
 
- 
+
 
     await instance.put("usuario", data)
         .then((res) => {
@@ -823,13 +870,13 @@ export async function temConsulta() {
                 console.log(error)
                 return false;
             })
-            return response
+        return response
     } catch (error) {
         console.log("Erro grave:", error);
         console.log(error)
         return false;
     }
-    
+
 }
 
 export async function marcarUmaConsulta(data, idMedico) {
@@ -871,38 +918,38 @@ export async function marcarUmaConsulta(data, idMedico) {
 
 export async function tempoConsulta() {
     try {
-      const credenciais = await getCredentials();
-      const id = await getPacienteId();
-  
-      const url = urlBase + `consultas/tempo/${id}`;
-      console.log("Realizando uma requisição GET em: " + url);
-      console.log("Token: " + credenciais.token);
-  
-      const instance = axios.create({
-        baseURL: urlBase,
-        headers: {
-          'Authorization': `Bearer ${credenciais.token}`,
-          "Access-Control-Allow-Origin": "*"
-        }
-      });
-  
-      const response = await instance.get(`consultas/tempo/${id}`);
-      if (response.status === 200) {
-        tempoRestante = response.data.valor;
-        console.log(tempoRestante)
-        return tempoRestante;
-      } else if(response.status === 400){
-        return "Indeterminado"
+        const credenciais = await getCredentials();
+        const id = await getPacienteId();
+
+        const url = urlBase + `consultas/tempo/${id}`;
+        console.log("Realizando uma requisição GET em: " + url);
+        console.log("Token: " + credenciais.token);
+
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${credenciais.token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        });
+
+        const response = await instance.get(`consultas/tempo/${id}`);
+        if (response.status === 200) {
+            tempoRestante = response.data.valor;
+            console.log(tempoRestante)
+            return tempoRestante;
+        } else if (response.status === 400) {
+            return "Indeterminado"
         }
         else {
-        console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
-        throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
-      }
+            console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+            throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+        }
     } catch (error) {
-      console.log("Erro:", error);
-      return "Indeterminado"
+        console.log("Erro:", error);
+        return "Indeterminado"
     }
-  }
+}
 
 
 
@@ -945,19 +992,21 @@ export async function listaPacientes(token) {
 //OBS: acrescentar tratativa de erro, retornar o que está errado
 export async function cadastrarPaciente(token, paciente) {
     try {
-    const url = urlBase + "pacientes"
-    console.log("Realizando uma requisição post em: " + url)
-    console.log(paciente)
+        const url = urlBase + "pacientes"
+        console.log("Realizando uma requisição post em: " + url)
+        console.log(paciente)
 
-    const instance = axios.create({
-        baseURL: urlBase,
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            "Access-Control-Allow-Origin": "*"
-        }
-    })
+        const instance = axios.create({
+            baseURL: urlBase,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                "Access-Control-Allow-Origin": "*"
+            }
+        })
 
-    const res = await instance.post("/pacientes", paciente)
+        const res = await instance.post("/pacientes", paciente, {
+            timeout: 7500 // 7,5 segundos
+        })
         if (res.status == 201) {
 
             console.log("Requisição concluída com sucesso")
@@ -980,18 +1029,31 @@ export async function cadastrarPaciente(token, paciente) {
                 ],
                 { cancelable: false }
             );
-        }else{
+        } else {
             return false
         }
     } catch (error) {
+        try{
         const err = error.response.data
 
         alert(
-        err.forEach(err => {
-            return `Campo: ${err.campo}\nErro: ${err.mensagem}`;
-          })
+            err.forEach(err => {
+                return `Campo: ${err.campo}\nErro: ${err.mensagem}`;
+            })
         )
-
+        }catch(error){
+            Alert.alert(
+                'Erro ao cadastrar novo usuário',
+                "Sem conexão com o servidor",
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => console.log('Botão OK pressionado'),
+                    },
+                ],
+                { cancelable: false }
+            );
+        }
 
         return false
     }

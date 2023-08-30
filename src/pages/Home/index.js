@@ -1,16 +1,20 @@
-import React, {useEffect} from 'react';
-import { View, Text, ScrollView, ImageBackground, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, ImageBackground, StyleSheet, FlatList } from 'react-native';
 import { styles } from "./styles.js"
 import Menus from "./components/Menus/index.js"
 import Emocoes from "./components/Emocoes/index.js"
 import RectangleLembrete from "./components/RectangleLembrete/index.js"
 
 import { getPacienteData, getPacienteId } from "../../services/saveData.js"
+import { listarDiarios } from "../../services/api.js"
 
 export default function Home({ navigation }) {
 
   const imageUrl = 'https://storage.alboom.ninja/sites/1071/albuns/844197/00019.jpg'; // Substitua pela URL real da imagem
   const phoneNumber = '5511980697346'; // Substitua pelo número de telefone desejado
+
+  const [diariosEmocoes, setDiariosEmocoes] = useState([]);
+  const [diariosSonhos, setDiariosSonhos] = useState([]);
 
   const pegaLa = async () => {
     console.log("credenciais")
@@ -22,8 +26,19 @@ export default function Home({ navigation }) {
   }
 
   useEffect(() => {
-    
-  }, []); 
+    const fetchData = async () => {
+      try {
+        const diariosSonhosData = await listarDiarios("sonhos");
+        const diariosEmocoesData = await listarDiarios("emocoes");
+        setDiariosEmocoes(diariosEmocoesData);
+        setDiariosSonhos(diariosSonhosData);
+      } catch (error) {
+        console.error("Error fetching diarios:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <ImageBackground
@@ -43,10 +58,30 @@ export default function Home({ navigation }) {
 
         <Text style={styles.title}>Emoções</Text>
         <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
-          <Emocoes title={"É difícil"} text={"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo."} />
-          <Emocoes title={"Hoje foi legal"} text={"Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."} />
-          <Emocoes title={"Tenho medo"} text={"Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."} />
+        <FlatList
+            data={diariosEmocoes}
+            keyExtractor={(_, index) => index.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <Emocoes title={item.titulo} text={item.texto} />
+            )}
+          />
         </ScrollView>
+
+        <Text style={styles.title}>Sonhos</Text>
+        <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
+        <FlatList
+            data={diariosSonhos}
+            keyExtractor={(_, index) => index.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item, index }) => (
+              <Emocoes title={item.titulo} text={item.texto} />
+            )}
+          />
+        </ScrollView>
+
 
         <Text style={styles.title}>Lembretes</Text>
         <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
@@ -54,6 +89,9 @@ export default function Home({ navigation }) {
           <RectangleLembrete title="Consulta!" text="A hora da sua consulta chegou, venha ter seu atendimento!!!" page="02" />
           <RectangleLembrete title="Diário dos sonhos" text="Você ainda não preencheu sue diário hoje." page="03" />
           <RectangleLembrete title="Diário de Emoçoes" text="Seu diário de emoções ainda não está salvo!" page="04" />
+
+
+
 
         </ScrollView>
 

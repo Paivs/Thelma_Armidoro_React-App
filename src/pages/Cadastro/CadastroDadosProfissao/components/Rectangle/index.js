@@ -13,7 +13,7 @@ export const Rectangle = ({ navigation }) => {
   const heightRectangle = windowHeight * 0.65;
 
   useEffect(() => {
-    setGrau_escolaridade('SEM_ESCOLARIDADE')
+    setGrau_escolaridade(0)
   }, [])
 
 

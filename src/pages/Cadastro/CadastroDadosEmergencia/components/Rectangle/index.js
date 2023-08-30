@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
@@ -6,12 +6,15 @@ import { cadastrarPaciente } from "../../../../../services/api.js"
 import { getCredentials } from "../../../../../services/saveData.js"
 import { DataStateContext } from "../../../components/DataCenter/index.js"
 import { ValidarCelular, ValidarVinculo, ValidarNome } from "../validator/index.js"
+import LoadingModal from "../../../../../components/Carregando"
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
   const heightRectangle = windowHeight * 0.65;
 
   const { contatoEmergencia, setContatoEmergencia } = useContext(DataStateContext);
+  const [canPressButton, setCanPressButton] = useState(true); // Novo estado
+  const [isLoading, setIsLoading] = useState(false);
   
   const {
     nome,
@@ -33,11 +36,28 @@ export const Rectangle = ({ navigation }) => {
     setNascimento(date);
   };
 
+  useEffect(() => {
+    let timer; // Armazenar o timer do setTimeout
+
+    if (!canPressButton) {
+      // Se o botão não puder ser pressionado, definir um timer para reativá-lo após 2 segundos
+      timer = setTimeout(() => {
+        setCanPressButton(true);
+      }, 2000);
+    }
+
+    return () => {
+      // Limpar o timer ao desmontar o componente
+      clearTimeout(timer);
+    };
+  }, [canPressButton]);
+
   const handleEnvio = async () => {
 
   }
 
   const handleSubmit = async () => {
+    if (canPressButton) {
 
     let erros = []
 
@@ -89,8 +109,9 @@ export const Rectangle = ({ navigation }) => {
       const getToken = await getCredentials()
   
       
-  
+      setIsLoading(true)
       const foi = await cadastrarPaciente(getToken.token, data)
+      setIsLoading(false)
   
       if(foi){
         console.log("------------- Enviado paciente:")
@@ -107,7 +128,7 @@ export const Rectangle = ({ navigation }) => {
         { cancelable: false }
       );
     }
-    
+  }
 
    
     
@@ -123,6 +144,7 @@ export const Rectangle = ({ navigation }) => {
 
   return (
     <View style={[styles.rectangle, { height: heightRectangle }]}>
+      <LoadingModal isVisible={isLoading} />
       <View style={styles.form}>
         <View style={styles.formControl}>
           <Text style={styles.label}>Nome do contato:</Text>

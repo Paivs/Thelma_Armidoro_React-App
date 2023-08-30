@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import LoadingModal from '../../components/Carregando/index.js';
 
 import { login } from "../../services/api"
 
@@ -12,27 +13,49 @@ export const RectangleHomePage = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [senhaOculta, setSenhaOculta] = useState(true);
+  const [canPressButton, setCanPressButton] = useState(true); // Novo estado
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let timer; // Armazenar o timer do setTimeout
+
+    if (!canPressButton) {
+      // Se o botão não puder ser pressionado, definir um timer para reativá-lo após 2 segundos
+      timer = setTimeout(() => {
+        setCanPressButton(true);
+      }, 2000);
+    }
+
+    return () => {
+      // Limpar o timer ao desmontar o componente
+      clearTimeout(timer);
+    };
+  }, [canPressButton]);
+
 
   const toggleSenhaOculta = () => {
     setSenhaOculta(!senhaOculta);
   };
 
   const handleSubmit = async () => {
-    console.log("entrar do login")
-    const foi = await login(email.trim(), senha) 
-
-    if (foi) {
-      navigation.navigate('Home', { reset: true });
+    if (canPressButton) {
+      console.log("entrar do login");
+      setCanPressButton(false); // Desativar o botão
+      
+      setIsLoading(true)
+      const foi = await login(email.trim(), senha);
+      setIsLoading(false)
+      
+      if (foi) {
+        navigation.navigate('Home', { reset: true });
+      }
     }
   };
 
-  const handleLoginGoogle = async () => {
-    console.log('Entrar com Google');
-  };
 
   const handleCadastrar = () => {
-    navigation.navigate('Cadastro');
-    // navigation.navigate('Dados Pessoais');
+    // navigation.navigate('Cadastro');
+    navigation.navigate('Dados Emergencia');
   };
 
   const handleEsqueciMinhaSenha = () => {
@@ -45,6 +68,7 @@ export const RectangleHomePage = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      <LoadingModal isVisible={isLoading} />
       <View style={styles.form}>
         <View style={styles.formControl}>
           <Text style={styles.label}>E-mail:</Text>
@@ -72,7 +96,7 @@ export const RectangleHomePage = ({ navigation }) => {
             onPress={toggleSenhaOculta}
           >
             <Text style={styles.btnOcultarSenhaTexto}>
-              {toggleSenhaOculta ? 'Ocultar' : 'Mostrar'}
+              {senhaOculta ? 'Mostrar' : 'Ocultar'}
             </Text>
           </TouchableOpacity>
         </View>
@@ -126,17 +150,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#fff',
     marginBottom: 10
-  },
-  inputSenhaContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 12,
-    marginBottom: 20,
-    backgroundColor: '#9b7bb2',
   },
   inputSenha: {
     flex: 1,

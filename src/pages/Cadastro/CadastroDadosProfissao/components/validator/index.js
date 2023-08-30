@@ -2,7 +2,8 @@ import React from 'react';
 import { View, TextInput, Button, Text } from 'react-native';
 
 export function ValidarCurso(curso) {
-    const isValid = curso.trim() !== "";
+    // const isValid = curso.trim() !== "";
+    const isValid = true;
     console.log('ValidarCurso - Input:', curso, 'Resultado:', isValid);
 
     return isValid;

@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     justifyContent: 'center',
     textAlign: 'right',
+    overflow: 'hidden',
   },
   title: {
     fontSize: 24,
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 10,
     textAlign: "justify",
+    overflow: 'hidden',
   },
   page: {
     fontSize: 18,

@@ -6,7 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 export default function Emocoes({title, text}) {
     return (
         <View style={styles.container}>
-            <Text style={styles.title} multiline>{title}</Text>
+            <Text style={styles.title} numberOfLines={1}>{title}</Text>
             <Text style={styles.text} numberOfLines={3}>{text}</Text>
         </View>
     );
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#282A3A",
         height: 115,
         width: 265,
+        overflow: 'hidden',
     },
     title: {
         color: 'white',
