@@ -6,7 +6,7 @@ import 'moment/locale/pt-br';
 import { format } from 'date-fns';
 import { Alert } from "react-native"
 
-// const urlBase = "http://89.116.214.129:8080/"
+// const urlBase = "http://89.116.214.128:8080/"
 const urlBase = "http://10.0.2.2:8080/"
 
 export async function login(username, password) {
@@ -1014,6 +1014,7 @@ export async function cadastrarPaciente(token, paciente) {
 
             return true
         } else if (res.status == 400) {
+            console.log("Bad Request")
             console.log(`Erro 400: ${res.status}\nDescrição: ${res.data}`)
 
             Alert.alert(
@@ -1029,6 +1030,7 @@ export async function cadastrarPaciente(token, paciente) {
                 ],
                 { cancelable: false }
             );
+
         } else {
             return false
         }
@@ -1036,11 +1038,20 @@ export async function cadastrarPaciente(token, paciente) {
         try{
         const err = error.response.data
 
-        alert(
-            err.forEach(err => {
-                return `Campo: ${err.campo}\nErro: ${err.mensagem}`;
-            })
-        )
+        Alert.alert(
+            'Erro ao cadastrar novo usuário',
+            res.array.forEach(err => {
+                return `${err.campo}: ${err.mensagem}`
+            }),
+            [
+                {
+                    text: 'OK',
+                    onPress: () => console.log('Botão OK pressionado'),
+                },
+            ],
+            { cancelable: false }
+        );
+
         }catch(error){
             Alert.alert(
                 'Erro ao cadastrar novo usuário',

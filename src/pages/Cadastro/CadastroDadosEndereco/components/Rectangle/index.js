@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
 import { DataStateContext } from "../../../components/DataCenter/index.js"
 import { buscaCEP } from "../../../../../services/cep.js"
+import verificaCEP from "../../../../../services/verificaCEP.js"
 import {
   ValidarCEP,
   ValidarLogradouro,
@@ -26,6 +27,29 @@ export const Rectangle = ({ navigation }) => {
   const handleEnvio = async () => {
 
   }
+
+  const handleCEP = async (text) => {
+    let valores = {}
+
+    setEndereco({ ...endereco, cep: text })
+
+    console.log(text)
+
+    if (text.length == 8) {
+      valores = await verificaCEP(text)
+      console.log(valores)
+      if (!valores.erro) {
+        setEndereco({
+          ...endereco,
+          cep: text,
+          logradouro: valores.logradouro,
+          bairro: valores.bairro,
+          cidade: valores.localidade,
+          uf: valores.uf
+        })
+      }
+    }
+  }
 
   const handleSubmit = async () => {
 
@@ -67,19 +91,19 @@ export const Rectangle = ({ navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.form}>
 
-        <View style={styles.formControl}>
-          <Text style={styles.label}>CEP:</Text>
-          <TextInputMask
-            style={styles.input}
-            type={'custom'}
-            value={endereco.cep}
-            onChangeText={text => setEndereco({ ...endereco, cep: text})}
-            placeholder="Digite seu CEP"
-            options={{
-              mask: "99999999"
-            }}
-          />
-        </View>
+          <View style={styles.formControl}>
+            <Text style={styles.label}>CEP:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Digite seu CEP"
+              onChangeText={text => {
+                setEndereco({ ...endereco, cep: text })
+                handleCEP(text)
+              }}
+              value={endereco.cep}
+              maxLength={8}
+            />
+          </View>
 
         <View style={styles.formControl}>
           <Text style={styles.label}>Logradouro:</Text>
@@ -138,6 +162,7 @@ export const Rectangle = ({ navigation }) => {
             placeholder="Digite sua estado. Ex: SP"
             onChangeText={(text) => setEndereco({ ...endereco, uf: text}) }
             value={endereco.uf}
+            maxLength={3}
           />
         </View>
 

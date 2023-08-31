@@ -45,7 +45,7 @@ export const Rectangle = ({ navigation }) => {
     if (!ValidarNome(nome)) erros.push("Nome")
     if (!ValidarCPF(cpf)) erros.push("CPF")
     if (!ValidarCelular(telefone)) erros.push("Celular")
-    if (!ValidarTelefoneFixo(telefoneFixo)) erros.push("Celular")
+    if (!ValidarTelefoneFixo(telefoneFixo)) erros.push("Telefone fixo")
     if (!ValidarDataNascimento(nascimento)) erros.push("Data Nascimento")
     if (!ValidarNacionalidade(nacionalidade)) erros.push("Nacionalidade")
 

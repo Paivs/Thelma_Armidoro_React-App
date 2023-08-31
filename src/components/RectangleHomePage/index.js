@@ -3,6 +3,7 @@ import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacit
 import { FontAwesome } from '@expo/vector-icons';
 import LoadingModal from '../../components/Carregando/index.js';
 
+// import { displayNotification } from "../../services/NotificationService.js"
 import { login } from "../../services/api"
 
 
@@ -32,6 +33,10 @@ export const RectangleHomePage = ({ navigation }) => {
     };
   }, [canPressButton]);
 
+  // useEffect(() => {
+  //   displayNotification()
+  // }, []);
+
 
   const toggleSenhaOculta = () => {
     setSenhaOculta(!senhaOculta);
@@ -55,7 +60,7 @@ export const RectangleHomePage = ({ navigation }) => {
 
   const handleCadastrar = () => {
     // navigation.navigate('Cadastro');
-    navigation.navigate('Dados Emergencia');
+    navigation.navigate('Dados Pessoais');
   };
 
   const handleEsqueciMinhaSenha = () => {
