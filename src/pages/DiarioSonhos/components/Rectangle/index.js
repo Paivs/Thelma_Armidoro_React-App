@@ -1,6 +1,6 @@
 // Rectangle.js
 import React, { Component } from 'react';
-import { View, Dimensions, StyleSheet, TextInput, ScrollView, Text } from 'react-native';
+import { View, Dimensions, StyleSheet, TextInput, ScrollView, Text, Alert } from 'react-native';
 import { salvarDiario, pegarAtualDiario } from "../../../../services/api.js"
 import { getCredentials, getPacienteId } from "../../../../services/saveData.js"
 
@@ -21,6 +21,16 @@ export default class Rectangle extends Component {
   }
 
   salvar = async () => {
+    const { title, text } = this.state;
+
+    if (!title || !text) {
+      Alert.alert(
+        'Alerta', 'Para salvar seu sonho é necessário colocar título e texto',
+        [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
+        { cancelable: false }
+    );
+      return;
+    }
     const credenciais = await getCredentials();
     const id = await getPacienteId();
 
@@ -28,6 +38,7 @@ export default class Rectangle extends Component {
   }
 
   atualizaMesmo = async (id, credenciais, dataFormatada) => {
+    console.log("ten")
     let conteudo = await pegarAtualDiario(false, id, credenciais.token, dataFormatada);
 
     let tituloL = await conteudo.titulo;
@@ -50,12 +61,19 @@ export default class Rectangle extends Component {
     const id = await getPacienteId();
   
     const { data } = this.props;
-    const [ano, mesString, dia] = data.split('-');
-    const mesNumeral = this.transformarMesNumeral(mesString);
-    const dataFormatada = ano + "-" + mesNumeral + "-" + dia;
+    let [ano, mes, dia] = data.split('-');
+
+    mes = parseInt(mes) + 1
+
+    if (mes < 10) {
+      mes = '0' + mes;
+    }
+    
+    const dataFormatada = ano + "-" + (mes) + "-" + dia;
   
     await this.atualizaMesmo(id, credenciais, dataFormatada);
   }
+
 
   transformarMesNumeral = (mesString) => {
     const mesesAno = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];

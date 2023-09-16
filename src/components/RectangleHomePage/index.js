@@ -34,8 +34,14 @@ export const RectangleHomePage = ({ navigation }) => {
   }, [canPressButton]);
 
   // useEffect(() => {
-  //   displayNotification()
+  //   navigation.navigate('Dados Pessoais');
   // }, []);
+
+
+  const focusListener = navigation.addListener('focus', () => {
+    setEmail("");
+    setSenha("");
+  });
 
 
   const toggleSenhaOculta = () => {
@@ -48,7 +54,7 @@ export const RectangleHomePage = ({ navigation }) => {
       setCanPressButton(false); // Desativar o botão
       
       setIsLoading(true)
-      const foi = await login(email.trim(), senha);
+      const foi = await login(email.trim(), senha, navigation);
       setIsLoading(false)
       
       if (foi) {
@@ -59,8 +65,8 @@ export const RectangleHomePage = ({ navigation }) => {
 
 
   const handleCadastrar = () => {
-    // navigation.navigate('Cadastro');
-    navigation.navigate('Dados Pessoais');
+    navigation.navigate('Cadastro');
+    // navigation.navigate('Dados Pessoais');
   };
 
   const handleEsqueciMinhaSenha = () => {

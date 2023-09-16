@@ -21,6 +21,21 @@ export const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 24,
   },
+  subtitle: {
+    margin: 25,
+    marginBottom: 0,
+    color: "#282A3A",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  subtitleMenu: {
+    margin: 25,
+    marginLeft: 10,
+    marginBottom: 15,
+    color: "#282A3A",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
   menus: {
     margin: 0,
     marginLeft: 15,

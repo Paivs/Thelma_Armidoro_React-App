@@ -110,7 +110,7 @@ export const RectangleCadastro = ({ navigation }) => {
                 onPress={toggleSenhaOculta}
               >
                 <Text style={styles.btnOcultarSenhaTexto}>
-                  {toggleSenhaOculta ? 'Ocultar' : 'Mostrar'}
+                  {senhaOculta ? 'Mostrar' : 'Ocultar'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -131,7 +131,7 @@ export const RectangleCadastro = ({ navigation }) => {
                 onPress={toggleSenhaOcultaNovamente}
               >
                 <Text style={styles.btnOcultarSenhaTexto}>
-                  {toggleSenhaOcultaNovamente ? 'Ocultar' : 'Mostrar'}
+                  {senhaOcultaNovamente ? 'Mostrar' : 'Ocultar'}
                 </Text>
               </TouchableOpacity>
             </View>

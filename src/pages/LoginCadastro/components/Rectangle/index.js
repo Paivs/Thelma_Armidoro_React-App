@@ -19,7 +19,7 @@ export const Rectangle = ({ navigation }) => {
 
   const handleSubmit = async () => {
     console.log("entrar do login")
-    const foi = await login(email.trim(), senha) 
+    const foi = await login(email.trim(), senha, navigation) 
 
     if (foi) {
       navigation.navigate('Dados Pessoais');

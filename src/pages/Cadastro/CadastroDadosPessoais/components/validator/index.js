@@ -50,7 +50,7 @@ export function ValidarCelular(celular) {
 };
 
 export function ValidarTelefoneFixo(telefone) {
-    const isValid = telefone.length === 18 || telefone.length === 0;
+    const isValid = telefone.length === 17 || telefone.length === 0;
     console.log('ValidarTelefoneFixo - Input:', telefone, 'Resultado:', isValid);
 
     return isValid;

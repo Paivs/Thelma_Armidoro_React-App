@@ -114,27 +114,7 @@ export const Rectangle = ({ navigation }) => {
             value={endereco.logradouro}
           />
         </View>
-
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Número:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite o número do seu endereço"
-            onChangeText={(text) => setEndereco({ ...endereco, numero: text})}
-            value={endereco.numero}
-          />
-        </View>
-
-        <View style={styles.formControl}>
-          <Text style={styles.label}>Complemento:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Digite o complemento"
-            onChangeText={(text) => setEndereco({ ...endereco, complemento: text})}
-            value={endereco.complemento}
-          />
-        </View>
-
+        
         <View style={styles.formControl}>
           <Text style={styles.label}>Bairro:</Text>
           <TextInput
@@ -165,6 +145,30 @@ export const Rectangle = ({ navigation }) => {
             maxLength={3}
           />
         </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Número:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite o número do seu endereço"
+            onChangeText={(text) => setEndereco({ ...endereco, numero: text})}
+            value={endereco.numero}
+          />
+        </View>
+
+        <View style={styles.formControl}>
+          <Text style={styles.label}>Complemento:</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite o complemento"
+            onChangeText={(text) => setEndereco({ ...endereco, complemento: text})}
+            value={endereco.complemento}
+          />
+        </View>
+
+
+
+
 
         <View style={styles.formControl}>
           <Text style={styles.label}>País:</Text>

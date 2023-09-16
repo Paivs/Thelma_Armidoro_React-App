@@ -51,7 +51,7 @@ export default function DrawerNavigation() {
       }}
     >
       {/* Tela a tela abaixo */}
-      <Drawer.Screen name="Thelma Armidoro" component={Home} options={{ headerTitle: '' }} />
+      <Drawer.Screen name="Início" component={Home} options={{ headerTitle: '' }} />
       <Drawer.Screen name="Consulta" component={ConsultaStack} options={{ headerTitle: '' }} />
       <Drawer.Screen name="Diário de Emoções" component={DiarioEmocoes} options={{ headerTitle: '' }} />
       <Drawer.Screen name="Diário dos Sonhos" component={DiarioSonhos} options={{ headerTitle: '' }} />

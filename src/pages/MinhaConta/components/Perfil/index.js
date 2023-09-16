@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { getPacienteData } from "../../../../services/saveData.js"
 import { Feather } from '@expo/vector-icons';
 
@@ -23,6 +23,9 @@ export default function Perfil() {
         getUsernameAndEmail();
     }, []);
 
+    const screenWidth = Dimensions.get('window').width;
+    const maxWidthInVw = 75; // Defina o valor desejado em vw
+
     return (
         <View style={styles.centralizador}>
             <View style={styles.container}>
@@ -31,11 +34,11 @@ export default function Perfil() {
                 </View>
 
                 <View style={styles.textContainer}>
-                    <Text style={styles.nome}>{nome}</Text>
-                    <Text style={styles.email}>{email}</Text>
-                </View>
+                    <Text style={[styles.nome, { maxWidth: (screenWidth * maxWidthInVw) / 100 }]} numberOfLines={1}>{nome}</Text>
+                <Text style={[styles.email, { maxWidth: (screenWidth * maxWidthInVw) / 100 }]} numberOfLines={1}>{email}</Text>
             </View>
         </View>
+        </View >
     );
 }
 
@@ -64,11 +67,15 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         marginLeft: 10,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
     },
     nome: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 5,
+        overflow: 'hidden',
     },
     email: {
         fontSize: 18,

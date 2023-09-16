@@ -33,7 +33,6 @@ export default function Consultas({ navigation }) {
       source={require('../../../assets/fundo1.png')}
       style={styles.background}
     >
-      {/* Rest of your code */}
     </ImageBackground>
   )
 }

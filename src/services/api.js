@@ -5,11 +5,12 @@ import moment from 'moment-timezone';
 import 'moment/locale/pt-br';
 import { format } from 'date-fns';
 import { Alert } from "react-native"
+import { CommonActions } from '@react-navigation/native';
 
-// const urlBase = "http://89.116.214.128:8080/"
-const urlBase = "http://10.0.2.2:8080/"
+const urlBase = "http://89.116.214.128:8080/"
+// const urlBase = "http://10.0.2.2:8080/"
 
-export async function login(username, password) {
+export async function login(username, password, navigation) {
     return await axios.post(urlBase + "login",
         {
             "login": username,
@@ -21,7 +22,7 @@ export async function login(username, password) {
             console.log("then()")
             if (res.status == 200) {
                 storeUserData(username, password, res.data.token);
-                getPacienteUserData(username, res.data.token)
+                getPacienteUserData(username, res.data.token, navigation)
 
                 storeLogado(true)
 
@@ -56,9 +57,7 @@ export async function login(username, password) {
         })
 }
 
-async function getPacienteUserData(login, token) {
-
-    //const navigation = useNavigation();
+async function getPacienteUserData(login, token, navigation) {
 
     const instance = axios.create({
         baseURL: urlBase + `usuario/${login}`,
@@ -68,7 +67,7 @@ async function getPacienteUserData(login, token) {
         }
     })
 
-    await instance.get()
+    const foi = await instance.get()
         .then((res) => {
             console.log("then()")
             console.log(res.data)
@@ -77,11 +76,6 @@ async function getPacienteUserData(login, token) {
                 storePacienteData(res.data)
 
                 return true
-            } else {
-
-                //navigation.navigate('Dados Pessoais');
-
-                return false
             }
         })
         .catch((error) => {
@@ -94,10 +88,18 @@ async function getPacienteUserData(login, token) {
                 { cancelable: false }
             );
 
-            //navigation.navigate('Dados Pessoais');
+            // navigation.navigate('Dados Pessoais');
+
+            const resetAction = CommonActions.reset({
+                index: 0,
+                routes: [{ name: 'Dados Pessoais' }] // Replace 'Dados Pessoais' with the name of the screen you want to navigate to
+            });
+            navigation.dispatch(resetAction);
 
             return false
         })
+
+    return foi
 }
 
 export async function cadastrarUsuario(username, password) {
@@ -341,6 +343,7 @@ export async function esqueciMinhaSenhaPin(login, senha, pin) {
         })
 }
 
+
 //DIARIOS - DIARIOS - DIARIOS - DIARIOS - DIARIOS - DIARIOS - DIARIOS
 export async function salvarDiario(titulo, texto, tipo, paciente, token) {
 
@@ -529,7 +532,6 @@ export async function listarDiarios(tipo) {
                 "data": diario.data,
             }));
 
-            console.log(retorno);
             return retorno;
         } else {
             console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
@@ -541,8 +543,8 @@ export async function listarDiarios(tipo) {
     }
 }
 
-//MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA
 
+//MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA - MINHACONTA
 export async function alterarSenha(senhaAntiga, senhaNova) {
 
     console.log("\n")
@@ -752,9 +754,6 @@ export async function alterarTelefone(telefone, telefoneFixo) {
 }
 
 
-
-
-
 //PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA - PSICOLOGIA  
 export async function listaMedicos() {
     try {
@@ -793,9 +792,6 @@ export async function listaMedicos() {
         throw error;
     }
 }
-
-
-
 
 
 //CONSULTA - CONSULTA - CONSULTA - CONSULTA - CONSULTA - CONSULTA - CONSULTA  
@@ -952,10 +948,6 @@ export async function tempoConsulta() {
 }
 
 
-
-
-
-
 //PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES - PACIENTES
 
 //lista as propriedades dos pacientes, de acordo com o definido
@@ -1035,24 +1027,24 @@ export async function cadastrarPaciente(token, paciente) {
             return false
         }
     } catch (error) {
-        try{
-        const err = error.response.data
+        try {
+            const err = error.response.data
 
-        Alert.alert(
-            'Erro ao cadastrar novo usuário',
-            res.array.forEach(err => {
-                return `${err.campo}: ${err.mensagem}`
-            }),
-            [
-                {
-                    text: 'OK',
-                    onPress: () => console.log('Botão OK pressionado'),
-                },
-            ],
-            { cancelable: false }
-        );
+            Alert.alert(
+                'Erro ao cadastrar novo usuário',
+                res.array.forEach(err => {
+                    return `${err.campo}: ${err.mensagem}`
+                }),
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => console.log('Botão OK pressionado'),
+                    },
+                ],
+                { cancelable: false }
+            );
 
-        }catch(error){
+        } catch (error) {
             Alert.alert(
                 'Erro ao cadastrar novo usuário',
                 "Sem conexão com o servidor",

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import GrauEscolaridade from "../GrauEscolaridade/index.js"
 import { DataStateContext } from '../../../components/DataCenter/index.js';
@@ -48,6 +48,7 @@ export const Rectangle = ({ navigation }) => {
 
   return (
       <View style={[styles.rectangle, { height: heightRectangle }]}>
+        <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.form}>
 
         <View style={styles.formControl}>
@@ -94,6 +95,7 @@ export const Rectangle = ({ navigation }) => {
           <View style={styles.linksContainer}>
           </View>
         </View>
+        </ScrollView>
       </View>
   );
 };

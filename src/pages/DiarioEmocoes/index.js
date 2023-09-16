@@ -5,6 +5,7 @@ import Rectangle from "./components/Rectangle/index.js"
 import styles from "./styles.js"
 import NotificationService from "../../services/NotificationService.js"
 import { getPacienteData } from "../../services/saveData.js"
+import { getDiaSeguinte, getDiaAnterior } from "../../services/DataService.js"
 
 
 const mesesAno = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -15,12 +16,15 @@ export default function DiarioEmocoes({ navigation }) {
   const [diaReal, setDiaReal] = useState('');
   const [diaAnterior, setDiaAnterior] = useState('');
   const [mes, setMes] = useState('');
+  const [mesDisplay, setMesDisplay] = useState('');
   const [ano, setAno] = useState('');
 
   const rectangleRef = useRef(null);
+
   const salvar = () => {
     rectangleRef.current.salvar(); // Chama a função salvar do componente Rectangle
   };
+  
   const update = () => {
     header();
     rectangleRef.current.pegarAtual(); // Chama a função salvar do componente Rectangle
@@ -28,85 +32,64 @@ export default function DiarioEmocoes({ navigation }) {
 
 
   const minusDiaAnterior = () => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-  
-    if (diaAnterior > 1) {
-      if (diaAnterior - 1 >= currentDay - 15) {
-        setDia(diaAnterior);
-        setDiaAnterior(diaAnterior - 1);
-        update();
-      }
-    } else {
-      const currentMonth = currentDate.getMonth();
-      let previousMonth, previousYear;
-  
-      if (currentMonth === 0) {
-        // Janeiro (índice 0)
-        previousMonth = 11; // Dezembro (índice 11)
-        previousYear = currentDate.getFullYear() - 1;
-      } else {
-        previousMonth = currentMonth - 1;
-        previousYear = currentDate.getFullYear();
-      }
-  
-      const previousDate = new Date(previousYear, previousMonth + 1, 0);
-      const lastDayOfPreviousMonth = previousDate.getDate();
-  
-      if (lastDayOfPreviousMonth > dia) {
-        setDia(lastDayOfPreviousMonth);
-        setDiaAnterior(lastDayOfPreviousMonth - 1);
-        setMes(mesesAno[previousMonth]);
-        setAno(previousYear);
-      } else {
-        setDia(lastDayOfPreviousMonth);
-        setDiaAnterior(lastDayOfPreviousMonth);
-        setMes(mesesAno[previousMonth]);
-        setAno(previousYear);
-      }
-      update();
-    }
-  };
-  
+    let dataAtualizado = getDiaAnterior({ ano: ano, mes: mes, dia: dia })
+    const meses = [
+      "Janeiro",
+      "Fevereiro", 
+      "Marco",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro"]
 
+
+    setDiaAnterior(getDiaAnterior({ ano: dataAtualizado.ano, mes: dataAtualizado.mes, dia: dataAtualizado.dia }).dia)
+    setDia(dataAtualizado.dia)
+    setMes(dataAtualizado.mes)
+    setMesDisplay(meses[dataAtualizado.mes])
+    setAno(dataAtualizado.ano)
+    update()
+  };
 
   const plusDiaAtual = () => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
-    const lastDayOfMonth = getLastDayOfMonth(currentDate.getFullYear(), currentDate.getMonth());
-  
-    if (dia + 1 <= lastDayOfMonth && dia + 1 <= currentDay) {
-      setDia(dia + 1);
-      setDiaAnterior(dia);
-      setMes(mes);
-      setAno(currentDate.getFullYear());
-      update();
-    } else if (dia !== currentDay) {
-      const nextMonth = getNextMonth(currentDate.getMonth());
-      const nextYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
-  
-      setDia(1);
-      setDiaAnterior(lastDayOfMonth);
-      setMes(nextMonth);
-      setAno(nextYear);
-      update();
+    let dataAtualizado = getDiaSeguinte({ ano: ano, mes: mes, dia: dia })
+
+    const dataAtual = new Date();
+    const mesAtual = dataAtual.getMonth();
+    const diaAtual = dataAtual.getDate();
+    const anoAtual = dataAtual.getFullYear();
+
+    const meses = [
+      "Janeiro",
+      "Fevereiro", 
+      "Marco",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro"]
+
+
+    if (!(dataAtualizado.dia > diaAtual && dataAtualizado.mes == mesAtual) && !(dataAtualizado.mes > mesAtual)) {
+      setDiaAnterior(dia)
+      setDia(dataAtualizado.dia)
+      setMes(dataAtualizado.mes)
+      setMesDisplay(meses[dataAtualizado.mes])
+      setAno(dataAtualizado.ano)
+      update()
     }
   };
   
-
-  const getLastDayOfMonth = (year, month) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getNextMonth = (currentMonth) => {
-    const nextMonthIndex = currentMonth + 1;
-    if (nextMonthIndex > 11) {
-      return mesesAno[0]; // Janeiro
-    }
-    return mesesAno[nextMonthIndex];
-  };
-
-
+  
   const getUsername = async () => {
     try {
       const storedUsername = await getPacienteData();
@@ -119,40 +102,37 @@ export default function DiarioEmocoes({ navigation }) {
   };
 
   const getDate = () => {
-    const currentDate = new Date();
+    const dataAtual = new Date();
+    const mesAtual = dataAtual.getMonth();
+    const diaAtual = dataAtual.getDate();
+    const anoAtual = dataAtual.getFullYear();
+
+    const meses = [
+      "Janeiro",
+      "Fevereiro", 
+      "Marco",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro"]
+
     const diasSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-    const diaSemanaAtual = diasSemana[currentDate.getDay()];
-    const diaAtual = currentDate.getDate();
-    const mesAtual = mesesAno[currentDate.getMonth()];
-    const ano = currentDate.getFullYear();
+    const diaSemanaAtual = diasSemana[dataAtual.getDay()];
+
     setDia(diaAtual);
     setDiaReal(diaAtual);
-    setDiaAnterior(diaAtual - 1);
+    setDiaAnterior(getDiaAnterior({ ano: anoAtual, mes: mesAtual, dia: diaAtual }).dia);
     setMes(mesAtual);
-    setAno(ano)
+    setMesDisplay(meses[mesAtual])
+    setAno(anoAtual)
   };
 
-  const header = () => {
-
-    const currentDate = new Date();
-    const diaAtual = currentDate.getDate(); 
-
-    navigation.setOptions({
-      headerRight: () => {
-        if (dia == diaAtual) {
-          return <>
-            <TouchableOpacity onPress={salvar} style={styles.botaoDireita}>
-              <Text style={styles.botaoDireitaText}>Salvar</Text>
-            </TouchableOpacity>
-          </>
-        } else {
-          return <></>
-        }
-      }
-    });
-
-  }
-
+  
   useEffect(() => {
     header();
   }, [dia, diaReal]);
@@ -161,6 +141,33 @@ export default function DiarioEmocoes({ navigation }) {
     getUsername();
     getDate();
   }, []);
+
+  const header = () => {
+
+    const currentDate = new Date();
+    const diaAtual = currentDate.getDate();
+    const mesAtual = currentDate.getMonth();
+    const anoAtual = currentDate.getFullYear();
+
+    navigation.setOptions({
+      headerRight: () => {
+        if (dia == diaAtual && mes == mesAtual && ano == anoAtual) {
+          return <>
+            <TouchableOpacity onPress={salvar} style={styles.botaoDireita}>
+              <Text style={styles.botaoDireitaText}>Salvar</Text>
+            </TouchableOpacity>
+          </>
+        } else {
+          return <>
+          <TouchableOpacity onPress={getDate} style={styles.botaoDireita}>
+              <Text style={styles.botaoDireitaText}>Reset</Text>
+            </TouchableOpacity>
+          </>
+        }
+      }
+    });
+
+  }
 
 
   return (
@@ -183,7 +190,7 @@ export default function DiarioEmocoes({ navigation }) {
           <Text style={styles.dataAnterior}>{diaAnterior} ... </Text>
         </TouchableOpacity  >
         <TouchableOpacity onPress={plusDiaAtual}>
-          <Text style={styles.dataAtual}>{dia} de {mes}</Text>
+          <Text style={styles.dataAtual}>{dia} de {mesDisplay}</Text>
         </TouchableOpacity>
       </View>
 

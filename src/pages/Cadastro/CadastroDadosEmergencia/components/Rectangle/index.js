@@ -1,12 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, useWindowDimensions, StyleSheet, TextInput, Text, TouchableOpacity, Alert, ScrollView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { TextInputMask } from 'react-native-masked-text';
-import { cadastrarPaciente } from "../../../../../services/api.js"
+import { cadastrarPaciente } from "../../../../../services/api.js"  
 import { getCredentials } from "../../../../../services/saveData.js"
 import { DataStateContext } from "../../../components/DataCenter/index.js"
 import { ValidarCelular, ValidarVinculo, ValidarNome } from "../validator/index.js"
 import LoadingModal from "../../../../../components/Carregando"
+import { CommonActions } from '@react-navigation/native';
 
 export const Rectangle = ({ navigation }) => {
   const windowHeight = useWindowDimensions().height;
@@ -116,7 +117,12 @@ export const Rectangle = ({ navigation }) => {
       if(foi){
         console.log("------------- Enviado paciente:")
         console.log(data)
-        navigation.navigate('Home');
+        // navigation.navigate('Home');
+        const resetAction = CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Home' }] // Replace 'Dados Pessoais' with the name of the screen you want to navigate to
+      });
+      navigation.dispatch(resetAction);
       }else{
         console.log("------------- não foi")
       }
@@ -145,6 +151,7 @@ export const Rectangle = ({ navigation }) => {
   return (
     <View style={[styles.rectangle, { height: heightRectangle }]}>
       <LoadingModal isVisible={isLoading} />
+      <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.form}>
         <View style={styles.formControl}>
           <Text style={styles.label}>Nome do contato:</Text>
@@ -187,6 +194,7 @@ export const Rectangle = ({ navigation }) => {
         <View style={styles.linksContainer}>
         </View>
       </View>
+      </ScrollView>
     </View>
   );
 };

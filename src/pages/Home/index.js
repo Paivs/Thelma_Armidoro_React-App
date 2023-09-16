@@ -40,6 +40,22 @@ export default function Home({ navigation }) {
     fetchData();
   }, []);
 
+  const focusListener = navigation.addListener('focus', () => {
+    const fetchData = async () => {
+      try {
+        const diariosSonhosData = await listarDiarios("sonhos");
+        const diariosEmocoesData = await listarDiarios("emocoes");
+        setDiariosEmocoes(diariosEmocoesData);
+        setDiariosSonhos(diariosSonhosData);
+      } catch (error) {
+        console.error("Error fetching diarios:", error);
+      }
+    };
+
+    fetchData();
+  });
+
+
   return (
     <ImageBackground
       source={require('../../../assets/fundo2.png')}
@@ -57,42 +73,46 @@ export default function Home({ navigation }) {
         </ScrollView>
 
         <Text style={styles.title}>Emoções</Text>
-        <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
-        <FlatList
+        {diariosEmocoes.length > 0 ? (
+          <FlatList
             data={diariosEmocoes}
             keyExtractor={(_, index) => index.toString()}
             horizontal
+            style={styles.menus}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <Emocoes title={item.titulo} text={item.texto} />
             )}
           />
-        </ScrollView>
+        ) : (
+          <Text style={styles.subtitle}>Não há diários de emoções disponíveis</Text>
+        )}
 
         <Text style={styles.title}>Sonhos</Text>
-        <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
-        <FlatList
+        {diariosSonhos.length > 0 ? (
+          <FlatList
             data={diariosSonhos}
             keyExtractor={(_, index) => index.toString()}
+            style={styles.menus}
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => (
               <Emocoes title={item.titulo} text={item.texto} />
             )}
           />
-        </ScrollView>
+        ) : (
+          <Text style={styles.subtitle}>Não há diários de sonhos disponíveis</Text>
+        )}
+
 
 
         <Text style={styles.title}>Lembretes</Text>
         <ScrollView style={styles.menus} horizontal showsHorizontalScrollIndicator={false}>
-          <RectangleLembrete title="Parabéns" text="Hoje é seu aniversário. Tenha um ótimo dia!!!" page="01" />
+        <Text style={styles.subtitleMenu}>Não há lembretes</Text>
+          {/* <RectangleLembrete title="Parabéns" text="Hoje é seu aniversário. Tenha um ótimo dia!!!" page="01" />
           <RectangleLembrete title="Consulta!" text="A hora da sua consulta chegou, venha ter seu atendimento!!!" page="02" />
           <RectangleLembrete title="Diário dos sonhos" text="Você ainda não preencheu sue diário hoje." page="03" />
-          <RectangleLembrete title="Diário de Emoçoes" text="Seu diário de emoções ainda não está salvo!" page="04" />
-
-
-
-
+          <RectangleLembrete title="Diário de Emoçoes" text="Seu diário de emoções ainda não está salvo!" page="04" /> */}
         </ScrollView>
 
       </ScrollView>

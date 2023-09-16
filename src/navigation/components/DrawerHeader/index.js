@@ -87,11 +87,13 @@ const styles = {
     fontSize: 18,
     fontWeight: 'bold',
     alignSelf: 'center',
+    textAlign: "center",
     marginBottom: 4,
   },
   profileEmail: {
     fontSize: 14,
     alignSelf: 'center',
+    textAlign: "center",
   },
 };
 
