@@ -6,6 +6,14 @@ export default styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
   },
+  scrollInterno: {
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    marginHorizontal: 0,
+    paddingHorizontal: 0,
+    backgroundColor: '#282A3A',
+    paddingTop: 30,
+  },
   container: {
     alignItems: 'center',
     marginBottom: 20,

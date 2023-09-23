@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, ImageBackground, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
 import Rectangle from "./components/Rectangle/index.js"
 import styles from "./styles.js"
 import { getDiaSeguinte, getDiaAnterior } from "../../services/DataService.js"
@@ -30,7 +30,7 @@ export default function DiarioSonhos({ navigation }) {
     let dataAtualizado = getDiaAnterior({ ano: ano, mes: mes, dia: dia })
     const meses = [
       "Janeiro",
-      "Fevereiro", 
+      "Fevereiro",
       "Marco",
       "Abril",
       "Maio",
@@ -61,7 +61,7 @@ export default function DiarioSonhos({ navigation }) {
 
     const meses = [
       "Janeiro",
-      "Fevereiro", 
+      "Fevereiro",
       "Marco",
       "Abril",
       "Maio",
@@ -103,7 +103,7 @@ export default function DiarioSonhos({ navigation }) {
 
     const meses = [
       "Janeiro",
-      "Fevereiro", 
+      "Fevereiro",
       "Marco",
       "Abril",
       "Maio",
@@ -152,7 +152,7 @@ export default function DiarioSonhos({ navigation }) {
           </>
         } else {
           return <>
-          <TouchableOpacity onPress={getDate} style={styles.botaoDireita}>
+            <TouchableOpacity onPress={getDate} style={styles.botaoDireita}>
               <Text style={styles.botaoDireitaText}>Reset</Text>
             </TouchableOpacity>
           </>
@@ -168,14 +168,16 @@ export default function DiarioSonhos({ navigation }) {
       source={require('../../../assets/fundo2.png')}
       style={styles.background}
     >
+
       <View style={styles.container}>
         <Text style={styles.title}>Diário de Sonhos</Text>
         <View style={styles.line} />
         <View style={styles.conChamada}>
-          <Text style={styles.chamada}>Bom dia {nome}!</Text>
+          <Text style={styles.chamada} numberOfLines={1}>Bom dia {nome ? nome.split(' ')[0] : ''}!</Text>
           <Text style={styles.chamada}>Como foram seus sonhos?</Text>
         </View>
       </View>
+
       <View style={styles.conData}>
         <TouchableOpacity onPress={minusDiaAnterior}>
           <Text style={styles.dataAnterior}>{diaAnterior} ...</Text>
@@ -184,9 +186,8 @@ export default function DiarioSonhos({ navigation }) {
           <Text style={styles.dataAtual}>{dia} de {mesDisplay}</Text>
         </TouchableOpacity>
       </View>
-      <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
-        <Rectangle ref={rectangleRef} onSalvar={salvar} onUpdate={update} data={`${ano}-${mes}-${dia}`} />
-      </KeyboardAvoidingView>
+
+      <Rectangle ref={rectangleRef} onSalvar={salvar} onUpdate={update} data={`${ano}-${mes}-${dia}`} />
     </ImageBackground>
   );
 }

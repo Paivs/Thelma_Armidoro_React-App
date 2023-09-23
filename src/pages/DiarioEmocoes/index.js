@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, ImageBackground, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { DrawerActions } from '@react-navigation/native';
 import Rectangle from "./components/Rectangle/index.js"
 import styles from "./styles.js"
@@ -180,7 +181,7 @@ export default function DiarioEmocoes({ navigation }) {
         <View style={styles.line} />
 
         <View style={styles.conChamada}>
-          <Text style={styles.chamada}>Olá {nome}!</Text>
+          <Text style={styles.chamada} numberOfLines={1}>Olá {nome ? nome.split(' ')[0] : ''}!</Text>
           <Text style={styles.chamada}>Como está se sentindo hoje?</Text>
         </View> 
       </View>
@@ -194,9 +195,7 @@ export default function DiarioEmocoes({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
       <Rectangle ref={rectangleRef} onSalvar={salvar} onUpdate={update} data={`${ano}-${mes}-${dia}`} />
-      </KeyboardAvoidingView>
     </ImageBackground>
   );
 }

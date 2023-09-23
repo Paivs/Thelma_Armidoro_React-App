@@ -1,23 +1,54 @@
 // Rectangle.js
 import React, { Component } from 'react';
-import { View, Dimensions, StyleSheet, TextInput, ScrollView, Text, Alert } from 'react-native';
+import { View, Dimensions, StyleSheet, TextInput, ScrollView, Text, Alert, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { salvarDiario, pegarAtualDiario } from "../../../../services/api.js"
 import { getCredentials, getPacienteId } from "../../../../services/saveData.js"
 
 const windowHeight = Dimensions.get('window').height;
- 
+
 export default class Rectangle extends Component {
   constructor(props) {
     super(props);
     this.state = {
       heightRectangle: windowHeight * 0.65,
+      keyboardVerticalOffset: 0,
       title: '',
       text: ''
     };
   }
 
+  componentWillUnmount() {
+    // Certifique-se de remover os ouvintes quando o componente for desmontado
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  handleKeyboardDidShow = (event) => {
+    const windowHeight = Dimensions.get('window').height;
+    const keyboardHeight = event.endCoordinates.height;
+
+    // Calcule o deslocamento vertical com base na altura do teclado
+    const keyboardVerticalOffset = windowHeight - keyboardHeight;
+
+    this.setState({ keyboardVerticalOffset });
+  };
+
+  handleKeyboardDidHide = () => {
+    // Quando o teclado estiver oculto, redefina o deslocamento vertical para 0
+    this.setState({ keyboardVerticalOffset: 0 });
+  };
+
   componentDidMount() {
     this.pegarAtual();
+
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this.handleKeyboardDidShow
+    );
+    this.keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      this.handleKeyboardDidHide
+    );
   }
 
   salvar = async () => {
@@ -28,7 +59,7 @@ export default class Rectangle extends Component {
         'Alerta', 'Para salvar seu sonho é necessário colocar título e texto',
         [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') },],
         { cancelable: false }
-    );
+      );
       return;
     }
     const credenciais = await getCredentials();
@@ -59,7 +90,7 @@ export default class Rectangle extends Component {
   pegarAtual = async () => {
     const credenciais = await getCredentials();
     const id = await getPacienteId();
-  
+
     const { data } = this.props;
     let [ano, mes, dia] = data.split('-');
 
@@ -68,9 +99,9 @@ export default class Rectangle extends Component {
     if (mes < 10) {
       mes = '0' + mes;
     }
-    
+
     const dataFormatada = ano + "-" + (mes) + "-" + dia;
-  
+
     await this.atualizaMesmo(id, credenciais, dataFormatada);
   }
 
@@ -82,49 +113,65 @@ export default class Rectangle extends Component {
   };
 
   render() {
+    const { keyboardVerticalOffset } = this.state;
+
     return (
-      <View style={[styles.rectangle, { height: this.state.heightRectangle }]}>
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Título"
-            placeholderTextColor="white"
-            value={this.state.title}
-            onChangeText={text => {
-              this.setState({ title: text });
-            }}
-            multiline
-          />
-        </View>
-        <ScrollView>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : null} // Usamos null no Android
+        keyboardVerticalOffset={keyboardVerticalOffset}
+      >
+      <View style={[styles.rectangle]}>
           <View>
             <TextInput
-              style={styles.inputText}
-              placeholder="Digite suas emoções"
+              style={styles.input}
+              placeholder="Título"
               placeholderTextColor="white"
-              value={this.state.text}
+              value={this.state.title}
               onChangeText={text => {
-                this.setState({ text: text });
+                this.setState({ title: text });
               }}
-              multiline
+              numberOfLines={1}
             />
           </View>
-        </ScrollView>
-      </View>
+   
+          <ScrollView style={styles.descricaoContainer}>
+          <TextInput
+            style={styles.descricao}
+            placeholder="Digite suas emoções"
+            placeholderTextColor="white"
+            value={this.state.text}
+            onChangeText={text => {
+              this.setState({ text: text });
+            }}
+            multiline
+            scrollEnabled={true} // Habilitar o scroll na caixa de texto
+          />
+          </ScrollView>
+        </View>
+        </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  textScrollView: {
+    // flex: 1,
+    // marginBottom: 15,
+  },
+  descricaoContainer: {
+    flex: 1, // Isso fará com que a descrição preencha o espaço disponível
+  },
   rectangle: {
-    position: 'absolute',
-    bottom: 0,
+    // position: 'absolute',
+    // bottom: 0,
     backgroundColor: '#282A3A',
+    width: '100%',
+    height: "100%",
+    paddingHorizontal: 40,
+    paddingTop: 30,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    width: '100%',
-    paddingHorizontal: 40,
-    paddingVertical: 30,
   },
   input: {
     fontSize: 26,
@@ -132,10 +179,10 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 15,
   },
-  inputText: {
+  descricao: {
     fontSize: 20,
     color: "white",
     marginBottom: 15,
-    paddingBottom: 80,
+    paddingBottom: 15,
   }
 });

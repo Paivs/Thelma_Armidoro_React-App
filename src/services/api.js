@@ -7,8 +7,8 @@ import { format } from 'date-fns';
 import { Alert } from "react-native"
 import { CommonActions } from '@react-navigation/native';
 
-const urlBase = "http://89.116.214.128:8080/"
-// const urlBase = "http://10.0.2.2:8080/"
+// const urlBase = "http://89.116.214.128:8080/"
+const urlBase = "http://10.0.2.2:8080/"
 
 export async function login(username, password, navigation) {
     return await axios.post(urlBase + "login",
@@ -57,6 +57,34 @@ export async function login(username, password, navigation) {
         })
 }
 
+export async function loginZen(username, password) {
+    return await axios.post(urlBase + "login",
+        {
+            "login": username,
+            "senha": password
+        }, {
+        timeout: 7500 // 7,5 segundos
+    })
+        .then((res) => {
+            console.log("then()")
+            if (res.status == 200) {
+                storeUserData(username, password, res.data.token);
+                storeLogado(true)
+            } else {
+                return false
+            }
+        })
+        .catch((error) => {
+            return false
+        })
+}
+
+export async function renovarCredenciais(){
+    const credenciais = await getCredentials();
+
+    await loginZen(credenciais.username, credenciais.password)
+}
+
 async function getPacienteUserData(login, token, navigation) {
 
     const instance = axios.create({
@@ -87,6 +115,8 @@ async function getPacienteUserData(login, token, navigation) {
                 [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') }],
                 { cancelable: false }
             );
+            
+            renovarCredenciais()
 
             // navigation.navigate('Dados Pessoais');
 
@@ -396,6 +426,8 @@ export async function salvarDiario(titulo, texto, tipo, paciente, token) {
             console.log("catch()")
             console.log(error)
 
+            renovarCredenciais()
+
             return false
         })
 }
@@ -437,7 +469,15 @@ export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
     console.log("GET: " + `diarios/${endpoint}/${paciente}/${formattedDate}`)
 
     try {
-        const response = await instance.get(`diarios/${endpoint}/${paciente}/${formattedDate}`);
+        const response = await instance.get(`diarios/${endpoint}/${paciente}/${formattedDate}`)
+        .then((res) => {
+           
+        })
+        .catch((error) => {
+            renovarCredenciais()
+        })
+
+
         if (response.status === 200) {
             const diario = {
                 titulo: response.data.titulo,
@@ -490,7 +530,14 @@ export async function pegarAtualDiarioAnterior(tipo, paciente, token) {
     console.log("GET: " + `diarios/${endpoint}/${paciente}/${formattedDate}`)
 
     try {
-        const response = await instance.get(`diarios/${endpoint}/${paciente}/${formattedDate}`);
+        const response = await instance.get(`diarios/${endpoint}/${paciente}/${formattedDate}`)
+        .then((res) => {
+           
+        })
+        .catch((error) => {
+            renovarCredenciais()
+        })
+
         if (response.status === 200) {
             const diario = {
                 titulo: response.data.titulo,
@@ -523,7 +570,13 @@ export async function listarDiarios(tipo) {
             }
         });
 
-        const response = await instance.get(`diarios/${tipo}/listar/${credenciais.username}`);
+        const response = await instance.get(`diarios/${tipo}/listar/${credenciais.username}`)
+        .then((res) => {
+           
+        })
+        .catch((error) => {
+            renovarCredenciais()
+        })
 
         if (response.status === 200) {
             const retorno = response.data.content.map(diario => ({
@@ -600,6 +653,8 @@ export async function alterarSenha(senhaAntiga, senhaNova) {
                 { cancelable: false }
             );
 
+            renovarCredenciais()
+
             return false
         })
 }
@@ -664,6 +719,8 @@ export async function alterarEndereco(endereco) {
                 },],
                 { cancelable: false }
             );
+
+            renovarCredenciais()
 
             return false
         })
@@ -749,6 +806,8 @@ export async function alterarTelefone(telefone, telefoneFixo) {
                 { cancelable: false }
             );
 
+            renovarCredenciais()
+
             return false
         })
 }
@@ -771,7 +830,13 @@ export async function listaMedicos() {
             }
         });
 
-        const response = await instance.get("medicos");
+        const response = await instance.get("medicos")
+        .then((res) => {
+           
+        })
+        .catch((error) => {
+            renovarCredenciais()
+        });
 
         if (response.status === 200) {
             const retorno = response.data.content.map(medico => ({
