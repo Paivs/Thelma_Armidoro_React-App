@@ -19,11 +19,6 @@ export default function TemConsulta({ navigation }) {
     setMensagemReal(mensagemAtualizada)
   }
 
-  const marcar = () => {
-
-  }
-
-
   const header = () => {
     navigation.setOptions({
       headerRight: () => {

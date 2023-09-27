@@ -40,7 +40,7 @@ export default function Home({ navigation }) {
     fetchData();
   }, []);
 
-  const focusListener = navigation.addListener('focus', () => {
+  const focusListener = navigation.addListener('focus', async () => {
     const fetchData = async () => {
       try {
         const diariosSonhosData = await listarDiarios("sonhos");
@@ -49,6 +49,7 @@ export default function Home({ navigation }) {
         setDiariosSonhos(diariosSonhosData);
       } catch (error) {
         console.error("Error fetching diarios:", error);
+        return ;
       }
     };
 

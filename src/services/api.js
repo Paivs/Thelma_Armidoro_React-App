@@ -79,7 +79,7 @@ export async function loginZen(username, password) {
         })
 }
 
-export async function renovarCredenciais(){
+export async function renovarCredenciais() {
     const credenciais = await getCredentials();
 
     await loginZen(credenciais.username, credenciais.password)
@@ -115,7 +115,7 @@ async function getPacienteUserData(login, token, navigation) {
                 [{ text: 'OK', onPress: () => console.log('Botão OK pressionado') }],
                 { cancelable: false }
             );
-            
+
             renovarCredenciais()
 
             // navigation.navigate('Dados Pessoais');
@@ -470,12 +470,12 @@ export async function pegarAtualDiario(tipo, paciente, token, dataFormatada) {
 
     try {
         const response = await instance.get(`diarios/${endpoint}/${paciente}/${formattedDate}`)
-        .then((res) => {
-           
-        })
-        .catch((error) => {
-            renovarCredenciais()
-        })
+            .then((res) => {
+
+            })
+            .catch((error) => {
+                renovarCredenciais()
+            })
 
 
         if (response.status === 200) {
@@ -531,12 +531,12 @@ export async function pegarAtualDiarioAnterior(tipo, paciente, token) {
 
     try {
         const response = await instance.get(`diarios/${endpoint}/${paciente}/${formattedDate}`)
-        .then((res) => {
-           
-        })
-        .catch((error) => {
-            renovarCredenciais()
-        })
+            .then((res) => {
+
+            })
+            .catch((error) => {
+                renovarCredenciais()
+            })
 
         if (response.status === 200) {
             const diario = {
@@ -571,28 +571,30 @@ export async function listarDiarios(tipo) {
         });
 
         const response = await instance.get(`diarios/${tipo}/listar/${credenciais.username}`)
-        .then((res) => {
-           
-        })
-        .catch((error) => {
-            renovarCredenciais()
-        })
+            .then((res) => {
+                return res
+            })
+            .catch((error) => {
+                renovarCredenciais()
+            })
+            
 
-        if (response.status === 200) {
-            const retorno = response.data.content.map(diario => ({
-                "titulo": diario.titulo,
-                "texto": diario.texto,
-                "data": diario.data,
-            }));
+            if (response?.status === 200) {
+                const retorno = response.data.content.map(diario => ({
+                    "titulo": diario.titulo,
+                    "texto": diario.texto,
+                    "data": diario.data,
+                }));
 
-            return retorno;
-        } else {
-            console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
-            throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
-        }
+                console.log(retorno)
+
+                return retorno;
+            } else {
+                // console.log(`Erro: ${response.status}\nDescrição: ${response.data}`);
+                // throw new Error(`Erro: ${response.status}\nDescrição: ${response.data}`);
+            }
     } catch (error) {
         console.log("Erro:", error);
-        throw error;
     }
 }
 
@@ -831,12 +833,12 @@ export async function listaMedicos() {
         });
 
         const response = await instance.get("medicos")
-        .then((res) => {
-           
-        })
-        .catch((error) => {
-            renovarCredenciais()
-        });
+            .then((res) => {
+
+            })
+            .catch((error) => {
+                renovarCredenciais()
+            });
 
         if (response.status === 200) {
             const retorno = response.data.content.map(medico => ({
